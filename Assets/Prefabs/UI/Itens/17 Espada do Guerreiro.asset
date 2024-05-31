@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93f093dded7dc4d468e252bd6fd2a048, type: 3}
   m_Name: 17 Espada do Guerreiro
   m_EditorClassIdentifier: 
+  id: 0
+  isRuby: 0
+  isRuna: 0
   nameObject: Espada de Guerreiro
   descObject: Concede-lhe Ataque de 300 de ataque, velocidade de 5 e 8 volocidade
     de ataque
@@ -25,3 +28,5 @@ MonoBehaviour:
   vel: 5
   velAtaq: 8
   cd: 0
+  preco: 0
+  qtd: 0

@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93f093dded7dc4d468e252bd6fd2a048, type: 3}
   m_Name: 1 Escudo de Trok
   m_EditorClassIdentifier: 
+  id: 0
+  isRuby: 0
+  isRuna: 0
   nameObject: Escudo de Trok
   descObject: Aumenta a defesa de 50
   valCoin: 250
@@ -24,3 +27,5 @@ MonoBehaviour:
   vel: 0
   velAtaq: 0
   cd: 0
+  preco: 0
+  qtd: 0

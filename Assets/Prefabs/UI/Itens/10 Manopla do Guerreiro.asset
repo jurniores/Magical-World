@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93f093dded7dc4d468e252bd6fd2a048, type: 3}
   m_Name: 10 Manopla do Guerreiro
   m_EditorClassIdentifier: 
+  id: 0
+  isRuby: 0
+  isRuna: 0
   nameObject: Manopla do Guerreiro
   descObject: Esta manopla lhe concede velocidade de ataque 15 e 150 de ataque
   valCoin: 450
@@ -24,3 +27,5 @@ MonoBehaviour:
   vel: 0
   velAtaq: 15
   cd: 0
+  preco: 0
+  qtd: 0
