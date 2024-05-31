@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93f093dded7dc4d468e252bd6fd2a048, type: 3}
+  m_Name: 4 FEHU
+  m_EditorClassIdentifier: 
+  id: 0
+  isRuby: 0
+  isRuna: 1
+  nameObject: FEHU
+  descObject: "Esta runa lhe concede 100 de ataque m\xE1gico"
+  valCoin: 0
+  valRuby: 250
+  sprite: {fileID: 21300000, guid: 4df0f517384639b469f7223d26519e4b, type: 3}
+  def: 0
+  defM: 0
+  ataq: 0
+  ataqM: 100
+  vel: 0
+  velAtaq: 0
+  cd: 0
+  preco: 0
+  qtd: 0

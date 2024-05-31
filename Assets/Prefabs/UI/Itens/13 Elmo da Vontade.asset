@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93f093dded7dc4d468e252bd6fd2a048, type: 3}
+  m_Name: 13 Elmo da Vontade
+  m_EditorClassIdentifier: 
+  nameObject: Luva da Vontade
+  descObject: "Concede 200 de Defesa M\xE1gica"
+  valCoin: 500
+  valRuby: 100
+  sprite: {fileID: 21300000, guid: 4f723dbe02900d9408a47b1af0fb1475, type: 3}
+  def: 0
+  defM: 0
+  ataq: 0
+  ataqM: 200
+  vel: 0
+  velAtaq: 0
+  cd: 0
