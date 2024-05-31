@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 5
   isRuby: 1
+  isRuna: 0
   nameObject: Ruby
   descObject: 1000 Rubys
   valCoin: 0
   valRuby: 0
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: c76e91560b95a39408786c5553fe9d2c, type: 3}
   def: 0
   defM: 0
   ataq: 0

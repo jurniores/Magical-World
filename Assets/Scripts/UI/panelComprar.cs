@@ -6,14 +6,22 @@ using TMPro;
 public class panelComprar : MonoBehaviour
 {
     [SerializeField]
+    private Image img;
+    [SerializeField]
     private TextMeshProUGUI tmProName, tmProText;
     [SerializeField]
-    private GameObject coinSelect, rubySelect, moneySelect, loadSelect, succesSelect, errorSelect;
+    private GameObject coinSelect, rubySelect, moneySelect, loadSelect, errorMessageSelect;
     [SerializeField]
     private TextMeshProUGUI coinProVal, rubyProVal, moneyProVal;
-    [SerializeField]
-    private Toggle tgCoin, tgRuby, tgMoney;
-    public void InsertInfo(string nameInfo, string text, int valCoin, int valRuby)
+
+    /// <summary>
+    /// This function is called when the object becomes enabled and active.
+    /// </summary>
+    void OnEnable()
+    {
+        errorMessageSelect.SetActive(false);
+    }
+    public void InsertInfo(string nameInfo, string text, int valCoin, int valRuby, Sprite sprite)
     {
         coinSelect.SetActive(true);
         rubySelect.SetActive(true);
@@ -23,9 +31,9 @@ public class panelComprar : MonoBehaviour
         tmProText.text = text;
         coinProVal.text = valCoin.ToString();
         rubyProVal.text = valRuby.ToString();
-        TogglesOn(true,false,false);
+        img.sprite = sprite;
     }
-     public void InsertInfo(string nameInfo, int qtd, int valMoney)
+     public void InsertInfo(string nameInfo, int qtd, int valMoney, Sprite sprite)
     {
         coinSelect.SetActive(false);
         rubySelect.SetActive(false);
@@ -33,11 +41,10 @@ public class panelComprar : MonoBehaviour
 
         tmProName.text = nameInfo;
         tmProText.text = qtd.ToString() +" Rubys";
-        moneyProVal.text = valMoney.ToString()+"R$";
-        TogglesOn(false,false,true);
-        
+        moneyProVal.text = valMoney.ToString()+"R$"; 
+        img.sprite = sprite;
     }
-    public void InsertInfo(string nameInfo, string text, int valRuby)
+    public void InsertInfo(string nameInfo, string text, int valRuby, Sprite sprite)
     {
         coinSelect.SetActive(false);
         rubySelect.SetActive(true);
@@ -46,30 +53,14 @@ public class panelComprar : MonoBehaviour
         tmProName.text = nameInfo;
         tmProText.text = text;
         rubyProVal.text = valRuby.ToString();
-        TogglesOn(false,true,false);
-        
+        img.sprite = sprite;
     }
 
-    void TogglesOn(bool coin, bool ruby, bool money){
-        tgCoin.isOn = coin;
-        tgRuby.isOn = ruby;
-        tgMoney.isOn = money;
-    }
 
+
+   
     public void Comprar()
     {
-        if (tgCoin.gameObject.activeSelf && tgCoin.isOn)
-        {
-            print("Comprei com coin, codigo servidor");
-        }
-        else if (tgRuby.gameObject.activeSelf && tgRuby.isOn)
-        {
-            print("Comprei com ruby, codigo servidor");
-        }
-        else if (tgMoney.gameObject.activeSelf && tgMoney.isOn)
-        {
-            print("Comprei com money, codigo servidor");
-        }
         
         loadSelect.SetActive(true);
         StartCoroutine(SimulaturServer());
@@ -80,14 +71,14 @@ public class panelComprar : MonoBehaviour
     IEnumerator SimulaturServer(){
         yield return new WaitForSeconds(2);
         loadSelect.SetActive(false);
-        StartCoroutine(SimulaturServer2());
+        errorMessageSelect.SetActive(true);
+        //StartCoroutine(SimulaturServer2());
         
     }
     IEnumerator SimulaturServer2(){
-        succesSelect.SetActive(true);
         yield return new WaitForSeconds(1f);
-        succesSelect.SetActive(false);
         Camera.main.GetComponent<ComprarOuCancelar>().CancelPanel();
+        
     }
 
 

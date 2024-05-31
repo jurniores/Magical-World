@@ -17,17 +17,17 @@ public class ComprarOuCancelar : MonoBehaviour
         panelComprar.SetActive(true);
         if (item.isRuby)
         {
-            pComprar.InsertInfo(item.nameObject, item.qtd, item.preco);
+            pComprar.InsertInfo(item.nameObject, item.qtd, item.preco, item.sprite);
 
         }
         else if (item.isRuna)
         {
-            pComprar.InsertInfo(item.nameObject, item.descObject, item.valRuby);
+            pComprar.InsertInfo(item.nameObject, item.descObject, item.valRuby, item.sprite);
 
         }
         else
         {
-            pComprar.InsertInfo(item.nameObject, item.descObject, item.valCoin, item.valRuby);
+            pComprar.InsertInfo(item.nameObject, item.descObject, item.valCoin, item.valRuby, item.sprite);
         }
         
     }
