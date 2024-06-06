@@ -12,7 +12,7 @@ public class InstantiateRunes : MonoBehaviour
     private List<ScriptableItens> runes;
     void Start()
     {
-        runes.ForEach(e=>InstRunes());
+        runes.ForEach(e=>InstRunes(e));
     }
 
     // Update is called once per frame
@@ -21,8 +21,10 @@ public class InstantiateRunes : MonoBehaviour
         
     }
 
-    void InstRunes(){
+    void InstRunes(ScriptableItens item){
         Transform runeInst = Instantiate(rune).transform;
+        RunaDaSala rS = runeInst.GetComponent<RunaDaSala>();
+        rS.SetRune(item);
         runeInst.SetParent(content,false);
     }
 }
