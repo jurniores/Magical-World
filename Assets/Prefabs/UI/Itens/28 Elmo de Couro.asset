@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93f093dded7dc4d468e252bd6fd2a048, type: 3}
   m_Name: 28 Elmo de Couro
   m_EditorClassIdentifier: 
+  id: 27
+  isRuby: 0
+  isRuna: 0
   nameObject: Bota de Couro
   descObject: "Concede 100 de defesa, 100 de defesa m\xE1gica, 5 de velocidade e
     5 de velocidade de ataque"
@@ -25,3 +28,5 @@ MonoBehaviour:
   vel: 5
   velAtaq: 5
   cd: 0
+  preco: 0
+  qtd: 0

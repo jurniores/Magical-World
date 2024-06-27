@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93f093dded7dc4d468e252bd6fd2a048, type: 3}
   m_Name: 23 Cajado de Narim
   m_EditorClassIdentifier: 
+  id: 22
+  isRuby: 0
+  isRuna: 0
   nameObject: Cajado de Narim
   descObject: "Concede 400 de dano m\xE1gico, 10 de velocidade e 100 de defesa e
     100 de defesa m\xE1gica"
@@ -25,3 +28,5 @@ MonoBehaviour:
   vel: 10
   velAtaq: 0
   cd: 0
+  preco: 0
+  qtd: 0

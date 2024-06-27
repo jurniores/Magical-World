@@ -27,6 +27,11 @@ public class BtnInstanciados : MonoBehaviour
         PegaFuncPanel(item);
     }
 
+    public void InsertInv(ScriptableItens itemInv){
+        tmProName.text = itemInv.nameObject;
+        image.sprite = itemInv.sprite;
+    }
+
     public void InsertRuby(ScriptableItens ruby)
     {
         tmProName.text = ruby.qtd.ToString();

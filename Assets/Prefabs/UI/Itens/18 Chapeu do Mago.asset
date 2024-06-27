@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93f093dded7dc4d468e252bd6fd2a048, type: 3}
   m_Name: 18 Chapeu do Mago
   m_EditorClassIdentifier: 
+  id: 17
+  isRuby: 0
+  isRuna: 0
   nameObject: "Chap\xE9u do Mago"
   descObject: "Atribuiu 250 de ataque m\xE1gico, 150 de defesa m\xE1gica e 10 de
     velocidade"
@@ -25,3 +28,5 @@ MonoBehaviour:
   vel: 10
   velAtaq: 0
   cd: 0
+  preco: 0
+  qtd: 0

@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 2755678555637181807}
   - component: {fileID: 3630636929126365579}
   - component: {fileID: 4867448249458440815}
+  - component: {fileID: 4346400181668115825}
   m_Layer: 0
   m_Name: tagInventario
   m_TagString: Untagged
@@ -213,6 +214,22 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.101960786}
   m_EffectDistance: {x: 0, y: -20}
   m_UseGraphicAlpha: 1
+--- !u!114 &4346400181668115825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7547414130960807148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0ea5099bdb5e564bac15ab9dea05152, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tmProName: {fileID: 3710046251266299283}
+  tmProCoin: {fileID: 0}
+  tmProRuby: {fileID: 0}
+  image: {fileID: 4331052779342027898}
 --- !u!1 &8110399537326442511
 GameObject:
   m_ObjectHideFlags: 0

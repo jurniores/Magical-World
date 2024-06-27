@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93f093dded7dc4d468e252bd6fd2a048, type: 3}
   m_Name: 26 Luva de Couro
   m_EditorClassIdentifier: 
+  id: 25
+  isRuby: 0
+  isRuna: 0
   nameObject: Luva de Couro
   descObject: Concede 15 de velocidade e 15 de velocidade de ataque
   valCoin: 1000
@@ -24,3 +27,5 @@ MonoBehaviour:
   vel: 15
   velAtaq: 15
   cd: 0
+  preco: 0
+  qtd: 0

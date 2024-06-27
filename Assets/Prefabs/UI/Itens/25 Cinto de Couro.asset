@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93f093dded7dc4d468e252bd6fd2a048, type: 3}
   m_Name: 25 Cinto de Couro
   m_EditorClassIdentifier: 
+  id: 24
+  isRuby: 0
+  isRuna: 0
   nameObject: Cinto de Couro
   descObject: Concede 20 de velocidade e 20 de velocidade de ataque
   valCoin: 1000
@@ -24,3 +27,5 @@ MonoBehaviour:
   vel: 20
   velAtaq: 20
   cd: 0
+  preco: 0
+  qtd: 0

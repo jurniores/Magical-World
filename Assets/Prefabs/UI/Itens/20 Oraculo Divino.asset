@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93f093dded7dc4d468e252bd6fd2a048, type: 3}
   m_Name: 20 Oraculo Divino
   m_EditorClassIdentifier: 
+  id: 19
+  isRuby: 0
+  isRuna: 0
   nameObject: "Or\xE1culo Divino"
   descObject: "Concede 500 de dano m\xE1gico e 10 de velocidade"
   valCoin: 900
@@ -24,3 +27,5 @@ MonoBehaviour:
   vel: 10
   velAtaq: 0
   cd: 0
+  preco: 0
+  qtd: 0

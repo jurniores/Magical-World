@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93f093dded7dc4d468e252bd6fd2a048, type: 3}
   m_Name: 12 ALGIZ
   m_EditorClassIdentifier: 
-  id: 0
+  id: 1011
   isRuby: 0
   isRuna: 1
   nameObject: ALGIZ

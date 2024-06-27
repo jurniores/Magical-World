@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93f093dded7dc4d468e252bd6fd2a048, type: 3}
   m_Name: 22 Cajado Negro
   m_EditorClassIdentifier: 
+  id: 21
+  isRuby: 0
+  isRuna: 0
   nameObject: Cajado de Mork
   descObject: "Concede 450 de dano m\xE1gico, 10 de velocidade e 100 de defesa"
   valCoin: 900
@@ -24,3 +27,5 @@ MonoBehaviour:
   vel: 10
   velAtaq: 0
   cd: 0
+  preco: 0
+  qtd: 0

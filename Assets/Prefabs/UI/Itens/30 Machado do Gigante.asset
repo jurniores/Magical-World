@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93f093dded7dc4d468e252bd6fd2a048, type: 3}
   m_Name: 30 Machado do Gigante
   m_EditorClassIdentifier: 
+  id: 29
+  isRuby: 0
+  isRuna: 0
   nameObject: Machado do Gigante
   descObject: Concede 1000 de ataque
   valCoin: 1500
@@ -24,3 +27,5 @@ MonoBehaviour:
   vel: 0
   velAtaq: 0
   cd: 0
+  preco: 0
+  qtd: 0

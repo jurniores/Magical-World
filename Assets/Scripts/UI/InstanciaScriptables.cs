@@ -28,7 +28,6 @@ public class InstanciaScriptables : MonoBehaviour
 
         });
 
-        print("Chamei");
     }
 
     public void InstanciaInventario(){

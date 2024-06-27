@@ -1,27 +1,65 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+using System.Threading.Tasks;
+using Omni.Core;
 using TMPro;
-public class panelComprar : MonoBehaviour
+using UnityEngine;
+using UnityEngine.SocialPlatforms;
+using UnityEngine.UI;
+using static Omni.Core.HttpLite;
+
+public class panelComprar : ClientEventBehaviour
 {
     [SerializeField]
     private Image img;
-    [SerializeField]
-    private TextMeshProUGUI tmProName, tmProText;
-    [SerializeField]
-    private GameObject coinSelect, rubySelect, moneySelect, loadSelect, errorMessageSelect;
-    [SerializeField]
-    private TextMeshProUGUI coinProVal, rubyProVal, moneyProVal;
 
-    /// <summary>
-    /// This function is called when the object becomes enabled and active.
-    /// </summary>
+    [SerializeField]
+    private TextMeshProUGUI tmProName,
+        tmProText;
+
+    [SerializeField]
+    private GameObject coinSelect,
+        rubySelect,
+        moneySelect,
+        loadSelect,
+        errorMessageSelect;
+
+    [SerializeField]
+    private TextMeshProUGUI coinProVal,
+        rubyProVal,
+        moneyProVal;
+    private int idItem;
+    private byte tipoDoItem;
+    private Action Fechar;
+
+    string erroOriginal;
+    private TextMeshProUGUI erroText;
+    private GameManager gManager;
+    private bool bounce = true;
+
+    protected override void Start()
+    {
+        base.Start();
+        Fechar = () => Camera.main.GetComponent<ComprarOuCancelar>().CancelPanel();
+        erroText = errorMessageSelect.GetComponent<TextMeshProUGUI>();
+        erroOriginal = erroText.text;
+        gManager = NetworkService.Get<GameManager>("GameManager");
+    }
+
     void OnEnable()
     {
         errorMessageSelect.SetActive(false);
     }
-    public void InsertInfo(string nameInfo, string text, int valCoin, int valRuby, Sprite sprite)
+
+    public void InsertInfo(
+        int id,
+        string nameInfo,
+        string text,
+        int valCoin,
+        int valRuby,
+        Sprite sprite
+    )
     {
         coinSelect.SetActive(true);
         rubySelect.SetActive(true);
@@ -32,19 +70,25 @@ public class panelComprar : MonoBehaviour
         coinProVal.text = valCoin.ToString();
         rubyProVal.text = valRuby.ToString();
         img.sprite = sprite;
+        idItem = id;
+        tipoDoItem = ConstantsDB.IS_ITEM;
     }
-     public void InsertInfo(string nameInfo, int qtd, int valMoney, Sprite sprite)
+
+    public void InsertInfo(int id, string nameInfo, int qtd, int valMoney, Sprite sprite)
     {
         coinSelect.SetActive(false);
         rubySelect.SetActive(false);
         moneySelect.SetActive(true);
 
         tmProName.text = nameInfo;
-        tmProText.text = qtd.ToString() +" Rubys";
-        moneyProVal.text = valMoney.ToString()+"R$"; 
+        tmProText.text = qtd.ToString() + " Rubys";
+        moneyProVal.text = valMoney.ToString() + "R$";
         img.sprite = sprite;
+        idItem = id;
+        tipoDoItem = ConstantsDB.IS_RUBY;
     }
-    public void InsertInfo(string nameInfo, string text, int valRuby, Sprite sprite)
+
+    public void InsertInfo(int id, string nameInfo, string text, int valRuby, Sprite sprite)
     {
         coinSelect.SetActive(false);
         rubySelect.SetActive(true);
@@ -54,32 +98,49 @@ public class panelComprar : MonoBehaviour
         tmProText.text = text;
         rubyProVal.text = valRuby.ToString();
         img.sprite = sprite;
+        idItem = id;
+        tipoDoItem = ConstantsDB.IS_RUNE;
     }
 
-
-
-   
-    public void Comprar()
+    public void Comprar(int tipoMoeda)
     {
-        
-        loadSelect.SetActive(true);
-        StartCoroutine(SimulaturServer());
+        if (!Debounce.instance.Bounce(1))
+            return;
 
+        Fetch.Post(
+            "/cloja",
+            (req) =>
+            {
+                req.Write(idItem);
+                req.Write(tipoDoItem);
+                req.Write(tipoMoeda);
+                req.Send();
+                loadSelect.SetActive(true);
+            },
+            (res) =>
+            {
+                MsgDeErro(res);
+                loadSelect.SetActive(false);
+            }
+        );
     }
 
-    //Código fictício, virá esse load do servidor
-    IEnumerator SimulaturServer(){
-        yield return new WaitForSeconds(2);
-        loadSelect.SetActive(false);
-        errorMessageSelect.SetActive(true);
-        //StartCoroutine(SimulaturServer2());
-        
-    }
-    IEnumerator SimulaturServer2(){
-        yield return new WaitForSeconds(1f);
-        Camera.main.GetComponent<ComprarOuCancelar>().CancelPanel();
-        
-    }
+    void MsgDeErro(DataBuffer response)
+    {
+        var res = response.FromJson<NetworkResponse>();
+        if (res.status == ConstantsDB.SUCCESS)
+        {
+             var user = response.FromJson<UsersModel>();
+             var inv = response.FromJson<InventoryModel>();
+            gManager.User = user;
+            gManager.Inventory =  inv;
 
-
+            Fechar();
+        }
+        else if (res.status == ConstantsDB.ERROR)
+        {
+            erroText.text = res.message;
+            errorMessageSelect.SetActive(true);
+        }
+    }
 }

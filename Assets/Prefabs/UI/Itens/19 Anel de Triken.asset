@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93f093dded7dc4d468e252bd6fd2a048, type: 3}
   m_Name: 19 Anel de Triken
   m_EditorClassIdentifier: 
+  id: 18
+  isRuby: 0
+  isRuna: 0
   nameObject: Anel de Triken
   descObject: "Atribuiu 250 de ataque m\xE1gico e 5 de velocidade de ataque"
   valCoin: 450
@@ -24,3 +27,5 @@ MonoBehaviour:
   vel: 0
   velAtaq: 5
   cd: 0
+  preco: 0
+  qtd: 0

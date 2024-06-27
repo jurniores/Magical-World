@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93f093dded7dc4d468e252bd6fd2a048, type: 3}
   m_Name: 13 Elmo da Vontade
   m_EditorClassIdentifier: 
-  id: 0
+  id: 12
   isRuby: 0
   isRuna: 0
-  nameObject: Luva da Vontade
+  nameObject: Elmo da Vontade
   descObject: "Concede 200 de Defesa M\xE1gica"
   valCoin: 500
   valRuby: 100

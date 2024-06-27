@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93f093dded7dc4d468e252bd6fd2a048, type: 3}
   m_Name: 29 Couraca do Guerreiro
   m_EditorClassIdentifier: 
+  id: 28
+  isRuby: 0
+  isRuna: 0
   nameObject: "Coura\xE7a do Guerreiro"
   descObject: "Concede 300 de defesa e 300 de defesa m\xE1gica"
   valCoin: 1400
@@ -24,3 +27,5 @@ MonoBehaviour:
   vel: 0
   velAtaq: 0
   cd: 0
+  preco: 0
+  qtd: 0
