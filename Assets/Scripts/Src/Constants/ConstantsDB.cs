@@ -6,6 +6,7 @@ public class ConstantsDB
 {
     public const byte ERROR = 0;
     public const byte SUCCESS = 255;
+    public const byte NEUTRO = 254;
 
     
     

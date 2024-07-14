@@ -63,8 +63,8 @@ public class InventoryRoute : MonoBehaviour
                             userPeer.coin -= item.valCoin;
                             invPeer.itensDic.Add(item.id, item.nameObject);
 
-                            userClient = userPeer.ToCopy();
-                            invClient = invPeer.ToCopy();
+                            userClient = userPeer;
+                            invClient = invPeer;
 
                             response = new NetworkResponse()
                             {
@@ -99,8 +99,8 @@ public class InventoryRoute : MonoBehaviour
                             userPeer.ruby -= item.valRuby;
                             invPeer.itensDic.Add(item.id, item.nameObject);
 
-                            userClient = userPeer.ToCopy();
-                            invClient = invPeer.ToCopy();
+                            userClient = userPeer;
+                            invClient = invPeer;
 
                             response = new NetworkResponse()
                             {

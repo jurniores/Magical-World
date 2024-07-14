@@ -14,6 +14,8 @@
 
 using System;
 using System.Collections.Generic;
+using Omni.Core.Interfaces;
+using Omni.Shared;
 using UnityEngine;
 #if OMNI_RELEASE
 using System.Runtime.CompilerServices;
@@ -21,40 +23,83 @@ using System.Runtime.CompilerServices;
 
 namespace Omni.Core
 {
+    public static class Service
+    {
+        /// <summary>
+        /// Called when a service is added or updated, can be called multiple times.
+        /// Be sure to unsubscribe to avoid double subscriptions.
+        /// </summary>
+        public static event Action<string> OnReferenceChanged;
+
+        public static void UpdateReference(string componentName)
+        {
+            OnReferenceChanged?.Invoke(componentName);
+        }
+    }
+
+    public static class ComponentService
+    {
+        public static void Get<T>(string componentName, out T service)
+            where T : class
+        {
+            service = NetworkService.Get<INetworkComponentService>(componentName).Component as T;
+        }
+
+        public static T Get<T>(string componentName)
+            where T : class
+        {
+            return NetworkService.Get<INetworkComponentService>(componentName).Component as T;
+        }
+
+        public static bool TryGet<T>(string componentName, out T service)
+            where T : class
+        {
+            service = null;
+            bool success =
+                NetworkService.TryGet<INetworkComponentService>(
+                    componentName,
+                    out var componentService
+                )
+                && componentService.Component is T;
+
+            if (success)
+            {
+                service = componentService.Component as T;
+            }
+
+            return success;
+        }
+
+        public static GameObject GetGameObject(string componentName)
+        {
+            return NetworkService.Get<INetworkComponentService>(componentName).GameObject;
+        }
+
+        public static bool TryGetGameObject(string componentName, out GameObject service)
+        {
+            service = null;
+            bool success = NetworkService.TryGet<INetworkComponentService>(
+                componentName,
+                out var componentService
+            );
+
+            if (success)
+            {
+                service = componentService.GameObject;
+            }
+
+            return success;
+        }
+    }
+
     /// <summary>
     /// Service Locator is a pattern used to provide global access to a service instance.
     /// This class provides a static methods to store and retrieve services by name.
     /// </summary>
-    [DefaultExecutionOrder(-10500)]
-    public class NetworkService : MonoBehaviour
+    public static class NetworkService
     {
-        private static readonly Dictionary<string, object> services = new(); // Service Name
-
-        [Header("Service Settings")]
-        [SerializeField]
-        private string serviceName;
-
-        [SerializeField]
-        private bool dontDestroyOnLoad;
-
-        protected virtual void Awake()
-        {
-            InitializeServiceLocator();
-        }
-
-        /// <summary>
-        /// Adds the current instance to the service locator using the provided service name.
-        /// If `dontDestroyOnLoad` is set to true, the instance will persist across scene loads.
-        /// Called automatically by <c>Awake</c>, if you override <c>Awake</c> call this method yourself.
-        /// </summary>
-        protected void InitializeServiceLocator()
-        {
-            Register(this, serviceName);
-            if (dontDestroyOnLoad)
-            {
-                DontDestroyOnLoad(this);
-            }
-        }
+        // (Service Name, Service Instance)
+        private static readonly Dictionary<string, object> m_Services = new();
 
         /// <summary>
         /// Retrieves a service instance by its name from the service locator.
@@ -71,7 +116,7 @@ namespace Omni.Core
         {
             try
             {
-                if (services.TryGetValue(serviceName, out object service))
+                if (m_Services.TryGetValue(serviceName, out object service))
                 {
 #if OMNI_RELEASE
                     return Unsafe.As<T>(service);
@@ -105,7 +150,7 @@ namespace Omni.Core
             where T : class
         {
             service = default;
-            if (services.TryGetValue(serviceName, out object @obj))
+            if (m_Services.TryGetValue(serviceName, out object @obj))
             {
                 if (@obj is T)
                 {
@@ -144,7 +189,7 @@ namespace Omni.Core
         {
             service = default;
             string serviceName = typeof(T).Name;
-            if (services.TryGetValue(serviceName, out object @obj))
+            if (m_Services.TryGetValue(serviceName, out object @obj))
             {
                 if (@obj is T)
                 {
@@ -170,7 +215,7 @@ namespace Omni.Core
         /// </exception>
         public static void Register<T>(T service, string serviceName)
         {
-            if (!services.TryAdd(serviceName, service))
+            if (!m_Services.TryAdd(serviceName, service))
             {
                 throw new Exception(
                     $"Could not add service with name: \"{serviceName}\" because it already exists."
@@ -180,17 +225,13 @@ namespace Omni.Core
 
         /// <summary>
         /// Attempts to retrieve adds a new service instance to the service locator with a specified name.
-        /// Throws an exception if a service with the same name already exists.
         /// </summary>
         /// <typeparam name="T">The type of the service to add.</typeparam>
         /// <param name="service">The service instance to add.</param>
         /// <param name="serviceName">The name to associate with the service instance.</param>
-        /// <exception cref="Exception">
-        /// Thrown if a service with the specified name already exists.
-        /// </exception>
         public static bool TryRegister<T>(T service, string serviceName)
         {
-            return services.TryAdd(serviceName, service);
+            return m_Services.TryAdd(serviceName, service);
         }
 
         /// <summary>
@@ -205,9 +246,9 @@ namespace Omni.Core
         /// </exception>
         public static void Update<T>(T service, string serviceName)
         {
-            if (services.ContainsKey(serviceName))
+            if (m_Services.ContainsKey(serviceName))
             {
-                services[serviceName] = service;
+                m_Services[serviceName] = service;
             }
             else
             {
@@ -219,19 +260,15 @@ namespace Omni.Core
 
         /// <summary>
         /// Attempts to retrieve updates an existing service instance in the service locator with a specified name.
-        /// Throws an exception if a service with the specified name does not exist.
         /// </summary>
         /// <typeparam name="T">The type of the service to update.</typeparam>
         /// <param name="service">The new service instance to associate with the specified name.</param>
         /// <param name="serviceName">The name associated with the service instance to update.</param>
-        /// <exception cref="Exception">
-        /// Thrown if a service with the specified name does not exist in the.
-        /// </exception>
         public static bool TryUpdate<T>(T service, string serviceName)
         {
-            if (services.ContainsKey(serviceName))
+            if (m_Services.ContainsKey(serviceName))
             {
-                services[serviceName] = service;
+                m_Services[serviceName] = service;
                 return true;
             }
 
@@ -245,20 +282,17 @@ namespace Omni.Core
         /// <returns>True if the service was successfully removed; otherwise, false.</returns>
         public static bool Unregister(string serviceName)
         {
-            return services.Remove(serviceName);
+            return m_Services.Remove(serviceName);
         }
 
-        protected virtual void OnValidate()
+        /// <summary>
+        /// Determines whether a service with the specified name exists in the service locator.
+        /// </summary>
+        /// <param name="serviceName"></param>
+        /// <returns></returns>
+        public static bool Exists(string serviceName)
         {
-            if (string.IsNullOrEmpty(serviceName))
-            {
-                serviceName = GetType().Name;
-            }
-        }
-
-        protected virtual void Reset()
-        {
-            OnValidate();
+            return m_Services.ContainsKey(serviceName);
         }
     }
 }

@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 namespace Omni.Core.Components
 {
     [DefaultExecutionOrder(-10000)]
+    [DisallowMultipleComponent]
     public class NetworkIsolate : MonoBehaviour
     {
         private Scene m_Scene;
@@ -94,7 +95,7 @@ namespace Omni.Core.Components
                 SceneManager.MoveGameObjectToScene(gameObject, m_Scene);
 
                 // Color for diferentiate game objects in the scenes.
-                Renderer[] renderers = GetComponentsInChildren<Renderer>();
+                Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
                 foreach (Renderer renderer in renderers)
                 {
                     renderer.material.color = m_SimulateColor;

@@ -47,7 +47,7 @@ namespace Omni.Core
         }
 
         /// <summary>
-        /// Destroys a network identity on the server and serializes its destruction to the buffer.
+        /// Destroys a network identity on the server and serializes its data to the buffer.
         /// </summary>
         /// <param name="identity">The network identity to destroy.</param>
         public static void DestroyOnServer(this DataBuffer buffer, NetworkIdentity identity)
@@ -74,14 +74,15 @@ namespace Omni.Core
         /// Thrown when there is no space available in the buffer acquired from the pool,
         /// or if an error occurs during compression.
         /// </exception>
-        public static DataBuffer ToBrotli(this DataBuffer buffer, int quality = 1, int window = 22)
+        public static DataBuffer Compress(this DataBuffer buffer, int quality = 1, int window = 22)
         {
             try
             {
                 using BrotliCompressor compressor = new(quality, window);
-                compressor.Write(buffer.WrittenSpan);
+                buffer.SeekToEnd();
+                compressor.Write(buffer.BufferAsSpan);
 
-                var compressedBuffer = NetworkManager.Pool.Rent();
+                var compressedBuffer = NetworkManager.Pool.Rent(); // Disposed by the caller!
                 compressor.CopyTo(compressedBuffer);
                 return compressedBuffer;
             }
@@ -97,11 +98,21 @@ namespace Omni.Core
             }
         }
 
-        public static void ToBrotliRaw(this DataBuffer buffer, int quality = 1, int window = 22)
+        /// <summary>
+        /// Compresses the data in the current buffer using the Brotli compression algorithm.
+        /// </summary>
+        /// <param name="buffer">The buffer containing the data to compress.</param>
+        /// <param name="quality">The compression quality, ranging from 0 (fastest) to 11 (slowest). Default is 1.</param>
+        /// <param name="window">The Brotli sliding window size, ranging from 10 to 24. Default is 22.</param>
+        /// <exception cref="Exception">
+        /// Thrown when there is no space available in the buffer acquired from the pool,
+        /// or if an error occurs during compression.
+        /// </exception>
+        public static void CompressRaw(this DataBuffer buffer, int quality = 1, int window = 22)
         {
-            using var compressedBuffer = ToBrotli(buffer, quality, window);
-            buffer.ResetWrittenCount();
-            WriteRaw(buffer, compressedBuffer.WrittenSpan);
+            using var compressedBuffer = Compress(buffer, quality, window);
+            buffer.SeekToBegin();
+            WriteRaw(buffer, compressedBuffer.BufferAsSpan);
         }
 
         /// <summary>
@@ -112,42 +123,49 @@ namespace Omni.Core
         /// <exception cref="Exception">
         /// Thrown if an error occurs during decompression.
         /// </exception>
-        public static DataBuffer FromBrotli(this DataBuffer buffer)
+        public static DataBuffer Decompress(this DataBuffer buffer)
         {
             using BrotliDecompressor decompressor = new();
-            var data = decompressor.Decompress(buffer.Rework().WrittenSpan);
+            buffer.SeekToEnd();
+            var data = decompressor.Decompress(buffer.BufferAsSpan);
 
             var decompressedBuffer = NetworkManager.Pool.Rent();
             data.CopyTo(decompressedBuffer.GetSpan());
-            decompressedBuffer.SetLastWrittenCount((int)data.Length);
+            decompressedBuffer.SetEndPosition((int)data.Length);
             return decompressedBuffer;
         }
 
-        public static void FromBrotliRaw(this DataBuffer buffer)
+        /// <summary>
+        /// Decompresses the data in the current buffer using the Brotli decompression algorithm.
+        /// </summary>
+        /// <param name="buffer">The buffer containing the compressed data.</param>
+        /// <exception cref="Exception">
+        /// Thrown if an error occurs during decompression.
+        /// </exception>
+        public static void DecompressRaw(this DataBuffer buffer)
         {
-            using var decompressedBuffer = FromBrotli(buffer);
-            buffer.ResetWrittenCount();
-            WriteRaw(
-                buffer,
-                decompressedBuffer.Internal_GetSpan(decompressedBuffer.LastWrittenCount)
-            );
-            buffer.ResetWrittenCount();
+            using var decompressedBuffer = Decompress(buffer);
+            buffer.SeekToBegin();
+            WriteRaw(buffer, decompressedBuffer.Internal_GetSpan(decompressedBuffer.EndPosition));
+            buffer.SeekToBegin();
         }
 
         /// <summary>
-        /// Encrypts the data buffer using AES encryption.
+        /// Encrypts the data in the buffer using AES encryption.
         /// </summary>
         /// <param name="buffer">The data buffer to encrypt.</param>
         /// <param name="peer">The network peer used for encryption.</param>
         /// <returns>A new encrypted data buffer. The caller must ensure the buffer is disposed or used within a using statement</returns>
         public static DataBuffer Encrypt(this DataBuffer buffer, NetworkPeer peer)
         {
+            peer ??= NetworkManager.LocalPeer;
+            buffer.SeekToEnd();
             byte[] data = buffer.ToArray();
             byte[] encryptedData = AesCryptography.Encrypt(
                 data,
                 0,
                 data.Length,
-                peer.AesKey,
+                peer._aesKey,
                 out byte[] Iv
             );
 
@@ -157,43 +175,55 @@ namespace Omni.Core
             return encryptedBuffer;
         }
 
+        /// <summary>
+        /// Encrypts the data in the current buffer using AES encryption.
+        /// </summary>
+        /// <param name="buffer">The data buffer to encrypt.</param>
+        /// <param name="peer">The network peer used for encryption.</param>
         public static void EncryptRaw(this DataBuffer buffer, NetworkPeer peer)
         {
             using var encryptedBuffer = Encrypt(buffer, peer);
-            buffer.ResetWrittenCount();
-            WriteRaw(buffer, encryptedBuffer.WrittenSpan);
+            buffer.SeekToBegin();
+            WriteRaw(buffer, encryptedBuffer.BufferAsSpan);
         }
 
         /// <summary>
-        /// Decrypts the data buffer using AES decryption.
+        /// Decrypts the data in the buffer using AES decryption.
         /// </summary>
         /// <param name="buffer">The data buffer to decrypt.</param>
         /// <param name="peer">The network peer used for decryption.</param>
         /// <returns>A new decrypted data buffer. The caller must ensure the buffer is disposed or used within a using statement</returns>
         public static DataBuffer Decrypt(this DataBuffer buffer, NetworkPeer peer)
         {
+            peer ??= NetworkManager.LocalPeer;
             byte[] iv = buffer.FromBinary<byte[]>();
             byte[] encryptedData = buffer.FromBinary<byte[]>();
             byte[] decryptedData = AesCryptography.Decrypt(
                 encryptedData,
                 0,
                 encryptedData.Length,
-                peer.AesKey,
+                peer._aesKey,
                 iv
             );
 
             var decryptedBuffer = NetworkManager.Pool.Rent();
             decryptedBuffer.Write(decryptedData);
-            decryptedBuffer.ResetWrittenCount();
+            decryptedBuffer.SeekToBegin();
             return decryptedBuffer;
         }
 
+        /// <summary>
+        /// Decrypts the data in the current buffer using AES decryption.
+        /// </summary>
+        /// <param name="buffer">The data buffer to decrypt.</param>
+        /// <param name="peer">The network peer used for decryption.</param>
+        /// <returns>A new decrypted data buffer. The caller must ensure the buffer is disposed or used within a using statement</returns>
         public static void DecryptRaw(this DataBuffer buffer, NetworkPeer peer)
         {
             using var decryptedBuffer = Decrypt(buffer, peer);
-            buffer.ResetWrittenCount();
-            WriteRaw(buffer, decryptedBuffer.Internal_GetSpan(decryptedBuffer.LastWrittenCount));
-            buffer.ResetWrittenCount();
+            buffer.SeekToBegin();
+            WriteRaw(buffer, decryptedBuffer.Internal_GetSpan(decryptedBuffer.EndPosition));
+            buffer.SeekToBegin();
         }
     }
 
@@ -447,7 +477,7 @@ namespace Omni.Core
         {
             if (seekToBegin)
             {
-                buffer.ResetReadPosition();
+                buffer.SeekToBegin();
             }
 
             return FromJson<Response>(buffer);
@@ -460,7 +490,7 @@ namespace Omni.Core
         {
             if (seekToBegin)
             {
-                buffer.ResetReadPosition();
+                buffer.SeekToBegin();
             }
 
             return FromJson<Response<T>>(buffer);
@@ -501,7 +531,7 @@ namespace Omni.Core
         {
             int dataSize = Read7BitEncodedInt(buffer);
             Span<byte> data = buffer.Internal_GetSpan(dataSize);
-            buffer.Advance(dataSize);
+            buffer.Internal_Advance(dataSize);
             return MemoryPackSerializer.Deserialize<T>(data, settings);
         }
 
@@ -513,7 +543,7 @@ namespace Omni.Core
             encoding ??= DefaultEncoding;
             int byteCount = Read7BitEncodedInt(buffer);
             Span<byte> data = buffer.Internal_GetSpan(byteCount);
-            buffer.Advance(byteCount);
+            buffer.Internal_Advance(byteCount);
             return encoding.GetString(data);
         }
 
@@ -537,7 +567,7 @@ namespace Omni.Core
         {
             int size_t = Read7BitEncodedInt(buffer);
             ReadOnlySpan<byte> data = buffer.Internal_GetSpan(size_t);
-            buffer.Advance(size_t);
+            buffer.Internal_Advance(size_t);
 
             // Allocate a new array.
             int elementCount = size_t / Unsafe.SizeOf<T>();
@@ -561,7 +591,7 @@ namespace Omni.Core
         {
             int size_t = Read7BitEncodedInt(buffer);
             ReadOnlySpan<byte> data = buffer.Internal_GetSpan(size_t);
-            buffer.Advance(size_t);
+            buffer.Internal_Advance(size_t);
 
             // Fastest way to cast a byte[] to a T[].
             ReadOnlySpan<T> arraySpan = MemoryMarshal.Cast<byte, T>(data);
@@ -577,7 +607,7 @@ namespace Omni.Core
         {
             int size_t = Unsafe.SizeOf<T>();
             ReadOnlySpan<byte> data = buffer.Internal_GetSpan(size_t);
-            buffer.Advance(size_t);
+            buffer.Internal_Advance(size_t);
             return MemoryMarshal.Read<T>(data);
         }
 

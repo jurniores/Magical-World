@@ -1,7 +1,11 @@
+using System;
 using System.Collections;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Omni.Core.Interfaces;
+using Omni.Shared;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static Omni.Core.NetworkManager;
 
 namespace Omni.Core
@@ -15,12 +19,12 @@ namespace Omni.Core
     public class NbClient
     {
         private readonly INetworkMessage m_NetworkMessage;
-        private readonly NetVarBehaviour m_NetVarBehaviour;
+        private readonly NetworkVariablesBehaviour m_NetworkVariablesBehaviour;
 
         internal NbClient(INetworkMessage networkMessage)
         {
             m_NetworkMessage = networkMessage;
-            m_NetVarBehaviour = m_NetworkMessage as NetVarBehaviour;
+            m_NetworkVariablesBehaviour = m_NetworkMessage as NetworkVariablesBehaviour;
         }
 
         /// <summary>
@@ -38,7 +42,10 @@ namespace Omni.Core
             byte sequenceChannel = 0
         )
         {
-            using DataBuffer message = m_NetVarBehaviour.CreateHeader(property, propertyId);
+            using DataBuffer message = m_NetworkVariablesBehaviour.CreateHeader(
+                property,
+                propertyId
+            );
             Invoke(255, message, deliveryMode, sequenceChannel);
         }
 
@@ -55,12 +62,14 @@ namespace Omni.Core
             [CallerMemberName] string callerName = ""
         )
         {
-            IPropertyInfo property = m_NetVarBehaviour.GetPropertyInfoWithCallerName<T>(callerName);
+            IPropertyInfo property = m_NetworkVariablesBehaviour.GetPropertyInfoWithCallerName<T>(
+                callerName
+            );
             IPropertyInfo<T> propertyGeneric = property as IPropertyInfo<T>;
 
             if (property != null)
             {
-                using DataBuffer message = m_NetVarBehaviour.CreateHeader(
+                using DataBuffer message = m_NetworkVariablesBehaviour.CreateHeader(
                     propertyGeneric.Invoke(),
                     property.Id
                 );
@@ -108,12 +117,12 @@ namespace Omni.Core
     public class NbServer
     {
         private readonly INetworkMessage m_NetworkMessage;
-        private readonly NetVarBehaviour m_NetVarBehaviour;
+        private readonly NetworkVariablesBehaviour m_NetworkVariablesBehaviour;
 
         internal NbServer(INetworkMessage networkMessage)
         {
             m_NetworkMessage = networkMessage;
-            m_NetVarBehaviour = m_NetworkMessage as NetVarBehaviour;
+            m_NetworkVariablesBehaviour = m_NetworkMessage as NetworkVariablesBehaviour;
         }
 
         /// <summary>
@@ -141,7 +150,10 @@ namespace Omni.Core
         )
         {
             peer ??= Server.ServerPeer;
-            using DataBuffer message = m_NetVarBehaviour.CreateHeader(property, propertyId);
+            using DataBuffer message = m_NetworkVariablesBehaviour.CreateHeader(
+                property,
+                propertyId
+            );
             Invoke(
                 255,
                 peer.Id,
@@ -177,13 +189,15 @@ namespace Omni.Core
             [CallerMemberName] string callerName = ""
         )
         {
-            IPropertyInfo property = m_NetVarBehaviour.GetPropertyInfoWithCallerName<T>(callerName);
+            IPropertyInfo property = m_NetworkVariablesBehaviour.GetPropertyInfoWithCallerName<T>(
+                callerName
+            );
             IPropertyInfo<T> propertyGeneric = property as IPropertyInfo<T>;
 
             if (property != null)
             {
                 peer ??= Server.ServerPeer;
-                using DataBuffer message = m_NetVarBehaviour.CreateHeader(
+                using DataBuffer message = m_NetworkVariablesBehaviour.CreateHeader(
                     propertyGeneric.Invoke(),
                     property.Id
                 );
@@ -283,20 +297,22 @@ namespace Omni.Core
     // Works with il2cpp.
 
     [DefaultExecutionOrder(-3000)]
-    public class NetworkEventBehaviour : NetVarBehaviour, INetworkMessage
+    public class NetworkEventBehaviour
+        : NetworkVariablesBehaviour,
+            INetworkMessage,
+            IServiceBehaviour
     {
         [Header("Service Settings")]
         [SerializeField]
         private string m_ServiceName;
 
         [SerializeField]
-        private bool m_DontDestroyOnLoad;
-
-        [SerializeField]
         private int m_Id;
 
         private NbClient local;
         private NbServer remote;
+
+        private bool m_UnregisterOnLoad = true;
 
         /// <summary>
         /// Gets the identifier of the associated <see cref="INetworkMessage"/>.
@@ -314,7 +330,7 @@ namespace Omni.Core
             {
                 if (local == null)
                 {
-                    throw new System.NullReferenceException(
+                    throw new NullReferenceException(
                         "The event behaviour has not been initialized. Call Awake() first or initialize manually."
                     );
                 }
@@ -334,7 +350,7 @@ namespace Omni.Core
             {
                 if (remote == null)
                 {
-                    throw new System.NullReferenceException(
+                    throw new NullReferenceException(
                         "The event behaviour has not been initialized. Call Awake() first or initialize manually."
                     );
                 }
@@ -355,23 +371,79 @@ namespace Omni.Core
             Null
         > serverEventBehaviour = new();
 
-        protected virtual void Awake()
+        /// <summary>
+        /// The `Awake` method is virtual, allowing it to be overridden in derived classes
+        /// for additional startup logic. If overridden, it is essential to call the base class's
+        /// `Awake` method to ensure proper initialization. Not doing so may result in incomplete
+        /// initialization and unpredictable behavior.
+        /// </summary>
+        public virtual void Awake()
         {
-            NetworkService.Register(this, m_ServiceName);
-            if (m_DontDestroyOnLoad)
-            {
-                DontDestroyOnLoad(this);
-            }
-
-            InitializeBehaviour();
-            RegisterEvents();
+            InitAwake();
         }
 
-        protected virtual void Start()
+        private void InitAwake()
         {
-            RegisterMatchmakingEvents();
-            StartCoroutine(Internal_OnServerStart());
-            StartCoroutine(Internal_OnClientStart());
+            if (NetworkService.Exists(m_ServiceName))
+            {
+                m_UnregisterOnLoad = false;
+                return;
+            }
+
+            if (m_UnregisterOnLoad)
+            {
+                InitializeServiceLocator();
+                InitializeBehaviour();
+                RegisterSystemEvents();
+                OnAwake();
+            }
+        }
+
+        /// <summary>
+        /// The `Start` method is virtual, allowing it to be overridden in derived classes
+        /// for additional startup logic. If overridden, it is essential to call the base class's
+        /// `Start` method to ensure proper initialization. Not doing so may result in incomplete
+        /// initialization and unpredictable behavior.
+        /// </summary>
+        public virtual void Start()
+        {
+            InitStart();
+        }
+
+        private void InitStart()
+        {
+            if (m_UnregisterOnLoad)
+            {
+                RegisterMatchmakingEvents();
+                StartCoroutine(Internal_OnServerStart());
+                StartCoroutine(Internal_OnClientStart());
+
+                OnStart();
+                Service.UpdateReference(m_ServiceName);
+            }
+
+            m_UnregisterOnLoad = !NetworkHelper.IsDontDestroyOnLoad(gameObject);
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void Internal_Awake()
+        {
+            InitAwake();
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void Internal_Start()
+        {
+            InitStart();
+        }
+
+        protected void InitializeServiceLocator()
+        {
+            if (!NetworkService.TryRegister(this, m_ServiceName))
+            {
+                // Update the old reference to the new one.
+                NetworkService.Update(this, m_ServiceName);
+            }
         }
 
         private IEnumerator Internal_OnServerStart()
@@ -398,6 +470,12 @@ namespace Omni.Core
         /// </summary>
         protected virtual void OnClientStart() { }
 
+        protected virtual void OnAwake() { }
+
+        protected virtual void OnStart() { }
+
+        protected virtual void OnStop() { }
+
         protected void InitializeBehaviour()
         {
             clientEventBehaviour.FindEvents<ClientAttribute>(this);
@@ -410,8 +488,9 @@ namespace Omni.Core
             Remote = new NbServer(this);
         }
 
-        protected void RegisterEvents()
+        protected void RegisterSystemEvents()
         {
+            NetworkManager.OnBeforeSceneLoad += OnBeforeSceneLoad;
             NetworkManager.OnClientConnected += OnClientConnected;
             NetworkManager.OnClientDisconnected += OnClientDisconnected;
             Client.OnMessage += OnClientMessage;
@@ -437,6 +516,42 @@ namespace Omni.Core
             }
         }
 
+        protected void Unregister()
+        {
+            NetworkManager.OnBeforeSceneLoad -= OnBeforeSceneLoad;
+            NetworkManager.OnClientConnected -= OnClientConnected;
+            NetworkManager.OnClientDisconnected -= OnClientDisconnected;
+            Client.OnMessage -= OnClientMessage;
+
+            NetworkManager.OnServerInitialized -= OnServerInitialized;
+            NetworkManager.OnServerPeerConnected -= OnServerPeerConnected;
+            NetworkManager.OnServerPeerDisconnected -= OnServerPeerDisconnected;
+            Server.OnMessage -= OnServerMessage;
+
+            if (MatchmakingModuleEnabled)
+            {
+                Matchmaking.Client.OnJoinedGroup -= OnJoinedGroup;
+                Matchmaking.Client.OnLeftGroup -= OnLeftGroup;
+
+                Matchmaking.Server.OnPlayerJoinedGroup -= OnPlayerJoinedGroup;
+                Matchmaking.Server.OnPlayerLeftGroup -= OnPlayerLeftGroup;
+
+                Matchmaking.Server.OnPlayerFailedJoinGroup -= OnPlayerFailedJoinGroup;
+                Matchmaking.Server.OnPlayerFailedLeaveGroup -= OnPlayerFailedLeaveGroup;
+            }
+
+            NetworkService.Unregister(m_ServiceName);
+            OnStop();
+        }
+
+        protected virtual void OnBeforeSceneLoad(Scene scene)
+        {
+            if (m_UnregisterOnLoad)
+            {
+                Unregister();
+            }
+        }
+
         #region Client
         protected virtual void OnClientConnected() { }
 
@@ -444,7 +559,7 @@ namespace Omni.Core
 
         protected virtual void OnClientMessage(byte msgId, DataBuffer buffer, int seqChannel)
         {
-            buffer.ResetReadPosition();
+            buffer.SeekToBegin();
             TryClientLocate(msgId, buffer, seqChannel); // Global Invoke
         }
 
@@ -506,7 +621,7 @@ namespace Omni.Core
             int seqChannel
         )
         {
-            buffer.ResetReadPosition();
+            buffer.SeekToBegin();
             TryServerLocate(msgId, buffer, peer, seqChannel); // Global Invoke
         }
 
@@ -592,28 +707,32 @@ namespace Omni.Core
             if (m_Id == 0)
             {
                 m_Id = NetworkHelper.GenerateSceneUniqueId();
+                NetworkHelper.EditorSaveObject(gameObject);
             }
 
             if (string.IsNullOrEmpty(m_ServiceName))
             {
                 m_ServiceName = GetType().Name;
+                NetworkHelper.EditorSaveObject(gameObject);
             }
         }
     }
 
     [DefaultExecutionOrder(-3000)]
-    public class ClientEventBehaviour : NetVarBehaviour, INetworkMessage
+    public class ClientEventBehaviour
+        : NetworkVariablesBehaviour,
+            INetworkMessage,
+            IServiceBehaviour
     {
         [Header("Service Settings")]
         [SerializeField]
         private string m_ServiceName;
 
         [SerializeField]
-        private bool m_DontDestroyOnLoad;
-
-        [SerializeField]
         private int m_Id;
         private NbClient local;
+
+        private bool m_UnregisterOnLoad = true;
 
         /// <summary>
         /// Gets the identifier of the associated <see cref="INetworkMessage"/>.
@@ -643,22 +762,78 @@ namespace Omni.Core
 
         private readonly EventBehaviour<DataBuffer, int, Null, Null, Null> eventBehaviour = new();
 
-        protected virtual void Awake()
+        /// <summary>
+        /// The `Awake` method is virtual, allowing it to be overridden in derived classes
+        /// for additional startup logic. If overridden, it is essential to call the base class's
+        /// `Awake` method to ensure proper initialization. Not doing so may result in incomplete
+        /// initialization and unpredictable behavior.
+        /// </summary>
+        public virtual void Awake()
         {
-            NetworkService.Register(this, m_ServiceName);
-            if (m_DontDestroyOnLoad)
-            {
-                DontDestroyOnLoad(this);
-            }
-
-            InitializeBehaviour();
-            RegisterEvents();
+            InitAwake();
         }
 
-        protected virtual void Start()
+        private void InitAwake()
         {
-            RegisterMatchmakingEvents();
-            StartCoroutine(Internal_OnClientStart());
+            if (NetworkService.Exists(m_ServiceName))
+            {
+                m_UnregisterOnLoad = false;
+                return;
+            }
+
+            if (m_UnregisterOnLoad)
+            {
+                InitializeServiceLocator();
+                InitializeBehaviour();
+                RegisterSystemEvents();
+                OnAwake();
+            }
+        }
+
+        /// <summary>
+        /// The `Start` method is virtual, allowing it to be overridden in derived classes
+        /// for additional startup logic. If overridden, it is essential to call the base class's
+        /// `Start` method to ensure proper initialization. Not doing so may result in incomplete
+        /// initialization and unpredictable behavior.
+        /// </summary>
+        public virtual void Start()
+        {
+            InitStart();
+        }
+
+        private void InitStart()
+        {
+            if (m_UnregisterOnLoad)
+            {
+                RegisterMatchmakingEvents();
+                StartCoroutine(Internal_OnClientStart());
+
+                OnStart();
+                Service.UpdateReference(m_ServiceName);
+            }
+
+            m_UnregisterOnLoad = !NetworkHelper.IsDontDestroyOnLoad(gameObject);
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void Internal_Awake()
+        {
+            InitAwake();
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void Internal_Start()
+        {
+            InitStart();
+        }
+
+        protected void InitializeServiceLocator()
+        {
+            if (!NetworkService.TryRegister(this, m_ServiceName))
+            {
+                // Update the old reference to the new one.
+                NetworkService.Update(this, m_ServiceName);
+            }
         }
 
         private IEnumerator Internal_OnClientStart()
@@ -673,6 +848,12 @@ namespace Omni.Core
         /// </summary>
         protected virtual void OnClientStart() { }
 
+        protected virtual void OnAwake() { }
+
+        protected virtual void OnStart() { }
+
+        protected virtual void OnStop() { }
+
         protected void InitializeBehaviour()
         {
             eventBehaviour.FindEvents<ClientAttribute>(this);
@@ -680,8 +861,9 @@ namespace Omni.Core
             Local = new NbClient(this);
         }
 
-        protected void RegisterEvents()
+        protected void RegisterSystemEvents()
         {
+            NetworkManager.OnBeforeSceneLoad += OnBeforeSceneLoad;
             NetworkManager.OnClientConnected += OnClientConnected;
             NetworkManager.OnClientDisconnected += OnClientDisconnected;
             Client.OnMessage += OnMessage;
@@ -696,13 +878,38 @@ namespace Omni.Core
             }
         }
 
+        protected void Unregister()
+        {
+            NetworkManager.OnBeforeSceneLoad -= OnBeforeSceneLoad;
+            NetworkManager.OnClientConnected -= OnClientConnected;
+            NetworkManager.OnClientDisconnected -= OnClientDisconnected;
+            Client.OnMessage -= OnMessage;
+
+            if (MatchmakingModuleEnabled)
+            {
+                Matchmaking.Client.OnJoinedGroup -= OnJoinedGroup;
+                Matchmaking.Client.OnLeftGroup -= OnLeftGroup;
+            }
+
+            NetworkService.Unregister(m_ServiceName);
+            OnStop();
+        }
+
+        protected virtual void OnBeforeSceneLoad(Scene scene)
+        {
+            if (m_UnregisterOnLoad)
+            {
+                Unregister();
+            }
+        }
+
         protected virtual void OnClientConnected() { }
 
         protected virtual void OnClientDisconnected(string reason) { }
 
         protected virtual void OnMessage(byte msgId, DataBuffer buffer, int seqChannel)
         {
-            buffer.ResetReadPosition();
+            buffer.SeekToBegin();
             TryClientLocate(msgId, buffer, seqChannel); // Global Invoke
         }
 
@@ -759,28 +966,32 @@ namespace Omni.Core
             if (m_Id == 0)
             {
                 m_Id = NetworkHelper.GenerateSceneUniqueId();
+                NetworkHelper.EditorSaveObject(gameObject);
             }
 
             if (string.IsNullOrEmpty(m_ServiceName))
             {
                 m_ServiceName = GetType().Name;
+                NetworkHelper.EditorSaveObject(gameObject);
             }
         }
     }
 
     [DefaultExecutionOrder(-3000)]
-    public class ServerEventBehaviour : NetVarBehaviour, INetworkMessage
+    public class ServerEventBehaviour
+        : NetworkVariablesBehaviour,
+            INetworkMessage,
+            IServiceBehaviour
     {
         [Header("Service Settings")]
         [SerializeField]
         private string m_ServiceName;
 
         [SerializeField]
-        private bool m_DontDestroyOnLoad;
-
-        [SerializeField]
         private int m_Id;
         private NbServer remote;
+
+        private bool m_UnregisterOnLoad = true;
 
         /// <summary>
         /// Gets the identifier of the associated <see cref="INetworkMessage"/>.
@@ -811,22 +1022,78 @@ namespace Omni.Core
         private readonly EventBehaviour<DataBuffer, NetworkPeer, int, Null, Null> eventBehaviour =
             new();
 
-        protected virtual void Awake()
+        /// <summary>
+        /// The `Awake` method is virtual, allowing it to be overridden in derived classes
+        /// for additional startup logic. If overridden, it is essential to call the base class's
+        /// `Awake` method to ensure proper initialization. Not doing so may result in incomplete
+        /// initialization and unpredictable behavior.
+        /// </summary>
+        public virtual void Awake()
         {
-            NetworkService.Register(this, m_ServiceName);
-            if (m_DontDestroyOnLoad)
-            {
-                DontDestroyOnLoad(this);
-            }
-
-            InitializeBehaviour();
-            RegisterEvents();
+            InitAwake();
         }
 
-        protected virtual void Start()
+        private void InitAwake()
         {
-            RegisterMatchmakingEvents();
-            StartCoroutine(Internal_OnServerStart());
+            if (NetworkService.Exists(m_ServiceName))
+            {
+                m_UnregisterOnLoad = false;
+                return;
+            }
+
+            if (m_UnregisterOnLoad)
+            {
+                InitializeServiceLocator();
+                InitializeBehaviour();
+                RegisterSystemEvents();
+                OnAwake();
+            }
+        }
+
+        /// <summary>
+        /// The `Start` method is virtual, allowing it to be overridden in derived classes
+        /// for additional startup logic. If overridden, it is essential to call the base class's
+        /// `Start` method to ensure proper initialization. Not doing so may result in incomplete
+        /// initialization and unpredictable behavior.
+        /// </summary>
+        public virtual void Start()
+        {
+            InitStart();
+        }
+
+        private void InitStart()
+        {
+            if (m_UnregisterOnLoad)
+            {
+                RegisterMatchmakingEvents();
+                StartCoroutine(Internal_OnServerStart());
+
+                OnStart();
+                Service.UpdateReference(m_ServiceName);
+            }
+
+            m_UnregisterOnLoad = !NetworkHelper.IsDontDestroyOnLoad(gameObject);
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void Internal_Awake()
+        {
+            InitAwake();
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void Internal_Start()
+        {
+            InitStart();
+        }
+
+        protected void InitializeServiceLocator()
+        {
+            if (!NetworkService.TryRegister(this, m_ServiceName))
+            {
+                // Update the old reference to the new one.
+                NetworkService.Update(this, m_ServiceName);
+            }
         }
 
         private IEnumerator Internal_OnServerStart()
@@ -841,6 +1108,12 @@ namespace Omni.Core
         /// </summary>
         protected virtual void OnServerStart() { }
 
+        protected virtual void OnAwake() { }
+
+        protected virtual void OnStart() { }
+
+        protected virtual void OnStop() { }
+
         protected void InitializeBehaviour()
         {
             eventBehaviour.FindEvents<ServerAttribute>(this);
@@ -848,8 +1121,9 @@ namespace Omni.Core
             Remote = new NbServer(this);
         }
 
-        protected void RegisterEvents()
+        protected void RegisterSystemEvents()
         {
+            NetworkManager.OnBeforeSceneLoad += OnBeforeSceneLoad;
             NetworkManager.OnServerInitialized += OnServerInitialized;
             NetworkManager.OnServerPeerConnected += OnServerPeerConnected;
             NetworkManager.OnServerPeerDisconnected += OnServerPeerDisconnected;
@@ -865,6 +1139,35 @@ namespace Omni.Core
 
                 Matchmaking.Server.OnPlayerFailedJoinGroup += OnPlayerFailedJoinGroup;
                 Matchmaking.Server.OnPlayerFailedLeaveGroup += OnPlayerFailedLeaveGroup;
+            }
+        }
+
+        protected void Unregister()
+        {
+            NetworkManager.OnBeforeSceneLoad -= OnBeforeSceneLoad;
+            NetworkManager.OnServerInitialized -= OnServerInitialized;
+            NetworkManager.OnServerPeerConnected -= OnServerPeerConnected;
+            NetworkManager.OnServerPeerDisconnected -= OnServerPeerDisconnected;
+            Server.OnMessage -= OnMessage;
+
+            if (MatchmakingModuleEnabled)
+            {
+                Matchmaking.Server.OnPlayerJoinedGroup -= OnPlayerJoinedGroup;
+                Matchmaking.Server.OnPlayerLeftGroup -= OnPlayerLeftGroup;
+
+                Matchmaking.Server.OnPlayerFailedJoinGroup -= OnPlayerFailedJoinGroup;
+                Matchmaking.Server.OnPlayerFailedLeaveGroup -= OnPlayerFailedLeaveGroup;
+            }
+
+            NetworkService.Unregister(m_ServiceName);
+            OnStop();
+        }
+
+        protected virtual void OnBeforeSceneLoad(Scene scene)
+        {
+            if (m_UnregisterOnLoad)
+            {
+                Unregister();
             }
         }
 
@@ -913,7 +1216,7 @@ namespace Omni.Core
             int seqChannel
         )
         {
-            buffer.ResetReadPosition();
+            buffer.SeekToBegin();
             TryServerLocate(msgId, buffer, peer, seqChannel); // Global Invoke
         }
 
@@ -996,12 +1299,20 @@ namespace Omni.Core
             if (m_Id == 0)
             {
                 m_Id = NetworkHelper.GenerateSceneUniqueId();
+                NetworkHelper.EditorSaveObject(gameObject);
             }
 
             if (string.IsNullOrEmpty(m_ServiceName))
             {
                 m_ServiceName = GetType().Name;
+                NetworkHelper.EditorSaveObject(gameObject);
             }
         }
     }
 }
+
+// Hacky: DIRTY CODE!
+// This class utilizes unconventional methods to minimize boilerplate code, reflection, and source generation.
+// Despite its appearance, this approach is essential to achieve high performance.
+// Avoid refactoring as these techniques are crucial for optimizing execution speed.
+// Works with il2cpp.

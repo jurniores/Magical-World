@@ -7,7 +7,7 @@ using Omni.Shared.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class GameManager : NetworkService
+public class GameManager : ServiceBehaviour
 {
     private UsersModel user;
     private InventoryModel inventory;
@@ -17,17 +17,14 @@ public class GameManager : NetworkService
     public Action<Dictionary<int, Sala>> OnRooms;
     public Action<Sala> OnUpdateRoom;
     public Action<SalaInGame> OnPlayerRoom;
+    public Action<DataBuffer> OnStartGame;
+    public Action OnNewMaster;
     public Sala salaGame;
-
     public SalaInGame salaInGame;
 
-    public GameManager(SalaInGame salaInGame)
+    public override void Start()
     {
-        this.salaInGame = salaInGame;
-    }
-
-    void Start()
-    {
+        base.Start();
         BufferWriterExtensions.DefaultEncoding = Encoding.UTF8;
     }
 

@@ -11,8 +11,9 @@ public class Connection : DatabaseManager
     private DatabaseType db = DatabaseType.MariaDb;
     [SerializeField]
     private string hostName = "localhost", dbName, userName, password;
-    void Start()
+    public override void Start()
     {
+        base.Start();
         instance = this;
         if(!NetworkManager.IsServerActive) return;
         var dbC = new DbCredentials();

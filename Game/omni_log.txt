@@ -191,3 +191,118 @@
 2024-06-27 15:32:25: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
 2024-06-27 15:32:27: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
 2024-06-27 15:33:25: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 13:33:30: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 13:34:30: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 13:43:56: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 13:45:47: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:45:47: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:45:59: Group: Peer with ID 1:-1093337286 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 13:46:14: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'dsasa'. -> ThreadId: (1) - Log
+2024-06-28 13:46:14: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 13:47:21: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 13:48:51: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 13:50:12: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:12:34: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:13:42: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:18:19: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:19:28: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:22:44: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:24:31: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:26:33: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:32:16: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:32:18: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:34:00: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:34:01: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:34:34: The request has timed out. Ensure that the route exists and that the server is running or the request will fail. -> ThreadId: (10) - Error
+2024-06-28 14:39:23: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:39:25: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:40:23: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:42:00: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:42:06: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:45:24: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:46:59: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:48:33: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:49:46: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:49:48: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:51:18: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 14:53:55: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 15:02:03: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 15:02:17: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 15:04:14: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 15:06:46: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 15:06:59: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 15:07:35: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 15:07:58: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 15:08:00: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 15:18:59: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 15:19:05: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 15:19:53: The request has timed out. Ensure that the route exists and that the server is running or the request will fail. -> ThreadId: (9) - Error
+2024-06-28 15:26:52: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 15:27:15: The request has timed out. Ensure that the route exists and that the server is running or the request will fail. -> ThreadId: (10) - Error
+2024-06-28 15:27:22: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 15:28:15: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 15:28:50: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 15:30:51: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:35:00: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:35:09: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:36:25: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:37:46: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:37:58: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:38:10: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:39:17: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:41:00: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:41:32: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:43:44: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:45:51: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:47:16: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:47:26: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:48:27: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:50:50: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:51:11: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:54:26: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:54:51: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:56:23: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:57:30: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 13:59:53: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:02:27: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:03:26: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:05:19: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:06:53: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:13:11: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:13:11: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:13:13: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 14:13:26: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:19:38: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:36:35: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:42:41: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:44:45: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:46:08: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:48:52: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:51:14: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:54:53: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:55:28: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:56:07: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:56:31: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:56:51: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:57:27: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:58:20: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:58:43: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 15:27:04: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 15:27:12: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 15:28:17: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 15:31:35: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 15:32:06: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 15:33:09: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 15:33:11: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 15:46:37: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:47:53: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 15:51:07: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 15:52:16: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 15:53:46: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 15:54:58: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 15:57:06: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 16:02:30: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 16:03:45: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 16:04:49: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 16:05:50: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 16:06:54: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning

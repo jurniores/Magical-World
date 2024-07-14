@@ -22,13 +22,4 @@ public class InventoryModel : Models
         itensDic = NetworkManager.FromJson<Dictionary<int, string>>(itens);
     }
 
-    public InventoryModel ToCopy()
-    {
-        return new InventoryModel()
-        {
-            id = -1,
-            itens = NetworkManager.ToJson(itensDic),
-            idUser = -1
-        };
-    }
 }

@@ -92,7 +92,7 @@ PlayerSettings:
   bakeCollisionMeshes: 0
   forceSingleInstance: 0
   useFlipModelSwapchain: 1
-  resizableWindow: 0
+  resizableWindow: 1
   useMacAppStoreValidation: 0
   macAppStoreCategory: public.app-category.games
   gpuSkinning: 1
@@ -814,7 +814,7 @@ PlayerSettings:
   webGLPowerPreference: 2
   scriptingDefineSymbols:
     Android: OMNI_DEBUG;RH_SerializedDictionary
-    Standalone: OMNI_DEBUG;RH_SerializedDictionary
+    Standalone: RH_SerializedDictionary;OMNI_DEBUG
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

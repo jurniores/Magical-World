@@ -7,14 +7,11 @@ namespace Omni.Core
     // ref: https://github.com/dotnet/runtime/blob/main/src/libraries/Common/src/System/Buffers/ArrayBufferWriter.cs
     public sealed partial class DataBuffer : IBufferWriter<byte>, IDisposable
     {
-        internal int _reworkStart;
-        internal int _reworkEnd;
-
         private readonly IObjectPooling<DataBuffer> _objectPooling;
         private readonly byte[] _buffer;
 
-        private int _lastPosition;
         private int _position;
+        private int _endPosition;
 
         /// <summary>
         /// An empty <see cref="DataBuffer"/> instance.
@@ -24,22 +21,24 @@ namespace Omni.Core
         /// <summary>
         /// Returns the data written to the underlying buffer so far, as a <see cref="ReadOnlyMemory{T}"/>.
         /// </summary>
-        public ReadOnlyMemory<byte> WrittenMemory => _buffer.AsMemory(0, _position);
+        public ReadOnlyMemory<byte> BufferAsMemory =>
+            _buffer.AsMemory(0, _position > 0 ? _position : _endPosition);
 
         /// <summary>
         /// Returns the data written to the underlying buffer so far, as a <see cref="ReadOnlySpan{T}"/>.
         /// </summary>
-        public ReadOnlySpan<byte> WrittenSpan => _buffer.AsSpan(0, _position);
+        public ReadOnlySpan<byte> BufferAsSpan =>
+            _buffer.AsSpan(0, _position > 0 ? _position : _endPosition);
 
         /// <summary>
         /// Returns the amount of data written to the underlying buffer so far.
         /// </summary>
-        public int WrittenCount => _position;
+        public int Position => _position;
 
         /// <summary>
-        /// Returns the last amount of data written to the underlying buffer so far.
+        /// Returns the amount of data written to the underlying buffer.
         /// </summary>
-        public int LastWrittenCount => _lastPosition;
+        public int EndPosition => _endPosition;
 
         /// <summary>
         /// Returns the total amount of space within the underlying buffer.
@@ -65,7 +64,7 @@ namespace Omni.Core
         /// <exception cref="ArgumentException">
         /// Thrown when <paramref name="capacity"/> is not positive (i.e. less than or equal to 0).
         /// </exception>
-        public DataBuffer(int capacity = 32768, IObjectPooling<DataBuffer> pool = null)
+        public DataBuffer(int capacity = 16384, IObjectPooling<DataBuffer> pool = null)
         {
             if (capacity <= 0)
             {
@@ -97,6 +96,30 @@ namespace Omni.Core
             if (_position > _buffer.Length - count)
                 throw new ArgumentException(null, nameof(count));
 
+            _endPosition += count;
+            _position += count;
+        }
+
+        /// <summary>
+        /// Notifies <see cref="IBufferWriter{T}"/> that <paramref name="count"/> amount of data was written to the output <see cref="Span{T}"/>/<see cref="Memory{T}"/>
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="count"/> is negative.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when attempting to advance past the end of the underlying buffer.
+        /// </exception>
+        /// <remarks>
+        /// You must request a new buffer after calling Advance to continue writing more data and cannot write to a previously acquired buffer.
+        /// </remarks>
+        internal void Internal_Advance(int count)
+        {
+            if (count < 0)
+                throw new ArgumentException(null, nameof(count));
+
+            if (_position > _buffer.Length - count)
+                throw new ArgumentException(null, nameof(count));
+
             _position += count;
         }
 
@@ -107,7 +130,7 @@ namespace Omni.Core
         public byte[] ToArray()
         {
             // Convert the written data to a byte array.
-            return WrittenSpan.ToArray();
+            return BufferAsSpan.ToArray();
         }
 
         /// <summary>
@@ -128,7 +151,7 @@ namespace Omni.Core
         /// You must request a new buffer after calling Advance to continue writing more data and cannot write to a previously acquired buffer.
         /// </para>
         /// <para>
-        /// If you reset the writer using the <see cref="ResetWrittenCount"/> method, this method may return a non-cleared <see cref="Memory{T}"/>.
+        /// If you reset the writer using the <see cref="SeekToBegin"/> method, this method may return a non-cleared <see cref="Memory{T}"/>.
         /// </para>
         /// <para>
         /// If you clear the writer using the <see cref="Clear"/> method, this method will return a <see cref="Memory{T}"/> with its content zeroed.
@@ -149,7 +172,7 @@ namespace Omni.Core
         /// </exception>
         /// <remarks>
         /// <para>
-        /// If you reset the writer using the <see cref="ResetWrittenCount"/> method, this method may return a non-cleared <see cref="Span{T}"/>.
+        /// If you reset the writer using the <see cref="SeekToBegin"/> method, this method may return a non-cleared <see cref="Span{T}"/>.
         /// </para>
         /// <para>
         /// If you clear the writer using the <see cref="Clear"/> method, this method will return a <see cref="Span{T}"/> with its content zeroed.
@@ -175,73 +198,61 @@ namespace Omni.Core
         /// You must reset or clear the <see cref="DataBuffer"/> before trying to re-use it.
         /// </para>
         /// <para>
-        /// The <see cref="ResetWrittenCount"/> method is faster since it only sets to zero the writer's index
+        /// The <see cref="SeekToBegin"/> method is faster since it only sets to zero the writer's index
         /// while the <see cref="Clear"/> method additionally zeroes the content of the underlying buffer.
         /// </para>
         /// </remarks>
-        /// <seealso cref="ResetWrittenCount"/>
+        /// <seealso cref="SeekToBegin"/>
         public void Clear()
         {
-            _buffer.AsSpan(0, _position).Clear();
-            _lastPosition = _position;
+            _buffer.AsSpan().Clear();
+            _endPosition = _position;
             _position = 0;
         }
 
         /// <summary>
-        /// Resets the data written to the underlying buffer without zeroing its content.
+        /// Resets the data writer's position to the beginning without clearing the buffer's content.
         /// </summary>
         /// <remarks>
         /// <para>
         /// You must reset or clear the <see cref="DataBuffer"/> before trying to re-use it.
         /// </para>
         /// <para>
-        /// If you reset the writer using the <see cref="ResetWrittenCount"/> method, the underlying buffer will not be cleared.
+        /// If you reset the writer using the <see cref="SeekToBegin"/> method, the underlying buffer will not be cleared.
         /// </para>
         /// </remarks>
         /// <seealso cref="Clear"/>
-        public void ResetWrittenCount()
+        public void SeekToBegin()
         {
-            _lastPosition = _position;
+            _endPosition = _position;
             _position = 0;
         }
 
-        public void SetWrittenCount(int pos)
+        /// <summary>
+        /// Sets the writer's position to the end of the buffer.
+        /// </summary>
+        public void SeekToEnd()
         {
+            _position = _endPosition;
+        }
+
+        /// <summary>
+        /// Sets the writer's position to the specified position and saves the current position as the end position.
+        /// </summary>
+        /// <param name="pos">The new position to set the writer's position to.</param>
+        public void SetPosition(int pos)
+        {
+            _endPosition = _position;
             _position = pos;
         }
 
         /// <summary>
-        /// Resets the read position to the start of the data, allowing the buffer to be read from the beginning again.
+        /// Sets the end position of the buffer to the specified position.
         /// </summary>
-        public void ResetReadPosition()
+        /// <param name="pos">The new end position to set.</param>
+        internal void SetEndPosition(int pos)
         {
-            _lastPosition = _position;
-            _position = _reworkStart;
-        }
-
-        internal void SetLastWrittenCount(int pos)
-        {
-            _lastPosition = pos;
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="DataBuffer"/> containing the data from the underlying buffer
-        /// without including the old header. This new <see cref="DataBuffer"/> is suitable for re-sending
-        /// as it contains only the relevant data.
-        /// </summary>
-        /// <remarks>
-        /// Ensure that the returned <see cref="DataBuffer"/> is used within a <c>using</c> statement
-        /// to properly return it to the pool after use. The caller must ensure the buffer is disposed or used within a using statement.
-        /// </remarks>
-        /// <returns>
-        /// A <see cref="DataBuffer"/> instance that contains the data from the original buffer,
-        /// excluding the old header.
-        /// </returns>
-        public DataBuffer Rework()
-        {
-            var buffer = NetworkManager.Pool.Rent();
-            buffer.Write(_buffer.AsSpan(_reworkStart, _reworkEnd));
-            return buffer;
+            _endPosition = pos;
         }
 
         private void CheckAndResizeBuffer(int sizeHint)
@@ -273,41 +284,8 @@ namespace Omni.Core
             _objectPooling.Return(this);
             _disposed = true;
 
-            /// Used for Lite HTTP
+            // internal purpose
             SendEnabled = false;
-        }
-    }
-
-    /// Used for Lite HTTP
-    public sealed partial class DataBuffer
-    {
-        internal bool SendEnabled { get; private set; }
-        internal DeliveryMode DeliveryMode { get; private set; } = DeliveryMode.ReliableOrdered;
-        internal bool ForceSendToSelf { get; private set; }
-        internal Target Target { get; private set; } = Target.Self;
-        internal int GroupId { get; private set; }
-        internal int CacheId { get; private set; }
-        internal CacheMode CacheMode { get; private set; } = CacheMode.None;
-        internal byte SequenceChannel { get; private set; }
-
-        public void Send(
-            Target target = Target.Self,
-            bool forceSendToSelf = false,
-            DeliveryMode deliveryMode = DeliveryMode.ReliableOrdered,
-            int groupId = 0,
-            int cacheId = 0,
-            CacheMode cacheMode = CacheMode.None,
-            byte sequenceChannel = 0
-        )
-        {
-            SendEnabled = true;
-            Target = target;
-            DeliveryMode = deliveryMode;
-            ForceSendToSelf = forceSendToSelf;
-            GroupId = groupId;
-            CacheId = cacheId;
-            CacheMode = cacheMode;
-            SequenceChannel = sequenceChannel;
         }
     }
 }

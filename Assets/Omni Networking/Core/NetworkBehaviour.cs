@@ -5,10 +5,11 @@ using System.Runtime.CompilerServices;
 using Omni.Core.Interfaces;
 using Omni.Shared;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Omni.Core
 {
-    public class NetworkBehaviour : NetVarBehaviour, INetworkMessage, ITickSystem
+    public class NetworkBehaviour : NetworkVariablesBehaviour, INetworkMessage, ITickSystem
     {
         // Hacky: DIRTY CODE!
         // This class utilizes unconventional methods to minimize boilerplate code, reflection, and source generation.
@@ -382,7 +383,7 @@ namespace Omni.Core
         /// <param name="data">The data associated with the current tick.</param>
         public virtual void OnTick(ITickInfo data) { }
 
-        internal void Register()
+        protected internal void Register()
         {
             if (Identity.IsServer)
             {
@@ -395,16 +396,18 @@ namespace Omni.Core
                 Local = new NbClient(this);
             }
 
-            AddEventBehaviour();
             InitializeServiceLocator();
+            AddEventBehaviour();
 
             if (NetworkManager.TickSystemModuleEnabled)
             {
                 NetworkManager.TickSystem.Register(this);
             }
+
+            NetworkManager.OnBeforeSceneLoad += OnBeforeSceneLoad;
         }
 
-        internal void Unregister()
+        protected internal void Unregister()
         {
             var eventBehaviours = Identity.IsServer
                 ? NetworkManager.Server.LocalEventBehaviours
@@ -418,11 +421,36 @@ namespace Omni.Core
                     NetworkLogger.LogType.Error
                 );
             }
+
+            if (NetworkManager.TickSystemModuleEnabled)
+            {
+                NetworkManager.TickSystem.Unregister(this);
+            }
+
+            if (!Identity.Unregister(m_ServiceName))
+            {
+                NetworkLogger.__Log__(
+                    $"Unregister Error: ServiceLocator with name '{m_ServiceName}' does not exist. Please ensure the ServiceLocator is registered before attempting to unregister.",
+                    NetworkLogger.LogType.Error
+                );
+            }
+
+            OnDestroy();
+            NetworkManager.OnBeforeSceneLoad -= OnBeforeSceneLoad;
+        }
+
+        protected virtual void OnBeforeSceneLoad(Scene scene)
+        {
+            Unregister();
         }
 
         private void InitializeServiceLocator()
         {
-            Identity.Register(this, m_ServiceName);
+            if (!Identity.TryRegister(this, m_ServiceName))
+            {
+                // Update the old reference to the new one.
+                Identity.UpdateService(this, m_ServiceName);
+            }
         }
 
         private void AddEventBehaviour()
@@ -434,10 +462,7 @@ namespace Omni.Core
             var key = (IdentityId, m_Id);
             if (!eventBehaviours.TryAdd(key, this))
             {
-                NetworkLogger.__Log__(
-                    $"Failed to add: EventBehaviour with ID {m_Id} and peer ID {IdentityId} already exists.",
-                    NetworkLogger.LogType.Error
-                );
+                eventBehaviours[key] = this;
             }
         }
 
@@ -516,6 +541,8 @@ namespace Omni.Core
             }
         }
 
+        protected virtual void OnDestroy() { }
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public void Internal_OnMessage(
             byte msgId,
@@ -540,10 +567,12 @@ namespace Omni.Core
             if (m_Id < 0)
             {
                 m_Id = 0;
+                NetworkHelper.EditorSaveObject(gameObject);
             }
             else if (m_Id > 255)
             {
                 m_Id = 255;
+                NetworkHelper.EditorSaveObject(gameObject);
             }
 
             if (string.IsNullOrEmpty(m_ServiceName))
@@ -561,6 +590,8 @@ namespace Omni.Core
                 {
                     m_ServiceName = serviceName;
                 }
+
+                NetworkHelper.EditorSaveObject(gameObject);
             }
         }
 

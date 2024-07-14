@@ -1057,7 +1057,7 @@ MonoBehaviour:
   m_ServerTransporter: {fileID: 0}
   m_ClientTransporter: {fileID: 0}
   m_ServerListenPort: 7777
-  m_ClientListenPort: 7778
+  m_ClientListenPort: 12332
   m_ConnectAddress: 127.0.0.1
   m_ConnectPort: 7777
   m_TickRate: 15
@@ -1101,6 +1101,7 @@ MonoBehaviour:
   m_pingInterval: 1000
   m_MaxConnections: 256
   m_MaxEventsPerFrame: 0
+  m_ChannelsCount: 1
   m_IPv6Enabled: 0
   m_useNativeSockets: 0
   m_useSafeMtu: 0
@@ -1119,6 +1120,7 @@ GameObject:
   - component: {fileID: 1044005972}
   - component: {fileID: 1044005971}
   - component: {fileID: 1044005973}
+  - component: {fileID: 1044005974}
   m_Layer: 0
   m_Name: GameMenager
   m_TagString: Untagged
@@ -1138,8 +1140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 171ad7c891e8ef54db8a04b6a232d072, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serviceName: GameManager
-  dontDestroyOnLoad: 1
+  m_ServiceName: GameManager
 --- !u!4 &1044005972
 Transform:
   m_ObjectHideFlags: 0
@@ -1167,6 +1168,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec6daeb259b467c4ba55e4860cafbb9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1044005974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1044005970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eda9cb15bc2b1b20ea50a6dadb8b2b3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Guid: 5fb5cee1-c6f5-4177-9ee3-ff5478d167e1
 --- !u!1 &1054020936 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5921172563030642583, guid: fea8476bdd0063740b3b315c73b134c0,
@@ -1186,7 +1200,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ServiceName: UsersRoute
-  m_DontDestroyOnLoad: 0
   m_Id: -944237983
 --- !u!114 &1054020941
 MonoBehaviour:
@@ -1313,8 +1326,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ServiceName: RoomRoute
-  m_DontDestroyOnLoad: 0
   m_Id: 1010912835
+  ServerGroup: {fileID: 7718317295470443263, guid: 19eb74013481372418460a00e73ff087,
+    type: 3}
+--- !u!114 &1054020948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1054020936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eda9cb15bc2b1b20ea50a6dadb8b2b3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Guid: 42be356f-b9ed-46ca-820e-64326628de57
 --- !u!1 &1096318342
 GameObject:
   m_ObjectHideFlags: 0
@@ -1728,7 +1755,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ServiceName: TelaInicial
-  m_DontDestroyOnLoad: 0
   m_Id: -170662714
   btnEntrar: {fileID: 1802083235}
   imageload1: {fileID: 1366143317}
@@ -2261,6 +2287,16 @@ PrefabInstance:
       propertyPath: userName
       value: root
       objectReference: {fileID: 0}
+    - target: {fileID: 1980777966143787103, guid: fea8476bdd0063740b3b315c73b134c0,
+        type: 3}
+      propertyPath: m_DontDestroyOnLoad
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1980777966143787103, guid: fea8476bdd0063740b3b315c73b134c0,
+        type: 3}
+      propertyPath: m_KeepOldInstanceReference
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5921172563030642583, guid: fea8476bdd0063740b3b315c73b134c0,
         type: 3}
       propertyPath: m_Name
@@ -2332,6 +2368,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1054020942}
+    - targetCorrespondingSourceObject: {fileID: 5921172563030642583, guid: fea8476bdd0063740b3b315c73b134c0,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1054020948}
   m_SourcePrefab: {fileID: 100100000, guid: fea8476bdd0063740b3b315c73b134c0, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

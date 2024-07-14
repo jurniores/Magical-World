@@ -8,15 +8,16 @@ using static Omni.Core.HttpLite;
 public class Debounce : MonoBehaviour
 {
     public static Debounce instance;
-    Action Onfn;
     private bool bounce = true;
 
     void Start()
     {
         instance = this;
     }
-
-    public bool Bounce(float time)
+    public static bool Bounce(float time){
+        return instance.BounceValidate(time);
+    }
+    private bool BounceValidate(float time)
     {
         if (bounce)
         {

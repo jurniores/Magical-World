@@ -4,14 +4,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Omni.Core;
+using static Omni.Core.HttpLite;
 public class PlayerSala : MonoBehaviour
 {
     [SerializeField]
-    private Image imgPlayer, rune1, rune2, rune3;
+    private Image imgPlayer;
+    [SerializeField]
+    private List<Image> runesImg;
+
     [SerializeField]
     private TextMeshProUGUI namePlayerPro;
     [SerializeField]
-    private Image backGroundColorPlayer;
+    private Image backGroundColorPlayer, masterImg;
     [SerializeField]
     private float timeTotal, timeTotalBack;
     private GameManager gManager;
@@ -20,15 +24,23 @@ public class PlayerSala : MonoBehaviour
 
     private bool click = false, animBack = false;
     private float time = 0, timeBack = 0;
-
+    [SerializeField]
+    private bool ImMaster = false;
+    private InstantiateRunes instRunes;
+    private readonly int indexRune = 1000;
     void Start()
     {
         anim = GetComponent<Animator>();
-        gManager = NetworkService.Get<GameManager>("GameManager");
-        if (gManager.User.hwid == user.hwid)
+
+        gManager = NetworkService.Get<GameManager>();
+        instRunes = NetworkService.Get<InstantiateRunes>();
+
+        if (gManager.User.peerId == user.peerId)
         {
             backGroundColorPlayer.color = new Color32(5, 101, 0, 164);
         }
+        IsMaster();
+        SetRunes(user.pConfig);
     }
 
     // Update is called once per frame
@@ -56,24 +68,41 @@ public class PlayerSala : MonoBehaviour
     }
     public void SetInfoPlayer(UsersModel user)
     {
-        string namePlayer;
         this.user = user;
-        if (user.name == null)
+
+        namePlayerPro.text = user.name;
+    }
+    public void SetRunes(PlayerConfigs pConfigs)
+    {
+        int count = 0;
+        pConfigs.listRunes.ForEach(rune =>
         {
-            namePlayer = "Anonymous";
+            if (rune > 0)
+            {
+                int index = rune - indexRune;
+                runesImg[count].color = Color.white;
+                runesImg[count].sprite = instRunes.runes[index].sprite;
+                count++;
+            }
+        });
+    }
+    public void IsMaster()
+    {
+        if (gManager.salaGame.master == user.peerId)
+        {
+            masterImg.gameObject.SetActive(true);
+            ImMaster = true;
         }
         else
         {
-            namePlayer = user.name;
-
+            ImMaster = false;
+            masterImg.gameObject.SetActive(false);
         }
-        namePlayerPro.text = namePlayer;
-
     }
-
 
     public void OnClick()
     {
+        if (gManager.salaGame.master != gManager.User.peerId || ImMaster) return;
         click = true;
     }
 
@@ -94,8 +123,26 @@ public class PlayerSala : MonoBehaviour
         timeBack = 0;
         animBack = false;
     }
-
-    public void Kikar(){
-        print("Kikado");
+    public void MeDestroy(UsersModel user)
+    {
+        if (user.peerId == this.user.peerId)
+        {
+            Destroy(gameObject);
+        }
+    }
+    public void Kikar()
+    {
+        if (!Debounce.Bounce(2)) return;
+        Fetch.Post("/room/kick",
+        req =>
+        {
+            req.ToJson(user);
+            req.Send();
+        },
+        res =>
+        {
+            var response = res.FromJson<NetworkResponse>();
+            ErrorManager.ValidateError(response, 1);
+        });
     }
 }

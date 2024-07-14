@@ -1635,3 +1635,455 @@
 2024-06-27 15:34:03: Disconnection Info: Peer '127.0.0.1:7782' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
 2024-06-27 15:34:03: Disconnection Info: Peer '127.0.0.1:7783' removed from group 'golps'. -> ThreadId: (1) - Log
 2024-06-27 15:34:03: Disconnection Info: Peer '127.0.0.1:7783' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 13:33:04: An error occurred while initializing the database connection: Unable to connect to any of the specified MySQL hosts. -> ThreadId: (1) - Error
+2024-06-28 13:33:04: The connection to the database could not be established, reason: Unable to connect to any of the specified MySQL hosts. -> ThreadId: (1) - Error
+2024-06-28 13:33:05: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:33:17: Error while initializing the database: Unable to connect to any of the specified MySQL hosts. -> ThreadId: (1) - Error
+2024-06-28 13:33:18: The request has timed out. Ensure that the route exists and that the server is running or the request will fail. -> ThreadId: (2054) - Error
+2024-06-28 13:33:19: Error while initializing the database: Unable to connect to any of the specified MySQL hosts. -> ThreadId: (1) - Error
+2024-06-28 13:33:20: The request has timed out. Ensure that the route exists and that the server is running or the request will fail. -> ThreadId: (2052) - Error
+2024-06-28 13:33:21: Error while initializing the database: Unable to connect to any of the specified MySQL hosts. -> ThreadId: (1) - Error
+2024-06-28 13:33:23: Error while initializing the database: Unable to connect to any of the specified MySQL hosts. -> ThreadId: (1) - Error
+2024-06-28 13:33:30: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:33:30: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:33:55: Group: Peer with ID 2:1941506930 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 13:34:06: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:34:30: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:34:31: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:34:41: Group: Peer with ID 2:-2019494062 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 13:34:51: The request has timed out. Ensure that the route exists and that the server is running or the request will fail. -> ThreadId: (2102) - Error
+2024-06-28 13:35:15: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'adsads'. -> ThreadId: (1) - Log
+2024-06-28 13:35:15: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 13:35:30: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:43:45: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:43:46: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 13:43:46: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:43:56: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:43:56: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:44:08: Group: Peer with ID 2:259073688 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 13:44:28: The request has timed out. Ensure that the route exists and that the server is running or the request will fail. -> ThreadId: (2160) - Error
+2024-06-28 13:45:46: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 13:46:12: The request has timed out. Ensure that the route exists and that the server is running or the request will fail. -> ThreadId: (2194) - Error
+2024-06-28 13:46:13: The request has timed out. Ensure that the route exists and that the server is running or the request will fail. -> ThreadId: (2188) - Error
+2024-06-28 13:46:13: The request has timed out. Ensure that the route exists and that the server is running or the request will fail. -> ThreadId: (2194) - Error
+2024-06-28 13:46:14: The request has timed out. Ensure that the route exists and that the server is running or the request will fail. -> ThreadId: (2194) - Error
+2024-06-28 13:47:21: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:47:21: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:47:30: Group: Peer with ID 2:1326369993 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 13:48:12: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:48:49: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:48:51: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:49:02: Group: Peer with ID 2:-1280880935 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 13:50:05: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'dsas'. -> ThreadId: (1) - Log
+2024-06-28 13:50:05: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 13:50:12: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 13:50:23: Group: Peer with ID 3:-1280880935 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:12:34: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:12:34: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:12:44: Group: Peer with ID 2:-515620060 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:13:30: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 14:13:40: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:13:42: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:15:17: Group: Peer with ID 2:-1275134947 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:17:06: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 14:18:11: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:18:19: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:18:32: Group: Peer with ID 1:-457997274 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:19:20: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:19:28: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:19:38: Group: Peer with ID 1:-1617887086 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:22:36: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'dsaasd'. -> ThreadId: (1) - Log
+2024-06-28 14:22:36: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 14:22:44: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:22:44: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:22:53: Group: Peer with ID 1:-1275134947 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:24:04: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'sdads'. -> ThreadId: (1) - Log
+2024-06-28 14:24:04: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 14:24:30: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:24:31: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:25:39: Group: Peer with ID 1:949678657 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:26:33: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:26:33: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:26:43: Group: Peer with ID 1:-1617887086 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:26:54: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'dsaasd'. -> ThreadId: (1) - Log
+2024-06-28 14:26:54: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 14:31:46: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:32:10: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:32:17: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:32:19: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:32:35: Group: Peer with ID 2:-166056868 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:32:38: Group: Peer with ID 3:-166056868 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:33:32: Disconnection Info: Peer '127.0.0.1:7780' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 14:33:32: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'maria'. -> ThreadId: (1) - Log
+2024-06-28 14:33:32: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 14:33:43: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:34:00: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:34:02: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:34:17: Group: Peer with ID 1:-1872640443 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:34:21: Group: Peer with ID 2:-1872640443 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:39:24: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:39:24: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:39:25: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:39:33: Group: Peer with ID 2:259073688 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:39:43: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'sdaasd'. -> ThreadId: (1) - Log
+2024-06-28 14:39:43: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 14:39:51: Group: Peer with ID 3:259073688 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:40:09: Disconnection Info: Peer '127.0.0.1:7780' removed from group 'sdaasd'. -> ThreadId: (1) - Log
+2024-06-28 14:40:09: Disconnection Info: Peer '127.0.0.1:7780' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 14:40:22: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:40:23: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:40:31: Group: Peer with ID 1:2085885229 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:40:39: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'dssda'. -> ThreadId: (1) - Log
+2024-06-28 14:40:39: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 14:42:01: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:42:01: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:42:06: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:42:17: Group: Peer with ID 2:-515620159 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:42:20: Group: Peer with ID 1:-515620159 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:42:27: Send: Target.GroupMembers cannot be used with specified groups(groupId is not 0). Note that this is not a limitation, it just doesn't make sense. -> ThreadId: (1) - Warning
+2024-06-28 14:45:17: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:45:24: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:45:31: Group: Peer with ID 2:-1929972860 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:45:34: Send: Target.GroupMembers cannot be used with specified groups(groupId is not 0). Note that this is not a limitation, it just doesn't make sense. -> ThreadId: (1) - Warning
+2024-06-28 14:45:34: Send: Target.GroupMembers cannot be used with specified groups(groupId is not 0). Note that this is not a limitation, it just doesn't make sense. -> ThreadId: (1) - Warning
+2024-06-28 14:45:37: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 14:47:00: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:47:00: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:47:12: Group: Peer with ID 1:-457997274 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:48:34: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:48:34: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:48:43: Group: Peer with ID 2:-1280880935 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:48:52: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 14:49:00: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:49:47: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:49:48: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:50:03: Group: Peer with ID 2:259050584 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:50:06: Group: Peer with ID 1:259050584 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:51:16: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:51:18: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:51:29: Group: Peer with ID 2:1716515199 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 14:53:49: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:53:55: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 14:54:03: Group: Peer with ID 2:2085884781 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 15:01:21: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:02:03: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:02:03: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:02:17: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:02:49: Disconnection Info: Peer '127.0.0.1:7780' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 15:02:54: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 15:04:05: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:04:14: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:05:21: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:05:31: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 15:05:31: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:05:41: Group: Peer with ID 2:-703191963 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 15:06:28: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:06:45: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:06:46: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:06:57: Group: Peer with ID 2:2085884781 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 15:06:59: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:07:06: Group: Peer with ID 3:2085884781 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 15:07:23: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 15:07:24: Disconnection Info: Peer '127.0.0.1:7780' removed from group 'dsads'. -> ThreadId: (1) - Log
+2024-06-28 15:07:24: Disconnection Info: Peer '127.0.0.1:7780' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 15:07:32: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:07:35: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:07:58: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:07:58: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:08:00: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:08:10: Group: Peer with ID 1:1716514513 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 15:08:13: Group: Peer with ID 3:1716514513 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 15:08:28: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'adss'. -> ThreadId: (1) - Log
+2024-06-28 15:08:28: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 15:08:29: Disconnection Info: Peer '127.0.0.1:7780' removed from group 'adss'. -> ThreadId: (1) - Log
+2024-06-28 15:08:29: Disconnection Info: Peer '127.0.0.1:7780' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 15:18:25: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:18:45: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:18:46: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-28 15:18:46: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:18:59: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:18:59: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:19:05: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:19:25: Group: Peer with ID 1:-588534896 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 15:19:26: Group: Peer with ID 2:-588534896 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 15:26:44: Disconnection Info: Peer '127.0.0.1:7779' removed from group '1233212'. -> ThreadId: (1) - Log
+2024-06-28 15:26:44: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 15:26:44: Disconnection Info: Peer '127.0.0.1:7780' removed from group '1233212'. -> ThreadId: (1) - Log
+2024-06-28 15:26:44: Disconnection Info: Peer '127.0.0.1:7780' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 15:26:53: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:26:53: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:27:02: Group: Peer with ID 1:-1275135395 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 15:27:15: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'sdsda'. -> ThreadId: (1) - Log
+2024-06-28 15:27:15: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 15:27:23: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:27:23: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:27:55: Group: Peer with ID 2:-515620060 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 15:28:13: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:28:15: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:28:51: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:28:51: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:29:02: Group: Peer with ID 2:-1595983452 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 15:29:11: The request has timed out. Ensure that the route exists and that the server is running or the request will fail. -> ThreadId: (3292) - Error
+2024-06-28 15:30:28: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-28 15:30:37: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:30:51: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-28 15:30:58: Group: Peer with ID 2:-1617887086 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-28 15:31:09: The request has timed out. Ensure that the route exists and that the server is running or the request will fail. -> ThreadId: (3304) - Error
+2024-06-29 13:34:51: An error occurred while initializing the database connection: Unable to connect to any of the specified MySQL hosts. -> ThreadId: (1) - Error
+2024-06-29 13:34:51: The connection to the database could not be established, reason: Unable to connect to any of the specified MySQL hosts. -> ThreadId: (1) - Error
+2024-06-29 13:34:52: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:35:06: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:35:09: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:35:21: Group: Peer with ID 2:-1275134947 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 13:35:42: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 13:36:24: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:36:25: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:36:32: Group: Peer with ID 2:1941506930 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 13:37:53: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:37:58: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:38:03: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 13:38:10: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:38:19: Group: Peer with ID 3:-1929972860 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 13:38:30: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 13:38:40: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:39:19: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:39:19: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:39:29: Group: Peer with ID 2:-1872640443 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 13:40:07: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 13:40:44: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:40:58: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:41:00: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:41:17: Group: Peer with ID 2:-1462707536 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 13:41:24: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 13:41:32: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:41:42: Group: Peer with ID 3:-1462707536 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 13:41:59: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 13:42:01: The request has timed out. Ensure that the route exists and that the server is running or the request will fail. -> ThreadId: (2743) - Error
+2024-06-29 13:43:36: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:43:44: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:44:06: Group: Peer with ID 2:-1093337283 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 13:44:22: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 13:45:50: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:45:51: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:46:05: Group: Peer with ID 2:1716515217 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 13:46:19: Group: Peer with ID 2:1716515217 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 13:46:30: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 13:46:31: The request has timed out. Ensure that the route exists and that the server is running or the request will fail. -> ThreadId: (2957) - Error
+2024-06-29 13:47:14: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:47:16: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:47:26: Group: Peer with ID 2:-1617887086 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 13:47:26: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:48:04: Group: Peer with ID 3:-1617887086 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 13:48:28: Connection Info: Peer '127.0.0.1:7781' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:48:31: Disconnection Info: Peer '127.0.0.1:7781' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 13:48:33: Disconnection Info: Peer '127.0.0.1:7780' removed from group 'dsaasd'. -> ThreadId: (1) - Log
+2024-06-29 13:48:33: Disconnection Info: Peer '127.0.0.1:7780' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 13:48:35: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 13:50:51: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:50:51: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:51:00: Group: Peer with ID 2:660657560 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 13:51:11: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:51:22: Group: Peer with ID 3:660657560 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 13:51:30: Disconnection Info: Peer '127.0.0.1:7780' removed from group 'dsaads'. -> ThreadId: (1) - Log
+2024-06-29 13:51:30: Disconnection Info: Peer '127.0.0.1:7780' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 13:52:57: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:53:05: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:53:25: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:54:08: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:54:26: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:54:32: Group: Peer with ID 2:-767940932 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 13:54:44: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 13:54:52: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:54:52: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:55:01: Group: Peer with ID 1:-1617887086 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 13:55:41: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 13:56:17: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:56:23: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:56:36: Group: Peer with ID 2:-90250108 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 13:56:54: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 13:57:02: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:57:30: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:57:38: Group: Peer with ID 1:1898341132 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 13:57:49: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'dssd'. -> ThreadId: (1) - Log
+2024-06-29 13:57:49: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 13:59:53: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 13:59:54: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:00:02: Group: Peer with ID 1:-1093337283 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:00:52: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:02:27: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:02:37: Group: Peer with ID 1:1898341132 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:03:18: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'dssd'. -> ThreadId: (1) - Log
+2024-06-29 14:03:18: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 14:03:27: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:03:27: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:03:38: Group: Peer with ID 1:-703191963 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:05:03: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'sdsa'. -> ThreadId: (1) - Log
+2024-06-29 14:05:03: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 14:05:19: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:05:19: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:05:28: Group: Peer with ID 1:-1617887086 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:06:44: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:06:53: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:07:00: Group: Peer with ID 1:-865273544 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:07:13: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'asdsda'. -> ThreadId: (1) - Log
+2024-06-29 14:07:13: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 14:12:05: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:12:52: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:13:11: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 14:13:22: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:13:26: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:13:34: Group: Peer with ID 1:1941506930 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:18:37: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:18:55: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:19:33: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:19:38: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:19:48: Group: Peer with ID 1:-457997274 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:20:34: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:21:53: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:23:27: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:24:15: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:25:04: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:25:04: Your are trying to send a message to the server while not connected. Please connect first. -> ThreadId: (1) - Error
+2024-06-29 14:25:09: The request has timed out. Ensure that the route exists and that the server is running or the request will fail. -> ThreadId: (3451) - Error
+2024-06-29 14:25:56: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:26:32: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:27:21: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:32:08: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:32:46: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:33:19: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:36:27: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:36:35: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:36:43: Group: Peer with ID 1:-457997274 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:42:33: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:42:41: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:42:48: Group: Peer with ID 1:-478200250 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:44:31: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'dasdsa'. -> ThreadId: (1) - Log
+2024-06-29 14:44:31: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 14:44:47: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:44:47: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:44:54: Group: Peer with ID 1:-515620511 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:46:03: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:46:08: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:46:19: Group: Peer with ID 1:949678227 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:48:29: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'daads'. -> ThreadId: (1) - Log
+2024-06-29 14:48:29: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 14:48:44: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:48:44: Your are trying to send a message to the server while not connected. Please connect first. -> ThreadId: (1) - Error
+2024-06-29 14:48:49: The request has timed out. Ensure that the route exists and that the server is running or the request will fail. -> ThreadId: (3727) - Error
+2024-06-29 14:48:52: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:49:00: Group: Peer with ID 1:-2019494062 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:51:02: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:51:15: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:51:24: Group: Peer with ID 1:-1685096809 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:54:11: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'daasd'. -> ThreadId: (1) - Log
+2024-06-29 14:54:11: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 14:54:54: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:54:54: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:55:01: Group: Peer with ID 1:-1638084846 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:55:28: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:55:36: Group: Peer with ID 3:-1638084846 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:56:06: Disconnection Info: Peer '127.0.0.1:7780' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 14:56:08: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:56:21: Disconnection Info: Peer '127.0.0.1:7780' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 14:56:31: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:56:39: Group: Peer with ID 5:-1638084846 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:56:51: Connection Info: Peer '127.0.0.1:7781' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:57:01: Group: Peer with ID 6:-1638084846 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:57:18: Disconnection Info: Peer '127.0.0.1:7780' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 14:57:20: Disconnection Info: Peer '127.0.0.1:7781' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 14:57:28: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:57:39: Group: Peer with ID 7:-1638084846 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:58:20: Connection Info: Peer '127.0.0.1:7781' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:58:26: Group: Peer with ID 8:-1638084846 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:58:30: Disconnection Info: Peer '127.0.0.1:7781' removed from group 'asddsa'. -> ThreadId: (1) - Log
+2024-06-29 14:58:30: Disconnection Info: Peer '127.0.0.1:7781' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 14:58:33: Disconnection Info: Peer '127.0.0.1:7780' removed from group 'asddsa'. -> ThreadId: (1) - Log
+2024-06-29 14:58:33: Disconnection Info: Peer '127.0.0.1:7780' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 14:58:43: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 14:58:50: Group: Peer with ID 9:-1638084846 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 14:59:13: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'asddsa'. -> ThreadId: (1) - Log
+2024-06-29 14:59:13: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 15:24:06: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:24:58: Lite: Server is already initialized in another instance, only the client will be initialized. -> ThreadId: (1) - Warning
+2024-06-29 15:24:58: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:25:08: Group: Peer with ID 2:1898341132 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 15:25:27: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 15:26:53: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:27:04: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:27:12: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:27:24: Group: Peer with ID 1:678209298 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 15:28:11: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:28:17: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:28:32: Group: Peer with ID 2:1898341114 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 15:28:34: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'dsad'. -> ThreadId: (1) - Log
+2024-06-29 15:28:34: Peer Retrieval Error: Peer with ID '2' not found. Please verify the peer ID and ensure the peer is properly registered(connected!). -> ThreadId: (1) - Error
+2024-06-29 15:28:34: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 15:31:09: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:31:34: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:31:35: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:31:48: Group: Peer with ID 1:-1745550722 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 15:32:06: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:32:20: Group: Peer with ID 3:-1745550722 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 15:32:29: Group: Peer with ID 1:-1745550722 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 15:33:10: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:33:10: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:33:11: Connection Info: Peer '127.0.0.1:7780' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:33:23: Group: Peer with ID 3:-1275134947 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 15:33:28: Group: Peer with ID 2:-1275134947 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 15:33:45: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 15:46:48: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:47:53: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:47:53: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:48:06: Group: Peer with ID 2:-457997274 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 15:48:16: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 15:50:59: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:51:07: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:51:16: Group: Peer with ID 2:678209298 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 15:52:12: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:52:16: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:52:26: Group: Peer with ID 2:-457968698 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 15:53:42: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:53:46: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:53:56: Group: Peer with ID 2:-1462706850 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 15:54:19: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 15:54:53: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:54:58: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:55:12: Group: Peer with ID 1:1326369894 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 15:55:23: Group: Peer with ID 1:1326369894 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 15:55:31: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'dsaas'. -> ThreadId: (1) - Log
+2024-06-29 15:55:31: Peer Retrieval Error: Peer with ID '2' not found. Please verify the peer ID and ensure the peer is properly registered(connected!). -> ThreadId: (1) - Error
+2024-06-29 15:55:31: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 15:57:06: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:57:06: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 15:57:15: Group: Peer with ID 1:-515643949 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 15:57:23: Group: Peer with ID 1:-515643949 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 15:59:09: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'addas'. -> ThreadId: (1) - Log
+2024-06-29 15:59:09: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 16:02:21: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 16:02:30: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 16:02:38: Group: Peer with ID 1:1716515217 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 16:02:41: Send: You are not in any groups. Please join a group first. -> ThreadId: (1) - Error
+2024-06-29 16:02:41: LeaveGroup: Failed to remove group from peer!!! -> ThreadId: (1) - Log
+2024-06-29 16:03:29: Group: Peer with ID 1:1716515217 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 16:03:41: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 16:03:45: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 16:03:54: Group: Peer with ID 1:-1617887086 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 16:04:00: Send: You are not in any groups. Please join a group first. -> ThreadId: (1) - Error
+2024-06-29 16:04:00: LeaveGroup: Failed to remove group from peer!!! -> ThreadId: (1) - Log
+2024-06-29 16:04:30: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'dsaasd'. -> ThreadId: (1) - Log
+2024-06-29 16:04:30: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 16:04:38: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 16:04:49: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 16:05:08: Group: Peer with ID 1:-1685096809 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 16:05:22: Disconnection Info: Peer '127.0.0.1:7779' removed from group 'daasd'. -> ThreadId: (1) - Log
+2024-06-29 16:05:22: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 16:05:49: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 16:05:50: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 16:05:59: Group: Peer with ID 2:-1462706850 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 16:06:19: Disconnection Info: Peer '127.0.0.1:7779' removed from the server. Reason: RemoteConnectionClose. -> ThreadId: (1) - Log
+2024-06-29 16:06:41: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 16:06:50: Connection Info: Peer '127.0.0.1:7778' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 16:06:55: Connection Info: Peer '127.0.0.1:7779' added to the server successfully. -> ThreadId: (1) - Log
+2024-06-29 16:07:03: Group: Peer with ID 1:-1617881870 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 16:07:15: Group: Peer with ID 1:-1617881870 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error
+2024-06-29 16:08:02: Group: Peer with ID 1:-1617881870 not found. Please verify the peer ID and ensure the peer is properly registered(connected!) in the group. -> ThreadId: (1) - Error

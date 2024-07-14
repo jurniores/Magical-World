@@ -10,7 +10,7 @@ public class UsersRoute : ServerEventBehaviour
     private Controllers User = new Controllers("users");
     private Controllers Inventory = new Controllers("inventory");
 
-    protected override void Start()
+    public override void Start()
     {
         base.Start();
         Http.PostAsync("/login", Login);
@@ -22,7 +22,10 @@ public class UsersRoute : ServerEventBehaviour
     {
         if (status == Status.Begin)
         {
-            UsersModel peerUser = peer.Data.Get<UsersModel>("user");
+            peer.Data.TryGet<UsersModel>("user", out var peerUser);
+
+            if (peerUser == null) return;
+
             InventoryModel peerInv = peer.Data.Get<InventoryModel>("inv");
             await User.UpdateAll(peerUser);
             await Inventory.UpdateAll(peerInv);
@@ -31,12 +34,12 @@ public class UsersRoute : ServerEventBehaviour
 
     async Task Login(DataBuffer req, DataBuffer res, NetworkPeer peer)
     {
-        
+
         try
         {
             UsersModel user = req.FromJson<UsersModel>();
             InventoryModel inventory = new();
-
+            user.peerId = peer.Id;
             var userPlayer = await User.Get<UsersModel>(new { user.hwid });
             //Cria um novo player e seu intentário
             if (userPlayer == null)
@@ -44,7 +47,7 @@ public class UsersRoute : ServerEventBehaviour
                 int userInsert = await User.Insert(user);
                 inventory.idUser = userInsert;
                 await Inventory.Insert(inventory);
-
+                user.name = Utils.RandName(6);
                 peer.Data.TryAdd("user", user);
                 peer.Data.TryAdd("inv", inventory);
 
@@ -60,15 +63,18 @@ public class UsersRoute : ServerEventBehaviour
 
             var invPlayer = await Inventory.Get<InventoryModel>(new { idUser = userPlayer.id });
             invPlayer.InitDic();
+            userPlayer.peerId = peer.Id;
+            userPlayer.name ??= Utils.RandName(6);
+
             peer.Data.TryAdd("user", userPlayer);
             peer.Data.TryAdd("inv", invPlayer);
 
-            UsersModel userClient = userPlayer.ToCopy();
+            UsersModel userClient = userPlayer;
 
             if (userPlayer.password == null)
                 userClient.password = null;
-            InventoryModel invClient = invPlayer.ToCopy();
-
+            InventoryModel invClient = invPlayer;
+            
             res.Write(ConstantsDB.SUCCESS);
             res.ToJson(userClient);
             res.ToJson(invClient);
@@ -175,8 +181,7 @@ public class UsersRoute : ServerEventBehaviour
                 {
                     status = ConstantsDB.SUCCESS,
                     message = "Password alterado com sucesso!",
-                    Data = userPeer.ToCopy()
-                };
+                    Data = userPeer                };
             }
             else if (userClient.newPass.Length >= 6 && userClient.newPass != userClient.passRepeat)
             {

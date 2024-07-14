@@ -17,6 +17,7 @@ using Omni.Core.Modules.Ntp;
 using Omni.Core.Modules.UConsole;
 using Omni.Shared;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 #pragma warning disable
 
@@ -70,6 +71,32 @@ namespace Omni.Core
     }
 
     /// <summary>
+    /// Specifies the target recipients for a GET/POST message.
+    /// </summary>
+    public enum HttpTarget
+    {
+        /// <summary>
+        /// Sends the message to the current client itself. If the peer ID is 0 (server), the message is not executed.
+        /// </summary>
+        Self,
+
+        /// <summary>
+        /// Broadcasts the message to all connected players.
+        /// </summary>
+        All,
+
+        /// <summary>
+        /// Sends the message to all players who are members of the same groups as the sender.
+        /// </summary>
+        GroupMembers,
+
+        /// <summary>
+        /// Sends the message to all players who are not members of any groups.
+        /// </summary>
+        NonGroupMembers,
+    }
+
+    /// <summary>
     /// Specifies the target recipients for a network message.
     /// </summary>
     public enum Target
@@ -90,19 +117,24 @@ namespace Omni.Core
         AllExceptSelf,
 
         /// <summary>
-        /// Sends the message to all players who are members of the same groups as the sender.
+        /// Sends the message to all players who are members of the same groups as the sender(sub groups not included).
         /// </summary>
         GroupMembers,
 
         /// <summary>
-        /// Sends the message to all players(except the sender) who are members of the same groups as the sender.
+        /// Sends the message to all players(except the sender) who are members of the same groups as the sender(sub groups not included).
         /// </summary>
         GroupMembersExceptSelf,
 
         /// <summary>
         /// Sends the message to all players who are not members of any groups.
         /// </summary>
-        NonGroupMembers
+        NonGroupMembers,
+
+        /// <summary>
+        /// Sends the message to all players who are not members of any groups. Except the sender.
+        /// </summary>
+        NonGroupMembersExceptSelf
     }
 
     /// <summary>
@@ -158,6 +190,8 @@ namespace Omni.Core
     public partial class NetworkManager : MonoBehaviour, ITransporterReceive
     {
         private static Stopwatch _stopwatch = new Stopwatch();
+        private static bool _allowLoadScene;
+
         public static bool UseTickTiming { get; private set; } = false;
         internal static float DeltaTime =>
             UseTickTiming ? (float)TickSystem.DeltaTick : UnityEngine.Time.deltaTime;
@@ -167,6 +201,10 @@ namespace Omni.Core
 
         public static int MainThreadId { get; private set; }
         public static IObjectPooling<DataBuffer> Pool { get; } = new DataBufferPool();
+
+        public static event Action<Scene, LoadSceneMode> OnSceneLoaded;
+        public static event Action<Scene> OnSceneUnloaded;
+        public static event Action<Scene> OnBeforeSceneLoad;
 
         public static event Action OnServerInitialized;
         public static event Action<NetworkPeer, Status> OnServerPeerConnected;
@@ -366,9 +404,11 @@ namespace Omni.Core
 
         protected virtual void Awake()
         {
+            NetworkHelper.LoadComponent(this, "setup.cfg");
             if (_manager != null)
             {
                 gameObject.SetActive(false);
+                Destroy(gameObject, 1f);
                 return;
             }
 
@@ -377,7 +417,6 @@ namespace Omni.Core
                 _stopwatch.Start();
             }
 
-            NetworkHelper.SaveComponent(this, "setup.cfg");
             _manager = this;
 #if !UNITY_SERVER || UNITY_EDITOR
             if (m_MaxFpsOnClient > 0)
@@ -420,6 +459,30 @@ namespace Omni.Core
             {
                 InitializeModule(Module.TickSystem);
             }
+
+            // Used to perform some operations before the scene is loaded.
+            // for example: removing registered events. (:
+
+            int sceneIndex = 0;
+            SceneManager.sceneLoaded += (scene, mode) =>
+            {
+                if (!_allowLoadScene && sceneIndex > 0)
+                {
+                    throw new NotSupportedException(
+                        "Use 'NetworkManager.LoadScene() or NetworkManager.LoadSceneAsync()' to load a scene instead of 'SceneManager.LoadScene().'"
+                    );
+                }
+
+                if (sceneIndex > 0)
+                {
+                    _allowLoadScene = false;
+                    OnSceneLoaded?.Invoke(scene, mode);
+                }
+
+                sceneIndex++;
+            };
+
+            SceneManager.sceneUnloaded += (scene) => OnSceneUnloaded?.Invoke(scene);
         }
 
         protected virtual void Start()
@@ -521,10 +584,10 @@ namespace Omni.Core
                         GameObject clientTransporter = new("Client Transporter");
                         GameObject serverTransporter = new("Server Transporter");
 
-                        clientTransporter.hideFlags =
-                            HideFlags.HideInHierarchy | HideFlags.HideInInspector;
-                        serverTransporter.hideFlags =
-                            HideFlags.HideInHierarchy | HideFlags.HideInInspector;
+                        // clientTransporter.hideFlags =
+                        //     HideFlags.HideInHierarchy | HideFlags.HideInInspector;
+                        // serverTransporter.hideFlags =
+                        //     HideFlags.HideInHierarchy | HideFlags.HideInInspector;
 
                         clientTransporter.transform.parent = Manager.transform;
                         serverTransporter.transform.parent = Manager.transform;
@@ -618,7 +681,9 @@ namespace Omni.Core
                 Connection.Server.Listen(port);
                 NetworkHelper.SaveComponent(_manager, "setup.cfg");
 #elif !UNITY_SERVER
-                NetworkLogger.LogToFile("Server is not available in release mode on client build.");
+                NetworkLogger.LogToFile(
+                    "Server is not available in 'release mode' on client build."
+                );
 #else
                 Server.GenerateRsaKeys();
                 Connection.Server.Listen(port);
@@ -673,7 +738,7 @@ namespace Omni.Core
                 Connection.Client.Listen(listenPort);
                 Connection.Client.Connect(address, port);
 #elif UNITY_SERVER && !UNITY_EDITOR
-                NetworkLogger.__Log__("Debug: Client is not available in a server build.");
+                NetworkLogger.__Log__("Client is not available in a server build.");
 #endif
             }
             else
@@ -724,7 +789,7 @@ namespace Omni.Core
         {
             Manager.Internal_SendToClient(
                 msgType,
-                buffer.WrittenSpan,
+                buffer.BufferAsSpan,
                 fromPeer,
                 target,
                 deliveryMode,
@@ -744,7 +809,7 @@ namespace Omni.Core
         {
             Manager.Internal_SendToServer(
                 msgType,
-                buffer.WrittenSpan,
+                buffer.BufferAsSpan,
                 deliveryMode,
                 sequenceChannel
             );
@@ -758,7 +823,7 @@ namespace Omni.Core
             using DataBuffer header = Pool.Rent();
             header.FastWrite(msgType);
             header.Write(message);
-            return header.WrittenSpan;
+            return header.BufferAsSpan;
         }
 
         protected virtual ReadOnlySpan<byte> PrepareServerMessageForSending(
@@ -769,7 +834,7 @@ namespace Omni.Core
             using DataBuffer header = Pool.Rent();
             header.FastWrite(msgType);
             header.Write(message);
-            return header.WrittenSpan;
+            return header.BufferAsSpan;
         }
 
         protected virtual void Internal_SendToClient(
@@ -1008,11 +1073,18 @@ namespace Omni.Core
                 switch (target)
                 {
                     case Target.NonGroupMembers:
+                    case Target.NonGroupMembersExceptSelf:
                         {
-                            var peers = peersById.Values.Where(p => p.Groups.Count == 0);
+                            var peers = peersById.Values.Where(p => p._groups.Count == 0);
                             foreach (var peer in peers)
                             {
                                 if (peer.Id == Server.ServerPeer.Id)
+                                    continue;
+
+                                if (
+                                    peer.EndPoint.Equals(fromPeer)
+                                    && target == Target.NonGroupMembersExceptSelf
+                                )
                                     continue;
 
                                 Send(message, peer.EndPoint);
@@ -1032,7 +1104,17 @@ namespace Omni.Core
 
                             if (PeersByIp.TryGetValue(fromPeer, out var sender))
                             {
-                                if (sender.Groups.Count == 0)
+                                if (sender.Id == 0)
+                                {
+                                    NetworkLogger.__Log__(
+                                        "Send: The server(id: 0) cannot use Target.GroupMembers. Because he's not in any group.",
+                                        NetworkLogger.LogType.Error
+                                    );
+
+                                    return;
+                                }
+
+                                if (sender._groups.Count == 0)
                                 {
                                     NetworkLogger.__Log__(
                                         "Send: You are not in any groups. Please join a group first.",
@@ -1042,8 +1124,11 @@ namespace Omni.Core
                                     return;
                                 }
 
-                                foreach (var (_, group) in sender.Groups)
+                                foreach (var (_, group) in sender._groups)
                                 {
+                                    if (group.IsSubGroup)
+                                        continue;
+
                                     foreach (var (_, peer) in group._peersById)
                                     {
                                         if (peer.Id == Server.ServerPeer.Id)
@@ -1204,6 +1289,7 @@ namespace Omni.Core
                 }
                 else
                 {
+                    OnServerPeerConnected?.Invoke(newPeer, Status.Begin);
                     newPeer.IsConnected = true;
                     using var message = Pool.Rent();
                     message.FastWrite(newPeer.Id);
@@ -1226,7 +1312,7 @@ namespace Omni.Core
                         $"Connection Info: Peer '{peer}' added to the server successfully."
                     );
 
-                    OnServerPeerConnected?.Invoke(newPeer, Status.Begin);
+                    OnServerPeerConnected?.Invoke(newPeer, Status.Normal);
                 }
             }
         }
@@ -1253,7 +1339,7 @@ namespace Omni.Core
                 }
                 else
                 {
-                    foreach (var (_, group) in currentPeer.Groups)
+                    foreach (var (_, group) in currentPeer._groups)
                     {
                         if (group._peersById.Remove(currentPeer.Id, out _))
                         {
@@ -1317,13 +1403,13 @@ namespace Omni.Core
             NetworkHelper.EnsureRunningOnMainThread();
             if (PeersByIp.TryGetValue(_peer, out NetworkPeer peer) || !isServer)
             {
-                using DataBuffer message = Pool.Rent();
-                message.Write(_data);
-                message.ResetWrittenCount();
+                using DataBuffer header = Pool.Rent();
+                header.Write(_data);
+                header.SeekToBegin();
 
-                byte msgType = message.FastRead<byte>(); // Note: On Message event
-                message._reworkStart = message.WrittenCount; // Skip header
-                message._reworkEnd = _data.Length; // Slice -> [Header..Length]
+                byte msgType = header.FastRead<byte>(); // Note: On Message event
+                int dataStartPos = header.Position; // Skip header
+                int dataEndPos = _data.Length; // Slice -> [Header..Length]
 
                 if (!isServer)
                 {
@@ -1341,9 +1427,13 @@ namespace Omni.Core
                     }
                 }
 
-                void ResetReadPosition()
+                DataBuffer EndOfHeader() // Disposed by the caller!
                 {
-                    message._reworkStart = message.WrittenCount; // Skip header
+                    dataStartPos = header.Position; // Skip header
+                    DataBuffer message = Pool.Rent();
+                    message.Write(header.Internal_GetSpan(dataEndPos));
+                    message.SeekToBegin();
+                    return message;
                 }
 
                 switch (msgType)
@@ -1352,18 +1442,18 @@ namespace Omni.Core
                         {
                             if (isServer)
                             {
-                                double time = message.FastRead<double>();
-                                float t = message.FastRead<float>();
-                                ResetReadPosition();
+                                double time = header.FastRead<double>();
+                                float t = header.FastRead<float>();
+                                using var _ = EndOfHeader();
                                 SNTP.Server.SendNtpResponse(time, peer, t);
                             }
                             else
                             {
-                                double a = message.FastRead<double>();
-                                double x = message.FastRead<double>();
-                                double y = message.FastRead<double>();
-                                float t = message.FastRead<float>();
-                                ResetReadPosition();
+                                double a = header.FastRead<double>();
+                                double x = header.FastRead<double>();
+                                double y = header.FastRead<double>();
+                                float t = header.FastRead<float>();
+                                using var _ = EndOfHeader();
                                 SNTP.Client.Evaluate(a, x, y, t);
                             }
                         }
@@ -1374,9 +1464,9 @@ namespace Omni.Core
                             {
                                 // Client side!
 
-                                int localPeerId = message.FastRead<int>();
-                                string rsaServerPublicKey = message.ReadString();
-                                ResetReadPosition();
+                                int localPeerId = header.FastRead<int>();
+                                string rsaServerPublicKey = header.ReadString();
+                                using var _ = EndOfHeader();
 
                                 // Initialize the local peer
                                 LocalPeer = new NetworkPeer(LocalEndPoint, localPeerId);
@@ -1386,7 +1476,7 @@ namespace Omni.Core
                                 // Generate AES Key and send it to the server(Encrypted by RSA public key).
                                 Client.RsaServerPublicKey = rsaServerPublicKey;
                                 byte[] aesKey = AesCryptography.GenerateKey();
-                                LocalPeer.AesKey = aesKey;
+                                LocalPeer._aesKey = aesKey;
 
                                 // Crypt the AES Key with the server's RSA public key
                                 byte[] cryptedAesKey = RsaCryptography.Encrypt(
@@ -1410,11 +1500,14 @@ namespace Omni.Core
                             {
                                 // Server side!
 
-                                byte[] aesKey = message.FromBinary<byte[]>();
-                                ResetReadPosition();
+                                byte[] aesKey = header.FromBinary<byte[]>();
+                                using var _ = EndOfHeader();
 
                                 // Decrypt the AES Key with the server's RSA private key
-                                peer.AesKey = RsaCryptography.Decrypt(aesKey, Server.RsaPrivateKey);
+                                peer._aesKey = RsaCryptography.Decrypt(
+                                    aesKey,
+                                    Server.RsaPrivateKey
+                                );
 
                                 // Send Ok to the client!
                                 SendToClient(
@@ -1440,13 +1533,10 @@ namespace Omni.Core
                                     TickSystem = new NetworkTickSystem();
                                     TickSystem.Initialize(m_TickRate);
                                 }
-                                else
-                                {
-                                    print("Inicializado já");
-                                }
 
                                 // Connection end & authorized.
                                 LocalPeer.IsConnected = true;
+                                LocalPeer.IsAuthenticated = true;
                                 IsClientActive = true;
                                 StartCoroutine(QueryNtp());
                                 OnClientConnected?.Invoke();
@@ -1461,18 +1551,18 @@ namespace Omni.Core
                             }
                             else
                             {
-                                OnServerPeerConnected?.Invoke(peer, Status.Normal);
+                                peer.IsAuthenticated = true;
                                 OnServerPeerConnected?.Invoke(peer, Status.End);
                             }
                         }
                         break;
                     case MessageType.LocalInvoke:
                         {
-                            int identityId = message.FastRead<int>();
-                            byte instanceId = message.FastRead<byte>();
-                            byte invokeId = message.FastRead<byte>();
+                            int identityId = header.FastRead<int>();
+                            byte instanceId = header.FastRead<byte>();
+                            byte invokeId = header.FastRead<byte>();
 
-                            ResetReadPosition();
+                            using var message = EndOfHeader();
 
                             var key = (identityId, instanceId);
                             var eventBehavious = isServer
@@ -1502,10 +1592,10 @@ namespace Omni.Core
                         break;
                     case MessageType.GlobalInvoke:
                         {
-                            int identityId = message.FastRead<int>();
-                            byte invokeId = message.FastRead<byte>();
+                            int identityId = header.FastRead<int>();
+                            byte invokeId = header.FastRead<byte>();
 
-                            ResetReadPosition();
+                            using var message = EndOfHeader();
 
                             var eventBehavious = isServer
                                 ? Server.GlobalEventBehaviours
@@ -1539,10 +1629,10 @@ namespace Omni.Core
                         break;
                     case MessageType.LeaveGroup:
                         {
-                            string groupName = message.FastReadString();
-                            string reason = message.FastReadString();
+                            string groupName = header.FastReadString();
+                            string reason = header.FastReadString();
 
-                            ResetReadPosition();
+                            using var _ = EndOfHeader();
 
                             if (isServer)
                             {
@@ -1556,9 +1646,9 @@ namespace Omni.Core
                         break;
                     case MessageType.JoinGroup:
                         {
-                            string groupName = message.FastReadString();
+                            string groupName = header.FastReadString();
 
-                            ResetReadPosition();
+                            using var message = EndOfHeader();
 
                             if (isServer)
                             {
@@ -1590,7 +1680,7 @@ namespace Omni.Core
                         {
                             if (isServer)
                             {
-                                ResetReadPosition();
+                                using var message = EndOfHeader();
                                 OnServerCustomMessage?.Invoke(
                                     msgType,
                                     message,
@@ -1600,13 +1690,87 @@ namespace Omni.Core
                             }
                             else
                             {
-                                ResetReadPosition();
+                                using var message = EndOfHeader();
                                 OnClientCustomMessage?.Invoke(msgType, message, sequenceChannel);
                             }
                         }
                         break;
                 }
             }
+        }
+
+        private static void DestroyScene(LoadSceneMode mode, Scene scene)
+        {
+            if (_allowLoadScene)
+            {
+                throw new Exception(
+                    "Load Scene: Wait for scene load to complete before loading another scene."
+                );
+            }
+
+            _allowLoadScene = true;
+            if (mode == LoadSceneMode.Single)
+            {
+                // This event is used to perform some operations before the scene is loaded.
+                // for example: removing registered events, destroying objects, etc.
+                // Only single mode, because the additive does not destroy/unregister anything.
+                OnBeforeSceneLoad?.Invoke(scene);
+            }
+        }
+
+        public static void LoadScene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
+        {
+            DestroyScene(mode, SceneManager.GetSceneByName(sceneName));
+            SceneManager.LoadScene(sceneName, mode);
+        }
+
+        public static AsyncOperation LoadSceneAsync(
+            string sceneName,
+            LoadSceneMode mode = LoadSceneMode.Single
+        )
+        {
+            DestroyScene(mode, SceneManager.GetSceneByName(sceneName));
+            return SceneManager.LoadSceneAsync(sceneName, mode);
+        }
+
+        public static void LoadScene(int index, LoadSceneMode mode = LoadSceneMode.Single)
+        {
+            DestroyScene(mode, SceneManager.GetSceneByBuildIndex(index));
+            SceneManager.LoadScene(index, mode);
+        }
+
+        public static AsyncOperation LoadSceneAsync(
+            int index,
+            LoadSceneMode mode = LoadSceneMode.Single
+        )
+        {
+            DestroyScene(mode, SceneManager.GetSceneByBuildIndex(index));
+            return SceneManager.LoadSceneAsync(index, mode);
+        }
+
+        public static AsyncOperation UnloadSceneAsync(
+            string sceneName,
+            UnloadSceneOptions options = UnloadSceneOptions.None
+        )
+        {
+            DestroyScene(LoadSceneMode.Single, SceneManager.GetSceneByName(sceneName));
+            return SceneManager.UnloadSceneAsync(sceneName, options);
+        }
+
+        public static AsyncOperation UnloadSceneAsync(
+            int index,
+            bool useBuildIndex = false,
+            UnloadSceneOptions options = UnloadSceneOptions.None
+        )
+        {
+            DestroyScene(
+                LoadSceneMode.Single,
+                useBuildIndex
+                    ? SceneManager.GetSceneByBuildIndex(index)
+                    : SceneManager.GetSceneAt(index)
+            );
+
+            return SceneManager.UnloadSceneAsync(index, options);
         }
 
         /// <summary>

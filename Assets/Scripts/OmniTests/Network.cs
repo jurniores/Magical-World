@@ -18,13 +18,11 @@ public class Network : NetworkEventBehaviour
     void Instantiates(DataBuffer buffer){
         
         buffer.InstantiateOnClient(obj);
-        print(buffer.ReadString());
     }
 
     [Server(1)]
     void ServerReceave(DataBuffer buffer, NetworkPeer peer){
         
-        buffer.ResetWrittenCount();
         var inst = buffer.InstantiateOnServer(obj,peer);
         buffer.FastWrite("Local Player");
         Remote.Invoke(1,peer.Id,buffer);
