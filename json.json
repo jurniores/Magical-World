@@ -1,0 +1,46 @@
+[
+    {
+        "peerId": 1,
+        "name": "Antonio",
+        "email": null,
+        "password": null,
+        "newPass": null,
+        "passRepeat": null,
+        "master": 0,
+        "hwid": "asdasdasd",
+        "cash": 0,
+        "coin": 550,
+        "ruby": 150,
+        "inGame": true,
+        "group": "dsdas",
+        "pConfig": {
+            "myBuffer": null,
+            "identity": 0,
+            "listRunes": []
+        },
+        "identity": -2147483647,
+        "id": 50
+    },
+    {
+        "peerId": 2,
+        "name": "jjlqpw",
+        "email": null,
+        "password": null,
+        "newPass": null,
+        "passRepeat": null,
+        "master": 0,
+        "hwid": "asdasdasd1",
+        "cash": 0,
+        "coin": 0,
+        "ruby": 0,
+        "inGame": true,
+        "group": "dsdas",
+        "pConfig": {
+            "myBuffer": null,
+            "identity": 0,
+            "listRunes": []
+        },
+        "identity": 0,
+        "id": 53
+    }
+]

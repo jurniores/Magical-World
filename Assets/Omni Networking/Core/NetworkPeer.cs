@@ -4,13 +4,15 @@ using System.Diagnostics;
 using System.Net;
 using MemoryPack;
 using Newtonsoft.Json;
+using Omni.Shared;
 using Omni.Shared.Collections;
+using static Omni.Core.NetworkManager;
 
 namespace Omni.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
     [MemoryPackable]
-    public partial class NetworkPeer
+    public partial class NetworkPeer : IEquatable<NetworkPeer>
     {
         [MemoryPackIgnore]
         internal byte[] _aesKey;
@@ -41,7 +43,7 @@ namespace Omni.Core
         public ObservableDictionary<string, object> Data { get; } = new();
 
         [MemoryPackIgnore, JsonProperty("Data")]
-        public ObservableDictionary<string, object> SerializedData { get; } = new();
+        public ObservableDictionary<string, object> SerializedData { get; internal set; } = new();
 
         [MemoryPackIgnore]
         public double Time => _nativePeer.Time;
@@ -81,13 +83,122 @@ namespace Omni.Core
         public void Disconnect()
         {
             EnsureServerActive();
-            NetworkManager.DisconnectPeer(this);
+            DisconnectPeer(this);
+        }
+
+        public void SyncSerializedData(SyncOptions options)
+        {
+            SyncSerializedData(
+                options.Target,
+                options.DeliveryMode,
+                options.GroupId,
+                options.CacheId,
+                options.CacheMode,
+                options.SequenceChannel
+            );
+        }
+
+        public void SyncSerializedData(
+            Target target = Target.Self,
+            DeliveryMode deliveryMode = DeliveryMode.ReliableOrdered,
+            int groupId = 0,
+            int cacheId = 0,
+            CacheMode cacheMode = CacheMode.None,
+            byte sequenceChannel = 0
+        )
+        {
+            SyncSerializedData(
+                "_AllKeys_",
+                target,
+                deliveryMode,
+                groupId,
+                cacheId,
+                cacheMode,
+                sequenceChannel
+            );
+        }
+
+        public void SyncSerializedData(string key, SyncOptions options)
+        {
+            SyncSerializedData(
+                key,
+                options.Target,
+                options.DeliveryMode,
+                options.GroupId,
+                options.CacheId,
+                options.CacheMode,
+                options.SequenceChannel
+            );
+        }
+
+        public void SyncSerializedData(
+            string key,
+            Target target = Target.Self,
+            DeliveryMode deliveryMode = DeliveryMode.ReliableOrdered,
+            int groupId = 0,
+            int cacheId = 0,
+            CacheMode cacheMode = CacheMode.None,
+            byte sequenceChannel = 0
+        )
+        {
+            Internal_SyncSerializedData(
+                key,
+                target,
+                deliveryMode,
+                groupId,
+                cacheId,
+                cacheMode,
+                sequenceChannel
+            );
+        }
+
+        private void Internal_SyncSerializedData(
+            string key = "_AllKeys_",
+            Target target = Target.Self,
+            DeliveryMode deliveryMode = DeliveryMode.ReliableOrdered,
+            int groupId = 0,
+            int cacheId = 0,
+            CacheMode cacheMode = CacheMode.None,
+            byte sequenceChannel = 0
+        )
+        {
+            if (!IsServerActive)
+            {
+                throw new Exception("Can't use this method on client.");
+            }
+
+            if (SerializedData.TryGetValue(key, out object value) || key == "_AllKeys_")
+            {
+                value = key != "_AllKeys_" ? value : SerializedData;
+                ImmutableKeyValuePair keyValuePair = new(key, value);
+                using var message = Pool.Rent();
+                message.FastWrite(Id);
+                message.ToJson(keyValuePair);
+                Server.SendMessage(
+                    MessageType.SyncPeerSerializedData,
+                    this,
+                    message,
+                    target,
+                    deliveryMode,
+                    groupId,
+                    cacheId,
+                    cacheMode,
+                    sequenceChannel
+                );
+            }
+            else
+            {
+                NetworkLogger.__Log__(
+                    $"SyncSerializedData Error: Failed to sync '{key}' because it doesn't exist.",
+                    NetworkLogger.LogType.Error
+                );
+            }
         }
 
         [Conditional("OMNI_DEBUG")]
         private void EnsureServerActive()
         {
-            if (!NetworkManager.IsServerActive)
+            if (!IsServerActive)
             {
                 throw new Exception("Can't use this method on client.");
             }
@@ -95,7 +206,23 @@ namespace Omni.Core
 
         public override string ToString()
         {
-            return NetworkManager.ToJson(this);
+            return ToJson(this);
+        }
+
+        public override bool Equals(object obj)
+        {
+            NetworkPeer other = (NetworkPeer)obj;
+            return Id == other.Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
+        public bool Equals(NetworkPeer other)
+        {
+            return Id == other.Id;
         }
     }
 }

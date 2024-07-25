@@ -1,11 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Omni.Core;
+using Omni.Threading.Tasks;
 using UnityEngine;
-using Cysharp.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 public static class Utils
 {
@@ -57,6 +57,7 @@ public static class Utils
             await UniTask.WaitForSeconds(0.001f);
         }
     }
+
 }
 
 public class NetworkResponse
@@ -97,4 +98,54 @@ public class SalaInGame
         lado2 = sala.lado2;
     }
 
+}
+
+
+public static class Extensions
+{
+    public static Vector2 RadiusPosition(this Vector3 posAtual, Vector3 pInicial, float maxRadius)
+    {
+        if (Vector2.Distance(pInicial, posAtual) > maxRadius)
+        {
+            Vector3 dir = posAtual - pInicial;
+            dir.Normalize();
+            posAtual = (dir * maxRadius) + pInicial;
+        }
+        return posAtual;
+
+    }
+
+    public static float RadiusAngle(this Vector3 posAtual, Vector3 pInicial)
+    {
+        Vector2 dir = posAtual - pInicial;
+        return Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+    }
+
+    public static NetworkIdentity InstantiateOnClientInScene(this NetworkIdentity prefab, int peerId, int identityId, Scene sceneGame)
+    {
+        NetworkIdentity objInstantScene = NetworkManager.InstantiateOnClient(prefab, peerId, identityId);
+
+        if (Application.isEditor)
+        {
+            SceneManager.MoveGameObjectToScene(objInstantScene.gameObject, sceneGame);
+        }
+        
+        return objInstantScene;
+    }
+    public static NetworkIdentity InstantiateOnServerInScene(this NetworkIdentity prefab, NetworkPeer peer, Scene sceneGame)
+    {
+        NetworkIdentity objInstantScene = NetworkManager.InstantiateOnServer(prefab, peer);
+
+        if (Application.isEditor)
+        {
+            SceneManager.MoveGameObjectToScene(objInstantScene.gameObject, sceneGame);
+        }
+
+        return objInstantScene;
+    }
+
+    public static void InvokeByPeer(this NetworkBehaviour identity, byte msgId, NetworkPeer peer, DataBuffer buffer, Target target)
+    {
+        NetworkManager.Server.Invoke(msgId, peer, identity.IdentityId, identity.Id, buffer, target);
+    }
 }

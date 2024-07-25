@@ -9,11 +9,12 @@ using Omni.Shared;
 
 namespace Omni.Core
 {
+    // High-level methods for sending network messages.
     public partial class NetworkManager
     {
         private static void Internal_SendMessage(
             byte msgId,
-            int peerId,
+            NetworkPeer peer,
             DataBuffer buffer,
             Target target,
             DeliveryMode deliveryMode,
@@ -31,26 +32,33 @@ namespace Omni.Core
             }
             else
             {
-                NetworkPeer targetPeer = Server.GetPeerById(peerId);
-                if (targetPeer != null)
+                if (peer == null)
                 {
-                    SendToClient(
-                        msgId,
-                        buffer,
-                        targetPeer.EndPoint,
-                        target,
-                        deliveryMode,
-                        groupId,
-                        cacheId,
-                        cacheMode,
-                        seqChannel
-                    );
+                    throw new NullReferenceException("Peer cannot be null.");
                 }
+
+                SendToClient(
+                    msgId,
+                    buffer,
+                    peer,
+                    target,
+                    deliveryMode,
+                    groupId,
+                    cacheId,
+                    cacheMode,
+                    seqChannel
+                );
             }
         }
 
         public static class Client
         {
+            /// <summary>
+            /// Gets the server peer used for exclusively for encryption keys.
+            /// </summary>
+            public static NetworkPeer ServerPeer { get; } =
+                new(new IPEndPoint(IPAddress.None, 0), 0);
+
             /// <summary>
             /// Gets the server RSA public key .
             /// This property stores the public key used in RSA cryptographic operations.
@@ -58,10 +66,13 @@ namespace Omni.Core
             /// </summary>
             internal static string RsaServerPublicKey { get; set; }
 
+            internal static Dictionary<int, NetworkGroup> Groups { get; } = new();
             internal static Dictionary<int, NetworkIdentity> Identities { get; } = new();
-            internal static Dictionary<int, INetworkMessage> GlobalEventBehaviours { get; } = new(); // int: identifier(identity id)
-            internal static Dictionary<(int, byte), INetworkMessage> LocalEventBehaviours { get; } =
+            internal static Dictionary<int, IInvokeMessage> GlobalEventBehaviours { get; } = new(); // int: identifier(identity id)
+            internal static Dictionary<(int, byte), IInvokeMessage> LocalEventBehaviours { get; } =
                 new();
+
+            public static Dictionary<int, NetworkPeer> Peers { get; } = new();
 
             public static event Action<byte, DataBuffer, int> OnMessage
             {
@@ -91,15 +102,21 @@ namespace Omni.Core
                 }
             }
 
+            public static void SendMessage(byte msgId, SyncOptions options)
+            {
+                SendMessage(msgId, options.Buffer, options.DeliveryMode, options.SequenceChannel);
+            }
+
             public static void SendMessage(
                 byte msgId,
                 DataBuffer buffer = null,
                 DeliveryMode deliveryMode = DeliveryMode.ReliableOrdered,
                 byte sequenceChannel = 0
-            ) =>
+            )
+            {
                 Internal_SendMessage(
                     msgId,
-                    0,
+                    LocalPeer,
                     buffer,
                     Target.Self,
                     deliveryMode,
@@ -109,13 +126,33 @@ namespace Omni.Core
                     CacheMode.None,
                     sequenceChannel
                 );
+            }
+
+            public static void GlobalInvoke(byte msgId, SyncOptions options)
+            {
+                GlobalInvoke(msgId, options.Buffer, options.DeliveryMode, options.SequenceChannel);
+            }
 
             public static void GlobalInvoke(
                 byte msgId,
                 DataBuffer buffer = null,
                 DeliveryMode deliveryMode = DeliveryMode.ReliableOrdered,
                 byte sequenceChannel = 0
-            ) => SendMessage(msgId, buffer, deliveryMode, sequenceChannel);
+            )
+            {
+                SendMessage(msgId, buffer, deliveryMode, sequenceChannel);
+            }
+
+            public static void Invoke(byte msgId, int identityId, SyncOptions options)
+            {
+                Invoke(
+                    msgId,
+                    identityId,
+                    options.Buffer,
+                    options.DeliveryMode,
+                    options.SequenceChannel
+                );
+            }
 
             public static void Invoke(
                 byte msgId,
@@ -131,6 +168,23 @@ namespace Omni.Core
                 message.FastWrite(msgId);
                 message.Write(buffer.BufferAsSpan);
                 SendMessage(MessageType.GlobalInvoke, message, deliveryMode, sequenceChannel);
+            }
+
+            public static void Invoke(
+                byte msgId,
+                int identityId,
+                byte instanceId,
+                SyncOptions options
+            )
+            {
+                Invoke(
+                    msgId,
+                    identityId,
+                    instanceId,
+                    options.Buffer,
+                    options.DeliveryMode,
+                    options.SequenceChannel
+                );
             }
 
             public static void Invoke(
@@ -191,7 +245,7 @@ namespace Omni.Core
                 SendMessage(MessageType.LeaveGroup, message, DeliveryMode.ReliableOrdered, 0);
             }
 
-            internal static void AddEventBehaviour(int identityId, INetworkMessage behaviour)
+            internal static void AddEventBehaviour(int identityId, IInvokeMessage behaviour)
             {
                 if (!GlobalEventBehaviours.TryAdd(identityId, behaviour))
                 {
@@ -202,6 +256,12 @@ namespace Omni.Core
 
         public static class Server
         {
+            /// <summary>
+            /// Gets the server peer.
+            /// </summary>
+            /// <remarks>
+            /// The server peer is a special peer that is used to represent the server.
+            /// </remarks>
             public static NetworkPeer ServerPeer { get; } =
                 new(new IPEndPoint(IPAddress.None, 0), 0);
 
@@ -223,10 +283,13 @@ namespace Omni.Core
             internal static List<NetworkCache> CACHES_APPEND_GLOBAL { get; } = new();
             internal static Dictionary<int, NetworkCache> CACHES_OVERWRITE_GLOBAL { get; } = new();
 
-            internal static Dictionary<int, NetworkIdentity> Identities { get; } = new();
-            internal static Dictionary<int, INetworkMessage> GlobalEventBehaviours { get; } = new();
-            internal static Dictionary<(int, byte), INetworkMessage> LocalEventBehaviours { get; } =
+            internal static Dictionary<int, NetworkGroup> Groups => GroupsById;
+            internal static Dictionary<int, IInvokeMessage> GlobalEventBehaviours { get; } = new();
+            internal static Dictionary<(int, byte), IInvokeMessage> LocalEventBehaviours { get; } =
                 new();
+
+            public static Dictionary<int, NetworkPeer> Peers => PeersById;
+            public static Dictionary<int, NetworkIdentity> Identities { get; } = new();
 
             public static event Action<byte, DataBuffer, NetworkPeer, int> OnMessage
             {
@@ -239,21 +302,6 @@ namespace Omni.Core
                 RsaCryptography.GetRsaKeys(out var rsaPrivateKey, out var rsaPublicKey);
                 RsaPrivateKey = rsaPrivateKey;
                 RsaPublicKey = rsaPublicKey;
-            }
-
-            public static Dictionary<int, NetworkIdentity> GetIdentities()
-            {
-                return Identities;
-            }
-
-            internal static Dictionary<int, NetworkGroup> GetGroups()
-            {
-                return Groups;
-            }
-
-            public static Dictionary<int, NetworkPeer> GetPeers()
-            {
-                return PeersById;
             }
 
             public static NetworkIdentity GetIdentity(int identityId)
@@ -273,55 +321,24 @@ namespace Omni.Core
                 }
             }
 
-            public static NetworkPeer GetPeerById(int peerId, int groupId = 0)
+            public static void SendMessage(byte msgId, NetworkPeer peer, SyncOptions options)
             {
-                if (groupId == 0)
-                {
-                    if (PeersById.TryGetValue(peerId, out var peer))
-                    {
-                        return peer;
-                    }
-                    else
-                    {
-                        NetworkLogger.__Log__(
-                            $"Peer Retrieval Error: Peer with ID '{peerId}' not found. Please verify the peer ID and ensure the peer is properly registered(connected!).",
-                            NetworkLogger.LogType.Error
-                        );
-
-                        return null;
-                    }
-                }
-                else
-                {
-                    if (Groups.TryGetValue(groupId, out NetworkGroup group))
-                    {
-                        if (group._peersById.TryGetValue(peerId, out var peer))
-                        {
-                            return peer;
-                        }
-                    }
-                    else
-                    {
-                        NetworkLogger.__Log__(
-                            $"Get Error: Group with ID {groupId} not found. ensure that the group exists and that the provided groupId is correct.",
-                            NetworkLogger.LogType.Error
-                        );
-
-                        return null;
-                    }
-                }
-
-                NetworkLogger.__Log__(
-                    $"Peer Retrieval Error: Peer with ID '{peerId}' not found. Please verify the peer ID and ensure the peer is properly registered(connected!).",
-                    NetworkLogger.LogType.Error
+                SendMessage(
+                    msgId,
+                    peer,
+                    options.Buffer,
+                    options.Target,
+                    options.DeliveryMode,
+                    options.GroupId,
+                    options.CacheId,
+                    options.CacheMode,
+                    options.SequenceChannel
                 );
-
-                return null;
             }
 
             public static void SendMessage(
                 byte msgId,
-                int peerId,
+                NetworkPeer peer,
                 DataBuffer buffer = null,
                 Target target = Target.All,
                 DeliveryMode deliveryMode = DeliveryMode.ReliableOrdered,
@@ -329,10 +346,11 @@ namespace Omni.Core
                 int cacheId = 0,
                 CacheMode cacheMode = CacheMode.None,
                 byte sequenceChannel = 0
-            ) =>
+            )
+            {
                 Internal_SendMessage(
                     msgId,
-                    peerId,
+                    peer,
                     buffer,
                     target,
                     deliveryMode,
@@ -342,10 +360,26 @@ namespace Omni.Core
                     cacheMode,
                     sequenceChannel
                 );
+            }
+
+            public static void GlobalInvoke(byte msgId, NetworkPeer peer, SyncOptions options)
+            {
+                GlobalInvoke(
+                    msgId,
+                    peer,
+                    options.Buffer,
+                    options.Target,
+                    options.DeliveryMode,
+                    options.GroupId,
+                    options.CacheId,
+                    options.CacheMode,
+                    options.SequenceChannel
+                );
+            }
 
             public static void GlobalInvoke(
                 byte msgId,
-                int peerId,
+                NetworkPeer peer,
                 DataBuffer buffer = null,
                 Target target = Target.All,
                 DeliveryMode deliveryMode = DeliveryMode.ReliableOrdered,
@@ -353,10 +387,11 @@ namespace Omni.Core
                 int cacheId = 0,
                 CacheMode cacheMode = CacheMode.None,
                 byte sequenceChannel = 0
-            ) =>
+            )
+            {
                 SendMessage(
                     msgId,
-                    peerId,
+                    peer,
                     buffer,
                     target,
                     deliveryMode,
@@ -365,10 +400,32 @@ namespace Omni.Core
                     cacheMode,
                     sequenceChannel
                 );
+            }
 
             public static void Invoke(
                 byte msgId,
-                int peerId,
+                NetworkPeer peer,
+                int identityId,
+                SyncOptions options
+            )
+            {
+                Invoke(
+                    msgId,
+                    peer,
+                    identityId,
+                    options.Buffer,
+                    options.Target,
+                    options.DeliveryMode,
+                    options.GroupId,
+                    options.CacheId,
+                    options.CacheMode,
+                    options.SequenceChannel
+                );
+            }
+
+            public static void Invoke(
+                byte msgId,
+                NetworkPeer peer,
                 int identityId,
                 DataBuffer buffer = null,
                 Target target = Target.All,
@@ -386,7 +443,7 @@ namespace Omni.Core
                 message.Write(buffer.BufferAsSpan);
                 SendMessage(
                     MessageType.GlobalInvoke,
-                    peerId,
+                    peer,
                     message,
                     target,
                     deliveryMode,
@@ -402,7 +459,30 @@ namespace Omni.Core
 
             public static void Invoke(
                 byte msgId,
-                int peerId,
+                NetworkPeer peer,
+                int identityId,
+                byte instanceId,
+                SyncOptions options
+            )
+            {
+                Invoke(
+                    msgId,
+                    peer,
+                    identityId,
+                    instanceId,
+                    options.Buffer,
+                    options.Target,
+                    options.DeliveryMode,
+                    options.GroupId,
+                    options.CacheId,
+                    options.CacheMode,
+                    options.SequenceChannel
+                );
+            }
+
+            public static void Invoke(
+                byte msgId,
+                NetworkPeer peer,
                 int identityId,
                 byte instanceId,
                 DataBuffer buffer = null,
@@ -422,7 +502,7 @@ namespace Omni.Core
                 message.Write(buffer.BufferAsSpan);
                 SendMessage(
                     MessageType.LocalInvoke,
-                    peerId,
+                    peer,
                     message,
                     target,
                     deliveryMode,
@@ -443,7 +523,7 @@ namespace Omni.Core
 
             internal static NetworkGroup GetGroupById(int groupId)
             {
-                if (Groups.TryGetValue(groupId, out NetworkGroup group))
+                if (GroupsById.TryGetValue(groupId, out NetworkGroup group))
                 {
                     return group;
                 }
@@ -458,7 +538,7 @@ namespace Omni.Core
 
             internal static bool TryGetGroupById(int groupId, out NetworkGroup group)
             {
-                return Groups.TryGetValue(groupId, out group);
+                return GroupsById.TryGetValue(groupId, out group);
             }
 
             internal static void JoinGroup(
@@ -480,7 +560,7 @@ namespace Omni.Core
 
                     SendMessage(
                         MessageType.JoinGroup,
-                        peer.Id,
+                        peer,
                         message,
                         Target.Self,
                         DeliveryMode.ReliableOrdered,
@@ -490,7 +570,7 @@ namespace Omni.Core
                 }
 
                 int uniqueId = GetGroupIdByName(groupName);
-                if (Groups.TryGetValue(uniqueId, out NetworkGroup group))
+                if (GroupsById.TryGetValue(uniqueId, out NetworkGroup group))
                 {
                     if (!group._peersById.TryAdd(peer.Id, peer))
                     {
@@ -513,7 +593,7 @@ namespace Omni.Core
                 {
                     group = new NetworkGroup(uniqueId, groupName);
                     group._peersById.Add(peer.Id, peer);
-                    if (!Groups.TryAdd(uniqueId, group))
+                    if (!GroupsById.TryAdd(uniqueId, group))
                     {
                         NetworkLogger.__Log__(
                             $"JoinGroup: Failed to add group: {groupName} because it already exists.",
@@ -554,7 +634,7 @@ namespace Omni.Core
             {
                 int groupId = GetGroupIdByName(groupName);
                 NetworkGroup group = new(groupId, groupName);
-                if (!Groups.TryAdd(groupId, group))
+                if (!GroupsById.TryAdd(groupId, group))
                 {
                     throw new Exception(
                         $"Failed to add group: [{groupName}] because it already exists."
@@ -568,7 +648,7 @@ namespace Omni.Core
             {
                 int groupId = GetGroupIdByName(groupName);
                 group = new(groupId, groupName);
-                return Groups.TryAdd(groupId, group);
+                return GroupsById.TryAdd(groupId, group);
             }
 
             internal static void LeaveGroup(string groupName, string reason, NetworkPeer peer)
@@ -581,7 +661,7 @@ namespace Omni.Core
 
                     SendMessage(
                         MessageType.LeaveGroup,
-                        peer.Id,
+                        peer,
                         message,
                         Target.Self,
                         DeliveryMode.ReliableOrdered,
@@ -591,7 +671,7 @@ namespace Omni.Core
                 }
 
                 int groupId = GetGroupIdByName(groupName);
-                if (Groups.TryGetValue(groupId, out NetworkGroup group))
+                if (GroupsById.TryGetValue(groupId, out NetworkGroup group))
                 {
                     OnPlayerLeftGroup?.Invoke(group, peer, Status.Begin, reason);
                     if (group._peersById.Remove(peer.Id, out _))
@@ -648,7 +728,7 @@ namespace Omni.Core
             {
                 if (group._peersById.Count == 0)
                 {
-                    if (!Groups.Remove(group.Id))
+                    if (!GroupsById.Remove(group.Id))
                     {
                         NetworkLogger.__Log__(
                             $"LeaveGroup: Destroy was called on group: {group.Name} but it does not exist.",
@@ -727,7 +807,7 @@ namespace Omni.Core
                                 == (CacheMode.Group | CacheMode.New | CacheMode.AutoDestroy)
                         )
                         {
-                            if (Groups.TryGetValue(groupId, out NetworkGroup group))
+                            if (GroupsById.TryGetValue(groupId, out NetworkGroup group))
                             {
                                 List<NetworkCache> caches = group
                                     .CACHES_APPEND.Where(x =>
@@ -800,7 +880,7 @@ namespace Omni.Core
                                 == (CacheMode.Group | CacheMode.Overwrite | CacheMode.AutoDestroy)
                         )
                         {
-                            if (Groups.TryGetValue(groupId, out NetworkGroup group))
+                            if (GroupsById.TryGetValue(groupId, out NetworkGroup group))
                             {
                                 if (
                                     group.CACHES_OVERWRITE.TryGetValue(
@@ -888,7 +968,7 @@ namespace Omni.Core
                                 == (CacheMode.Group | CacheMode.New | CacheMode.AutoDestroy)
                         )
                         {
-                            if (Groups.TryGetValue(groupId, out NetworkGroup group))
+                            if (GroupsById.TryGetValue(groupId, out NetworkGroup group))
                             {
                                 group.CACHES_APPEND.RemoveAll(x =>
                                     x.Mode == cacheMode && x.Id == cacheId
@@ -916,7 +996,7 @@ namespace Omni.Core
                                 == (CacheMode.Group | CacheMode.Overwrite | CacheMode.AutoDestroy)
                         )
                         {
-                            if (Groups.TryGetValue(groupId, out NetworkGroup group))
+                            if (GroupsById.TryGetValue(groupId, out NetworkGroup group))
                             {
                                 group.CACHES_OVERWRITE.Remove(cacheId);
                             }
@@ -981,7 +1061,7 @@ namespace Omni.Core
                                 == (CacheMode.Group | CacheMode.New | CacheMode.AutoDestroy)
                         )
                         {
-                            if (Groups.TryGetValue(groupId, out NetworkGroup group))
+                            if (GroupsById.TryGetValue(groupId, out NetworkGroup group))
                             {
                                 group.CACHES_APPEND.RemoveAll(x =>
                                     x.Mode == cacheMode && x.Id == cacheId && x.Peer.Id == peer.Id
@@ -1009,7 +1089,7 @@ namespace Omni.Core
                                 == (CacheMode.Group | CacheMode.Overwrite | CacheMode.AutoDestroy)
                         )
                         {
-                            if (Groups.TryGetValue(groupId, out NetworkGroup group))
+                            if (GroupsById.TryGetValue(groupId, out NetworkGroup group))
                             {
                                 group.CACHES_OVERWRITE.Remove(cacheId);
                             }
@@ -1063,7 +1143,7 @@ namespace Omni.Core
                 CACHES_OVERWRITE_GLOBAL.Clear();
             }
 
-            internal static void AddEventBehaviour(int identityId, INetworkMessage behaviour)
+            internal static void AddEventBehaviour(int identityId, IInvokeMessage behaviour)
             {
                 if (!GlobalEventBehaviours.TryAdd(identityId, behaviour))
                 {

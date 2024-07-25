@@ -5,12 +5,13 @@ using MemoryPack;
 using Newtonsoft.Json;
 using Omni.Shared;
 using Omni.Shared.Collections;
+using static Omni.Core.NetworkManager;
 
 namespace Omni.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
     [MemoryPackable]
-    public partial class NetworkGroup
+    public partial class NetworkGroup : IEquatable<NetworkGroup>
     {
         [MemoryPackIgnore]
         internal readonly Dictionary<int, NetworkPeer> _peersById = new();
@@ -28,6 +29,9 @@ namespace Omni.Core
         public string Name { get; }
 
         [MemoryPackIgnore]
+        public int MasterClientId { get; set; } = -1;
+
+        [MemoryPackIgnore]
         public int PeerCount => _peersById.Count;
 
         [MemoryPackIgnore]
@@ -40,7 +44,7 @@ namespace Omni.Core
         public ObservableDictionary<string, object> Data { get; } = new();
 
         [MemoryPackIgnore, JsonProperty("Data")]
-        public ObservableDictionary<string, object> SerializedData { get; } = new();
+        public ObservableDictionary<string, object> SerializedData { get; internal set; } = new();
 
         [MemoryPackIgnore]
         public Dictionary<int, NetworkPeer> Peers
@@ -130,7 +134,7 @@ namespace Omni.Core
             string newIdentifier = $"{Identifier}->{subGroupName}";
             if (!__namebuilder__)
             {
-                return NetworkManager.Matchmaking.Server.AddGroup(newIdentifier);
+                return Matchmaking.Server.AddGroup(newIdentifier);
             }
 
             return new NetworkGroup(newIdentifier);
@@ -141,11 +145,137 @@ namespace Omni.Core
             string newIdentifier = $"{Identifier}->{subGroupName}";
             if (!__namebuilder__)
             {
-                return NetworkManager.Matchmaking.Server.TryAddGroup(newIdentifier, out subGroup);
+                return Matchmaking.Server.TryAddGroup(newIdentifier, out subGroup);
             }
 
             subGroup = new NetworkGroup(newIdentifier);
             return true;
+        }
+
+        public void SyncSerializedData(SyncOptions options)
+        {
+            SyncSerializedData(
+                options.Target,
+                options.DeliveryMode,
+                options.GroupId,
+                options.CacheId,
+                options.CacheMode,
+                options.SequenceChannel
+            );
+        }
+
+        public void SyncSerializedData(
+            Target target = Target.GroupMembers,
+            DeliveryMode deliveryMode = DeliveryMode.ReliableOrdered,
+            int groupId = 0,
+            int cacheId = 0,
+            CacheMode cacheMode = CacheMode.None,
+            byte sequenceChannel = 0
+        )
+        {
+            SyncSerializedData(
+                "_AllKeys_",
+                target,
+                deliveryMode,
+                groupId,
+                cacheId,
+                cacheMode,
+                sequenceChannel
+            );
+        }
+
+        public void SyncSerializedData(string key, SyncOptions options)
+        {
+            SyncSerializedData(
+                key,
+                options.Target,
+                options.DeliveryMode,
+                options.GroupId,
+                options.CacheId,
+                options.CacheMode,
+                options.SequenceChannel
+            );
+        }
+
+        public void SyncSerializedData(
+            string key,
+            Target target = Target.GroupMembers,
+            DeliveryMode deliveryMode = DeliveryMode.ReliableOrdered,
+            int groupId = 0,
+            int cacheId = 0,
+            CacheMode cacheMode = CacheMode.None,
+            byte sequenceChannel = 0
+        )
+        {
+            Internal_SyncSerializedData(
+                key,
+                target,
+                deliveryMode,
+                groupId,
+                cacheId,
+                cacheMode,
+                sequenceChannel
+            );
+        }
+
+        private void Internal_SyncSerializedData(
+            string key = "_AllKeys_",
+            Target target = Target.GroupMembers,
+            DeliveryMode deliveryMode = DeliveryMode.ReliableOrdered,
+            int groupId = 0,
+            int cacheId = 0,
+            CacheMode cacheMode = CacheMode.None,
+            byte sequenceChannel = 0
+        )
+        {
+            if (!IsServerActive)
+            {
+                throw new Exception("Can't use this method on client.");
+            }
+
+            if (MasterClientId <= -1)
+            {
+                throw new Exception(
+                    "MasterClientId is not set. Please set it before using this method."
+                );
+            }
+
+            if (Server.Peers.TryGetValue(MasterClientId, out var peer))
+            {
+                if (SerializedData.TryGetValue(key, out object value) || key == "_AllKeys_")
+                {
+                    value = key != "_AllKeys_" ? value : SerializedData;
+                    ImmutableKeyValuePair keyValuePair = new(key, value);
+                    using var message = Pool.Rent();
+                    message.FastWrite(Id);
+                    message.ToJson(keyValuePair);
+                    Server.SendMessage(
+                        MessageType.SyncGroupSerializedData,
+                        peer,
+                        message,
+                        target,
+                        deliveryMode,
+                        groupId,
+                        cacheId,
+                        cacheMode,
+                        sequenceChannel
+                    );
+                }
+                else
+                {
+                    NetworkLogger.__Log__(
+                        $"SyncSerializedData Group Error: Failed to sync '{key}' because it doesn't exist.",
+                        NetworkLogger.LogType.Error
+                    );
+                }
+            }
+            else
+            {
+                NetworkLogger.__Log__(
+                    $"SyncSerializedData Group Error: Peer(Master) with ID '{MasterClientId}' not found. Please verify the master ID and ensure the peer is properly registered(connected!).",
+                    NetworkLogger.LogType.Error
+                );
+            }
         }
 
         public void DeleteCache(CacheMode cacheMode, int cacheId)
@@ -159,8 +289,7 @@ namespace Omni.Core
             }
             else if (
                 cacheMode == (CacheMode.Group | CacheMode.Overwrite)
-                || cacheMode
-                    == (CacheMode.Group | CacheMode.Overwrite | CacheMode.AutoDestroy)
+                || cacheMode == (CacheMode.Group | CacheMode.Overwrite | CacheMode.AutoDestroy)
             )
             {
                 CACHES_OVERWRITE.Remove(cacheId);
@@ -187,8 +316,7 @@ namespace Omni.Core
             }
             else if (
                 cacheMode == (CacheMode.Group | CacheMode.Overwrite)
-                || cacheMode
-                    == (CacheMode.Group | CacheMode.Overwrite | CacheMode.AutoDestroy)
+                || cacheMode == (CacheMode.Group | CacheMode.Overwrite | CacheMode.AutoDestroy)
             )
             {
                 CACHES_OVERWRITE.Remove(cacheId);
@@ -240,7 +368,23 @@ namespace Omni.Core
 
         public override string ToString()
         {
-            return NetworkManager.ToJson(this);
+            return ToJson(this);
+        }
+
+        public override bool Equals(object obj)
+        {
+            NetworkGroup other = (NetworkGroup)obj;
+            return Id == other.Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
+        public bool Equals(NetworkGroup other)
+        {
+            return Id == other.Id;
         }
     }
 }

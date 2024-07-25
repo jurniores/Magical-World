@@ -1,5 +1,7 @@
 using System;
 using System.Buffers;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Omni.Core.Interfaces;
 
 namespace Omni.Core
@@ -12,6 +14,7 @@ namespace Omni.Core
 
         private int _position;
         private int _endPosition;
+        private int _length;
 
         /// <summary>
         /// An empty <see cref="DataBuffer"/> instance.
@@ -21,14 +24,12 @@ namespace Omni.Core
         /// <summary>
         /// Returns the data written to the underlying buffer so far, as a <see cref="ReadOnlyMemory{T}"/>.
         /// </summary>
-        public ReadOnlyMemory<byte> BufferAsMemory =>
-            _buffer.AsMemory(0, _position > 0 ? _position : _endPosition);
+        public ReadOnlyMemory<byte> BufferAsMemory => _buffer.AsMemory(0, CurrentPos());
 
         /// <summary>
         /// Returns the data written to the underlying buffer so far, as a <see cref="ReadOnlySpan{T}"/>.
         /// </summary>
-        public ReadOnlySpan<byte> BufferAsSpan =>
-            _buffer.AsSpan(0, _position > 0 ? _position : _endPosition);
+        public ReadOnlySpan<byte> BufferAsSpan => _buffer.AsSpan(0, CurrentPos());
 
         /// <summary>
         /// Returns the amount of data written to the underlying buffer so far.
@@ -50,6 +51,12 @@ namespace Omni.Core
         /// </summary>
         public int FreeCapacity => _buffer.Length - _position;
 
+        /// <summary>
+        /// Returns the amount of data written to the underlying buffer.
+        /// Call <see cref="Clear"/> to clear the buffer and reset the length to 0.
+        /// </summary>
+        public int Length => _length;
+
         private DataBuffer()
         {
             _buffer = Array.Empty<byte>();
@@ -64,7 +71,10 @@ namespace Omni.Core
         /// <exception cref="ArgumentException">
         /// Thrown when <paramref name="capacity"/> is not positive (i.e. less than or equal to 0).
         /// </exception>
-        public DataBuffer(int capacity = 16384, IObjectPooling<DataBuffer> pool = null)
+        public DataBuffer(int capacity = 32768)
+            : this(capacity, null) { }
+
+        internal DataBuffer(int capacity = 32768, IObjectPooling<DataBuffer> pool = null)
         {
             if (capacity <= 0)
             {
@@ -90,35 +100,44 @@ namespace Omni.Core
         /// </remarks>
         public void Advance(int count)
         {
-            if (count < 0)
-                throw new ArgumentException(null, nameof(count));
-
-            if (_position > _buffer.Length - count)
-                throw new ArgumentException(null, nameof(count));
-
+            Internal_Advance(count);
+            _length += count;
             _endPosition += count;
-            _position += count;
         }
 
-        /// <summary>
-        /// Notifies <see cref="IBufferWriter{T}"/> that <paramref name="count"/> amount of data was written to the output <see cref="Span{T}"/>/<see cref="Memory{T}"/>
-        /// </summary>
-        /// <exception cref="ArgumentException">
-        /// Thrown when <paramref name="count"/> is negative.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown when attempting to advance past the end of the underlying buffer.
-        /// </exception>
-        /// <remarks>
-        /// You must request a new buffer after calling Advance to continue writing more data and cannot write to a previously acquired buffer.
-        /// </remarks>
-        internal void Internal_Advance(int count)
+        // Advances when read, read-only.
+        internal void Internal_Advance(int count, [CallerMemberName] string ___ = "")
         {
+            if (_disposed)
+            {
+                throw new ObjectDisposedException(
+                    nameof(DataBuffer),
+                    "Cannot advance as the DataBuffer instance has already been disposed."
+                );
+            }
+
             if (count < 0)
-                throw new ArgumentException(null, nameof(count));
+            {
+                throw new ArgumentException(
+                    "The count parameter must be a non-negative integer.",
+                    nameof(count)
+                );
+            }
 
             if (_position > _buffer.Length - count)
-                throw new ArgumentException(null, nameof(count));
+            {
+                throw new ArgumentException(
+                    $"The count parameter exceeds the buffer length. Current position: {_position}, Buffer length: {_buffer.Length}, Count: {count}",
+                    nameof(count)
+                );
+            }
+
+            if ((_position > _length - count) && ___ != nameof(Advance))
+            {
+                throw new InvalidOperationException(
+                    $"Cannot advance past the end of the buffer. Not enough data to read. Current position: {_position}, Length: {_length}, Count: {count}"
+                );
+            }
 
             _position += count;
         }
@@ -208,6 +227,7 @@ namespace Omni.Core
             _buffer.AsSpan().Clear();
             _endPosition = _position;
             _position = 0;
+            _length = 0;
         }
 
         /// <summary>
@@ -247,12 +267,26 @@ namespace Omni.Core
         }
 
         /// <summary>
+        /// Sets the length of the buffer to the specified position.
+        /// </summary>
+        /// <param name="length">The new length to set.</param>
+        public void SetLength(int length)
+        {
+            _length = length;
+        }
+
+        /// <summary>
         /// Sets the end position of the buffer to the specified position.
         /// </summary>
         /// <param name="pos">The new end position to set.</param>
         internal void SetEndPosition(int pos)
         {
             _endPosition = pos;
+        }
+
+        private int CurrentPos()
+        {
+            return _position > 0 ? _position : _endPosition;
         }
 
         private void CheckAndResizeBuffer(int sizeHint)
@@ -265,27 +299,42 @@ namespace Omni.Core
             }
         }
 
+#if OMNI_DEBUG
+        internal Action _onDisposed;
+#endif
         internal bool _disposed;
+        internal bool _enableTracking = true;
 
+        /// <summary>
+        /// Disposes the buffer, returning it to the pool if it was acquired from one.
+        /// Throws exceptions if the buffer is already disposed or was not acquired from a buffer pool.
+        /// </summary>
+        /// <exception cref="Exception">
+        /// Thrown when the buffer is already disposed or was not acquired from the buffer pool.
+        /// </exception>
         public void Dispose()
         {
             if (_disposed == true)
             {
-                throw new Exception("buffer: Buffer already disposed. Cannot dispose again.");
+                throw new ObjectDisposedException(
+                    "buffer: Buffer already disposed. Cannot dispose again."
+                );
             }
 
             if (_objectPooling == null)
             {
-                throw new Exception(
+                throw new ArgumentNullException(
                     "buffer: You should not dispose a buffer that was not acquired from the buffer pool."
                 );
             }
 
             _objectPooling.Return(this);
-            _disposed = true;
+        }
 
-            // internal purpose
-            SendEnabled = false;
+        [Conditional("OMNI_DEBUG")]
+        public void SuppressTracking(bool suppress = true)
+        {
+            _enableTracking = !suppress;
         }
     }
 }

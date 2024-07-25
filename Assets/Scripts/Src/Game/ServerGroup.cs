@@ -7,21 +7,28 @@ using UnityEngine.SceneManagement;
 
 public class ServerGroup : NetworkBehaviour
 {
-    private Scene scene;
+    [SerializeField]
+    private NetworkIdentity serverPlayer;
+    private readonly Dictionary<int, int> dicPlayers = new();
+    private Scene sceneGame;
     private Sala sala;
-    private SalaInGame salaInGame;
     private NetworkGroup group;
-    public void SetInfoGroupServer(NetworkGroup pGroup)
+    public static int identityId = 0;
+
+    void Start()
     {
-        Invoke(nameof(StartedGame), 11);
-        group = pGroup;
-        scene = SceneManager.CreateScene(group.Name, new CreateSceneParameters(LocalPhysicsMode.Physics3D));
-        SceneManager.MoveGameObjectToScene(gameObject, scene);
+        sala = group.Data.Get<Sala>("sala");
+        print("Players na sala: " + sala.playersNaSala.Count);
     }
 
-    void FixedUpdate()
+    public void SetInfoGroupServer(NetworkGroup pGroup)
     {
-        scene.GetPhysicsScene().Simulate(Time.fixedDeltaTime);
+        Invoke(nameof(StartedGame), 1);
+        group = pGroup;
+    }
+
+    void Update()
+    {
     }
     public void SetInfoGame(NetworkGroup pGroup)
     {
@@ -29,13 +36,29 @@ public class ServerGroup : NetworkBehaviour
     }
     void StartedGame()
     {
-        var res = NetworkManager.Pool.Rent();
+        using var res = NetworkManager.Pool.Rent();
         Remote.Invoke(ConstantsRPC.INIT_GAME_GO, res, Target.GroupMembers);
     }
-    void ReturnPlayers()
+    [Server(ConstantsRPC.INSTANT_PLAYER_GAME)]
+    void InstantePlayerRPC(DataBuffer buffer, NetworkPeer peer)
     {
 
+        //Adicionando o buffer de instanciação
+        NetworkIdentity identity = serverPlayer.InstantiateOnServer(peer);
+
+        buffer.WriteIdentity(identity);
+
+        this.InvokeByPeer(ConstantsRPC.INSTANT_ENEMY_GAME, peer, buffer, Target.GroupMembersExceptSelf);
+        this.InvokeByPeer(ConstantsRPC.INSTANT_PLAYER_GAME, peer, buffer, Target.Self);
+
+        using DataBuffer forAllBuffer = NetworkManager.Pool.Rent();
+        print(dicPlayers.Count);
+        forAllBuffer.ToJson(dicPlayers);
+        this.InvokeByPeer(ConstantsRPC.INSTANT_PLAYERS_GAME, peer, forAllBuffer, Target.Self);
+
+        dicPlayers.Add(peer.Id, identity.IdentityId);
     }
+
 
 
 

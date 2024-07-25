@@ -4,7 +4,7 @@ using Omni.Core;
 using static Omni.Core.HttpLite;
 using UnityEngine.UI;
 using System;
-using Cysharp.Threading.Tasks;
+using Omni.Threading.Tasks;
 public class ConfigSala : MonoBehaviour
 {
     [SerializeField]

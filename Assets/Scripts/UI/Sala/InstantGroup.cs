@@ -1,11 +1,10 @@
 using Omni.Core;
 using UnityEngine;
 using UnityEngine.UI;
-using Cysharp.Threading.Tasks;
 using UnityEngine.SceneManagement;
 
 
-public partial class InstantGroup : ClientEventBehaviour
+public partial class InstantGroup : ClientBehaviour
 {
     [SerializeField]
     private NetworkIdentity clientGroup;
@@ -13,6 +12,7 @@ public partial class InstantGroup : ClientEventBehaviour
     [Client(ConstantsRPC.INIT_GAME)]
      void InitiGame(DataBuffer res)
     {
-        res.InstantiateOnClient(clientGroup);
+        res.ReadIdentity(out int peerId, out int identityId);
+        clientGroup.InstantiateOnClient(peerId, identityId);
     }
 }

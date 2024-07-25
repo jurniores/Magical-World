@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 using static Omni.Core.HttpLite;
 using static Omni.Core.NetworkManager;
 
-public class RoomRoute : ServerEventBehaviour
+public class RoomRoute : ServerBehaviour
 {
     [SerializeField]
     private NetworkIdentity ServerGroup;
@@ -77,7 +77,7 @@ public class RoomRoute : ServerEventBehaviour
 
         res.Send();
 
-        Remote.Invoke(ConstantsRPC.SET_RUNE, peer.Id, res, Target.GroupMembers);
+        Remote.Invoke(ConstantsRPC.SET_RUNE, peer, res, Target.GroupMembers);
     }
 
     private void StartGame(DataBuffer res, NetworkPeer peer)
@@ -293,7 +293,7 @@ public class RoomRoute : ServerEventBehaviour
         salaClient.lado1.Add(user);
         salaClient.playersNaSala.Add(user);
 
-        group.SerializedData.TryAdd("sala", salaClient);
+        group.Data.TryAdd("sala", salaClient);
 
         //Colocar o jogador dentro de grupo, depois de criado e configurado
 
@@ -377,7 +377,7 @@ public class RoomRoute : ServerEventBehaviour
             return;
         }
 
-        group.SerializedData.TryGet("sala", out Sala sala);
+        group.Data.TryGet("sala", out Sala sala);
         group.Data.TryGet("pass", out string passServer);
 
         if (sala != null)
@@ -452,7 +452,7 @@ public class RoomRoute : ServerEventBehaviour
         var user = peer.Data.Get<UsersModel>("user");
         peer.Data.TryAdd("group", group);
 
-        group.SerializedData.TryAdd("sala", sala);
+        group.Data.TryAdd("sala", sala);
 
         if (sala.lado1.Count > sala.lado2.Count)
         {
@@ -496,19 +496,19 @@ public class RoomRoute : ServerEventBehaviour
 
     protected override void OnPlayerJoinedGroup(DataBuffer buffer, NetworkGroup group, NetworkPeer peer)
     {
-        DataBuffer res = Pool.Rent();
+        using DataBuffer res = Pool.Rent();
         res.ToJson(new NetworkResponse<UsersModel>()
         {
             status = ConstantsDB.SUCCESS,
             message = "Novo player entrou!",
             Data = peer.Data.Get<UsersModel>("user")
         });
-        Remote.Invoke(ConstantsRPC.INSTANT_PLAYER, peer.Id, res, Target.GroupMembersExceptSelf);
+        Remote.Invoke(ConstantsRPC.INSTANT_PLAYER, peer, res, Target.GroupMembersExceptSelf);
     }
 
     protected override void OnPlayerLeftGroup(NetworkGroup group, NetworkPeer peer, Status status, string reason)
     {
-        Sala sala = group.SerializedData.Get<Sala>("sala");
+        Sala sala = group.Data.Get<Sala>("sala");
 
         if (status == Status.Begin)
         {
@@ -525,7 +525,7 @@ public class RoomRoute : ServerEventBehaviour
             sala.lado2.RemoveAll(e => e.peerId == peer.Id);
             sala.playersNaSala.RemoveAll(e => e.peerId == peer.Id);
 
-            DataBuffer res = Pool.Rent();
+            using DataBuffer res = Pool.Rent();
 
             res.ToJson(new NetworkResponse<UsersModel>()
             {
@@ -533,7 +533,7 @@ public class RoomRoute : ServerEventBehaviour
                 message = "Um player foi removido da sala!",
                 Data = peer.Data.Get<UsersModel>("user")
             });
-            Remote.Invoke(ConstantsRPC.DESTROY_PLAYER_ROOM, peer.Id, res, Target.GroupMembersExceptSelf);
+            Remote.Invoke(ConstantsRPC.DESTROY_PLAYER_ROOM, peer, res, Target.GroupMembersExceptSelf);
 
             //
 
@@ -545,7 +545,7 @@ public class RoomRoute : ServerEventBehaviour
                 }
             }
 
-            DataBuffer resKick = Pool.Rent();
+            using DataBuffer resKick = Pool.Rent();
 
             resKick.ToJson(new NetworkResponse()
             {
@@ -553,7 +553,7 @@ public class RoomRoute : ServerEventBehaviour
                 message = "Você foi removido da sala!",
             });
 
-            Remote.Invoke(ConstantsRPC.ME_DESTROY_ROOM, peer.Id, resKick, Target.Self);
+            Remote.Invoke(ConstantsRPC.ME_DESTROY_ROOM, peer, resKick, Target.Self);
         }
 
     }
@@ -569,7 +569,7 @@ public class RoomRoute : ServerEventBehaviour
 
         if (!groupValida) return;
 
-        DataBuffer res = Pool.Rent();
+        using DataBuffer res = Pool.Rent();
 
         //Se for lider da sala troca-o
         if (sala.master == peer.Id && sala.playersNaSala.Count > 1)
@@ -589,7 +589,7 @@ public class RoomRoute : ServerEventBehaviour
                 Data = sala
             });
             res.CompressRaw();
-            Remote.Invoke(ConstantsRPC.CHANGE_MASTER, peer.Id, res, Target.GroupMembersExceptSelf);
+            Remote.Invoke(ConstantsRPC.CHANGE_MASTER, peer, res, Target.GroupMembersExceptSelf);
         }
 
         Matchmaking.Server.LeaveGroup(group, peer);
@@ -597,13 +597,15 @@ public class RoomRoute : ServerEventBehaviour
     //Só serve para iniciar uma partida
     private void InitGame(NetworkPeer peer, NetworkGroup group)
     {
-        DataBuffer instBuffer = Pool.Rent();
-        var groupInst = instBuffer.InstantiateOnServer(ServerGroup, peer);
-        var groupInstServer = groupInst.GetComponent<ServerGroup>();
+        using DataBuffer buffer = Pool.Rent();
+        NetworkIdentity identityGroup = ServerGroup.InstantiateOnServer(peer);
+        var groupInstServer = identityGroup.GetComponent<ServerGroup>();
         groupInstServer.SetInfoGroupServer(group);
 
+        buffer.WriteIdentity(identityGroup);
 
-        Remote.GlobalInvoke(ConstantsRPC.INIT_GAME, peer.Id, instBuffer, Target.GroupMembers);
+        Remote.GlobalInvoke(ConstantsRPC.INIT_GAME, peer, buffer, Target.GroupMembers);
+        
     }
 
 }

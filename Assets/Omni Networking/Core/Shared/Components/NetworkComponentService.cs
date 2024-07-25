@@ -1,8 +1,10 @@
 using System;
 using Omni.Core.Interfaces;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+#if OMNI_TEXTMESHPRO_ENABLED
+using TMPro;
+#endif
 
 namespace Omni.Core.Components
 {
@@ -39,6 +41,7 @@ namespace Omni.Core.Components
                 {
                     m_Component = mButton;
                 }
+#if OMNI_TEXTMESHPRO_ENABLED
                 else if (TryGetComponent<TMP_Text>(out var mText))
                 {
                     m_Component = mText;
@@ -51,6 +54,7 @@ namespace Omni.Core.Components
                 {
                     m_Component = mDropdown;
                 }
+#endif
                 else if (TryGetComponent<Text>(out var mUnityText))
                 {
                     m_Component = mUnityText;

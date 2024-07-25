@@ -130,7 +130,7 @@ public class TelaConfig : MonoBehaviour
         }
         if (error != 0) return;
 
-        var req = await Fetch.PostAsync("/info", res =>
+        using var req = await Fetch.PostAsync("/info", res =>
         {
             UsersModel modelUser = new()
             {
@@ -170,7 +170,7 @@ public class TelaConfig : MonoBehaviour
         }
 
         if (error != 0) return;
-        var req = await Fetch.PostAsync("/pass", res =>
+        using var req = await Fetch.PostAsync("/pass", res =>
         {
             UsersModel modelUser = new()
             {
@@ -182,7 +182,6 @@ public class TelaConfig : MonoBehaviour
             res.ToJson(modelUser);
 
         });
-
         Response(req);
     }
 

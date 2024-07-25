@@ -8,82 +8,47 @@ using MemoryPack;
 using MemoryPack.Compression;
 using Newtonsoft.Json;
 using Omni.Core.Cryptography;
+using UnityEngine;
 
 namespace Omni.Core
 {
+    public enum BrotliCompressionLevel
+    {
+        UltraFast = 1, // Ultra Rápido
+        VeryFast = 2, // Muito Rápido
+        Fast = 3, // Rápido
+        ModeratelyFast = 4, // Moderadamente Rápido
+        Balanced = 5, // Balanceado
+        ModeratelySlow = 6, // Moderadamente Lento
+        Slow = 7, // Lento
+        VerySlow = 8, // Muito Lento
+        UltraSlow = 9, // Ultra Lento
+        MaxCompression = 10, // Compressão Máxima
+        ExtremeCompression = 11 // Compressão Extrema
+    }
+
     public static partial class BufferWriterExtensions
     {
         /// <summary>
-        /// Instantiates a network identity on the server for a specific network peer and serializes its data to the buffer.
-        /// </summary>
-        /// <param name="prefab">The prefab of the network identity to instantiate.</param>
-        /// <param name="peer">The network peer for which the identity is instantiated.</param>
-        /// <param name="buffer">The buffer to write identity data.</param>
-        /// <param name="OnBeforeStart">An action to execute before the network identity starts, but after it has been registered.</param>
-        /// <returns>The instantiated network identity.</returns>
-        public static NetworkIdentity InstantiateOnServer(
-            this DataBuffer buffer,
-            NetworkIdentity prefab,
-            NetworkPeer peer,
-            Action<NetworkIdentity> OnBeforeStart = null
-        )
-        {
-            return prefab.InstantiateOnServer(peer, buffer, OnBeforeStart);
-        }
-
-        /// <summary>
-        /// Instantiates a network identity on the client from serialized data in the buffer.
-        /// </summary>
-        /// <param name="prefab">The prefab of the network identity to instantiate.</param>
-        /// <param name="buffer">The buffer containing serialized identity data.</param>
-        /// <returns>The instantiated network identity.</returns>
-        public static NetworkIdentity InstantiateOnClient(
-            this DataBuffer buffer,
-            NetworkIdentity prefab,
-            Action<NetworkIdentity> OnBeforeStart = null
-        )
-        {
-            return prefab.InstantiateOnClient(buffer, OnBeforeStart);
-        }
-
-        /// <summary>
-        /// Destroys a network identity on the server and serializes its data to the buffer.
-        /// </summary>
-        /// <param name="identity">The network identity to destroy.</param>
-        public static void DestroyOnServer(this DataBuffer buffer, NetworkIdentity identity)
-        {
-            identity.DestroyOnServer(buffer);
-        }
-
-        /// <summary>
-        /// Destroys a network identity on the client from serialized data in the buffer.
-        /// </summary>
-        public static void DestroyOnClient(this DataBuffer buffer)
-        {
-            buffer.Internal_DestroyOnClient();
-        }
-
-        /// <summary>
         /// Compresses the data in the buffer using the Brotli compression algorithm.
         /// </summary>
-        /// <param name="buffer">The buffer containing the data to compress.</param>
-        /// <param name="quality">The compression quality, ranging from 0 (fastest) to 11 (slowest). Default is 1.</param>
+        /// <param name="data">The buffer containing the data to compress.</param>
         /// <param name="window">The Brotli sliding window size, ranging from 10 to 24. Default is 22.</param>
         /// <returns>A new buffer containing the compressed data. The caller must ensure the buffer is disposed or used within a using statement.</returns>
-        /// <exception cref="Exception">
-        /// Thrown when there is no space available in the buffer acquired from the pool,
-        /// or if an error occurs during compression.
-        /// </exception>
-        public static DataBuffer Compress(this DataBuffer buffer, int quality = 1, int window = 22)
+        public static DataBuffer Compress(
+            this DataBuffer data,
+            BrotliCompressionLevel level = BrotliCompressionLevel.Fast,
+            int window = 22
+        )
         {
             try
             {
-                using BrotliCompressor compressor = new(quality, window);
-                buffer.SeekToEnd();
-                compressor.Write(buffer.BufferAsSpan);
+                data.SeekToEnd();
+                using BrotliCompressor compressor = new((int)level, window);
+                compressor.Write(data.BufferAsSpan);
 
                 var compressedBuffer = NetworkManager.Pool.Rent(); // Disposed by the caller!
-                compressor.CopyTo(compressedBuffer);
+                compressor.CopyTo(compressedBuffer); // IBufferWriter<byte> implementation
                 return compressedBuffer;
             }
             catch (NotSupportedException ex)
@@ -101,53 +66,49 @@ namespace Omni.Core
         /// <summary>
         /// Compresses the data in the current buffer using the Brotli compression algorithm.
         /// </summary>
-        /// <param name="buffer">The buffer containing the data to compress.</param>
-        /// <param name="quality">The compression quality, ranging from 0 (fastest) to 11 (slowest). Default is 1.</param>
+        /// <param name="data">The buffer containing the data to compress.</param>
         /// <param name="window">The Brotli sliding window size, ranging from 10 to 24. Default is 22.</param>
-        /// <exception cref="Exception">
-        /// Thrown when there is no space available in the buffer acquired from the pool,
-        /// or if an error occurs during compression.
-        /// </exception>
-        public static void CompressRaw(this DataBuffer buffer, int quality = 1, int window = 22)
+        public static void CompressRaw(
+            this DataBuffer data,
+            BrotliCompressionLevel level = BrotliCompressionLevel.Fast,
+            int window = 22
+        )
         {
-            using var compressedBuffer = Compress(buffer, quality, window);
-            buffer.SeekToBegin();
-            WriteRaw(buffer, compressedBuffer.BufferAsSpan);
+            using var compressedBuffer = Compress(data, level, window);
+            data.SeekToBegin();
+            data.Write(compressedBuffer.BufferAsSpan);
         }
 
         /// <summary>
         /// Decompresses the data in the buffer using the Brotli decompression algorithm.
         /// </summary>
-        /// <param name="buffer">The buffer containing the compressed data.</param>
+        /// <param name="data">The buffer containing the compressed data.</param>
         /// <returns>A new buffer containing the decompressed data. The caller must ensure the buffer is disposed or used within a using statement.</returns>
-        /// <exception cref="Exception">
-        /// Thrown if an error occurs during decompression.
-        /// </exception>
-        public static DataBuffer Decompress(this DataBuffer buffer)
+        public static DataBuffer Decompress(this DataBuffer data)
         {
+            data.SeekToEnd();
             using BrotliDecompressor decompressor = new();
-            buffer.SeekToEnd();
-            var data = decompressor.Decompress(buffer.BufferAsSpan);
+            var sequenceData = decompressor.Decompress(data.BufferAsSpan);
 
+            var length = (int)sequenceData.Length;
             var decompressedBuffer = NetworkManager.Pool.Rent();
-            data.CopyTo(decompressedBuffer.GetSpan());
-            decompressedBuffer.SetEndPosition((int)data.Length);
+
+            sequenceData.CopyTo(decompressedBuffer.Internal_GetSpan(length));
+            decompressedBuffer.SetLength(length);
+            decompressedBuffer.SetEndPosition(length);
             return decompressedBuffer;
         }
 
         /// <summary>
         /// Decompresses the data in the current buffer using the Brotli decompression algorithm.
         /// </summary>
-        /// <param name="buffer">The buffer containing the compressed data.</param>
-        /// <exception cref="Exception">
-        /// Thrown if an error occurs during decompression.
-        /// </exception>
-        public static void DecompressRaw(this DataBuffer buffer)
+        /// <param name="data">The buffer containing the compressed data.</param>
+        public static void DecompressRaw(this DataBuffer data)
         {
-            using var decompressedBuffer = Decompress(buffer);
-            buffer.SeekToBegin();
-            WriteRaw(buffer, decompressedBuffer.Internal_GetSpan(decompressedBuffer.EndPosition));
-            buffer.SeekToBegin();
+            using var decompressedBuffer = Decompress(data);
+            data.SeekToBegin();
+            data.Write(decompressedBuffer.Internal_GetSpan(decompressedBuffer.EndPosition));
+            data.SeekToBegin();
         }
 
         /// <summary>
@@ -184,7 +145,7 @@ namespace Omni.Core
         {
             using var encryptedBuffer = Encrypt(buffer, peer);
             buffer.SeekToBegin();
-            WriteRaw(buffer, encryptedBuffer.BufferAsSpan);
+            buffer.Write(encryptedBuffer.BufferAsSpan);
         }
 
         /// <summary>
@@ -225,6 +186,70 @@ namespace Omni.Core
             WriteRaw(buffer, decryptedBuffer.Internal_GetSpan(decryptedBuffer.EndPosition));
             buffer.SeekToBegin();
         }
+
+        private static void SetNetworkSerializableOptions(
+            ISerializable message,
+            bool isServer,
+            NetworkPeer peer
+        )
+        {
+            if (message is ISerializableWithPeer withPeer)
+            {
+                withPeer.Peer = peer;
+                withPeer.IsServer = isServer;
+            }
+        }
+
+        /// <summary>
+        /// Serializes the given network serializable object into a new data buffer.
+        /// </summary>
+        /// <returns>
+        /// A new data buffer containing the serialized data. The caller must ensure the buffer is disposed or used within a using statement.
+        /// </returns>
+        public static DataBuffer Serialize(
+            this ISerializable message,
+            bool isServer = false,
+            NetworkPeer peer = null
+        )
+        {
+            var writer = NetworkManager.Pool.Rent();
+            SetNetworkSerializableOptions(message, isServer, peer);
+            message.Serialize(writer);
+            return writer;
+        }
+
+        /// <summary>
+        /// Deserializes the contents of the given data buffer into the given network serializable object.
+        /// </summary>
+        /// <param name="reader">The data buffer containing the serialized data to deserialize.</param>
+        public static void Populate(
+            this ISerializable message,
+            DataBuffer reader,
+            bool isServer = false,
+            NetworkPeer peer = null
+        )
+        {
+            SetNetworkSerializableOptions(message, isServer, peer);
+            message.Deserialize(reader);
+        }
+
+        /// <summary>
+        /// Deserializes the contents of the given data buffer into a new instance of the given type.
+        /// </summary>
+        /// <typeparam name="T">The type of the message to deserialize. Must be a network serializable object.</typeparam>
+        /// <returns>The deserialized message.</returns>
+        public static T Deserialize<T>(
+            this DataBuffer reader,
+            bool isServer = false,
+            NetworkPeer peer = null
+        )
+            where T : ISerializable, new()
+        {
+            T message = new();
+            SetNetworkSerializableOptions(message, isServer, peer);
+            message.Deserialize(reader);
+            return message;
+        }
     }
 
     public static partial class BufferWriterExtensions
@@ -233,6 +258,22 @@ namespace Omni.Core
         /// The default encoding used when writing strings to the buffer.
         /// </summary>
         public static Encoding DefaultEncoding { get; set; } = Encoding.ASCII;
+
+        /// <summary>
+        /// The default JSON serializer settings used when serializing or deserializing objects.
+        /// </summary>
+        public static JsonSerializerSettings DefaultJsonSettings { get; set; } =
+            new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                Converters = { new HalfJsonConverter() },
+            };
+
+        /// <summary>
+        /// The default settings used when serializing or deserializing objects using MemoryPack.
+        /// </summary>
+        public static MemoryPackSerializerOptions DefaultMemoryPackSettings { get; set; } =
+            MemoryPackSerializerOptions.Default;
 
         /// <summary>
         /// Converts an object to JSON and writes it to the buffer.<br/>
@@ -244,7 +285,10 @@ namespace Omni.Core
             JsonSerializerSettings settings = null
         )
         {
+            settings ??= DefaultJsonSettings;
             string json = JsonConvert.SerializeObject(value, settings);
+            // The json string returned may be very large, so avoid using FastWrite which uses "stackalloc".
+            // Could cause a stack overflow.
             Write(buffer, json);
             return json;
         }
@@ -259,6 +303,7 @@ namespace Omni.Core
             MemoryPackSerializerOptions settings = null
         )
         {
+            settings ??= DefaultMemoryPackSettings;
             IBufferWriter<byte> writer = buffer;
             byte[] data = MemoryPackSerializer.Serialize(value, settings);
             Write7BitEncodedInt(buffer, data.Length);
@@ -275,6 +320,7 @@ namespace Omni.Core
             MemoryPackSerializerOptions settings = null
         )
         {
+            settings ??= DefaultMemoryPackSettings;
             IBufferWriter<byte> writer = buffer;
             using MemoryStream stream = new();
             await MemoryPackSerializer.SerializeAsync(stream, value, settings);
@@ -396,10 +442,20 @@ namespace Omni.Core
         /// </summary>
         /// <param name="buffer">The buffer to write to.</param>
         /// <param name="identity">The network identity to write.</param>
-        internal static void Write(this DataBuffer buffer, NetworkIdentity identity)
+        public static void WriteIdentity(this DataBuffer buffer, NetworkIdentity identity)
         {
             FastWrite(buffer, identity.IdentityId);
             FastWrite(buffer, identity.Owner.Id);
+        }
+
+        /// <summary>
+        /// Writes network identity data to the buffer, most used to instantiate network objects.
+        /// </summary>
+        /// <param name="buffer">The buffer to write to.</param>
+        public static void WriteIdentity(this DataBuffer buffer, int identityId, int peerId)
+        {
+            FastWrite(buffer, identityId);
+            FastWrite(buffer, peerId);
         }
 
         /// <summary>
@@ -466,6 +522,33 @@ namespace Omni.Core
 
             FastWrite(buffer, (byte)uValue);
         }
+
+        /// <summary>
+        /// Writes a compressed representation of a Vector3 to the DataBuffer.
+        /// This method reduces the size of the data by compressing the Vector3 before writing,
+        /// resulting in significant bandwidth savings during data transmission.
+        /// The compressed size of the Vector3 is 8 bytes (long).<br/><br/>
+        /// Min/Max Values (X / Y / Z)<br/>
+        /// Min Values: -9999.99f / -9999.99f / -9999.99f<br/>
+        /// Max Values: 9999.99f / 9999.99f / 9999.99f<br/>
+        /// </summary>
+        public static void WritePacked(this DataBuffer buffer, Vector3 vector)
+        {
+            long packedValue = VectorCompressor.Compress(vector);
+            FastWrite(buffer, packedValue);
+        }
+
+        /// <summary>
+        /// Writes a compressed representation of a Quaternion to the DataBuffer.
+        /// This method reduces the size of the data by compressing the Quaternion before writing,
+        /// resulting in significant bandwidth savings during data transmission.
+        /// The compressed size of the Quaternion is 4 bytes (uint).
+        /// </summary>
+        public static void WritePacked(this DataBuffer buffer, Quaternion quat)
+        {
+            uint packedValue = QuaternionCompressor.Compress(quat);
+            FastWrite(buffer, packedValue);
+        }
     }
 
     public static partial class BufferWriterExtensions
@@ -502,6 +585,7 @@ namespace Omni.Core
         /// </summary>
         public static T FromJson<T>(this DataBuffer buffer, JsonSerializerSettings settings = null)
         {
+            settings ??= DefaultJsonSettings;
             string json = ReadString(buffer);
             return JsonConvert.DeserializeObject<T>(json, settings);
         }
@@ -516,6 +600,7 @@ namespace Omni.Core
             JsonSerializerSettings settings = null
         )
         {
+            settings ??= DefaultJsonSettings;
             json = ReadString(buffer);
             return JsonConvert.DeserializeObject<T>(json, settings);
         }
@@ -529,6 +614,7 @@ namespace Omni.Core
             MemoryPackSerializerOptions settings = null
         )
         {
+            settings ??= DefaultMemoryPackSettings;
             int dataSize = Read7BitEncodedInt(buffer);
             Span<byte> data = buffer.Internal_GetSpan(dataSize);
             buffer.Internal_Advance(dataSize);
@@ -621,11 +707,7 @@ namespace Omni.Core
             return FastRead<T>(buffer);
         }
 
-        internal static void ReadIdentityData(
-            this DataBuffer buffer,
-            out int identityId,
-            out int peerId
-        )
+        public static void ReadIdentity(this DataBuffer buffer, out int peerId, out int identityId)
         {
             identityId = FastRead<int>(buffer);
             peerId = FastRead<int>(buffer);
@@ -721,6 +803,26 @@ namespace Omni.Core
 
             result |= (ulong)byteReadJustNow << (MaxBytesWithoutOverflow * 7);
             return (long)result;
+        }
+
+        /// <summary>
+        /// Reads and decompresses a Vector3 from the DataBuffer.
+        /// This method expects the data to be in the compressed format written by WritePacked.
+        /// </summary>
+        public static Vector3 ReadPackedVector3(this DataBuffer buffer)
+        {
+            long packedValue = FastRead<long>(buffer);
+            return VectorCompressor.Decompress(packedValue);
+        }
+
+        /// <summary>
+        /// Reads and decompresses a Quaternion from the DataBuffer.
+        /// This method expects the data to be in the compressed format written by WritePacked.
+        /// </summary>
+        public static Quaternion ReadPackedQuaternion(this DataBuffer buffer)
+        {
+            uint packedValue = FastRead<uint>(buffer);
+            return QuaternionCompressor.Decompress(packedValue);
         }
     }
 }

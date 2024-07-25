@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static Omni.Core.HttpLite;
 
-public class InstancePlayerSala : ClientEventBehaviour
+public class InstancePlayerSala : ClientBehaviour
 {
 
     [SerializeField]

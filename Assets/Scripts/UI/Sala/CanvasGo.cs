@@ -4,7 +4,7 @@ using Omni.Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using Cysharp.Threading.Tasks;
+using Omni.Threading.Tasks;
 public class CanvasGo : ServiceBehaviour
 {
     [SerializeField]

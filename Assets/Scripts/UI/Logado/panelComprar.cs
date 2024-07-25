@@ -9,7 +9,7 @@ using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 using static Omni.Core.HttpLite;
 
-public class panelComprar : ClientEventBehaviour
+public class panelComprar : ClientBehaviour
 {
     [SerializeField]
     private Image img;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Omni.Core;
 using Omni.Shared.Collections;
 using UnityEngine;
-public class InstanciaSalas : ClientEventBehaviour
+public class InstanciaSalas : ClientBehaviour
 {
     [SerializeField]
     private GameObject objSala;

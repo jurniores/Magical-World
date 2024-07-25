@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using Omni.Core;
 using static Omni.Core.HttpLite;
 
-public class RoomClientGame : ClientEventBehaviour
+public class RoomClientGame : ClientBehaviour
 {
     private GroupClient clientGroup;
     private GameManager gManager;

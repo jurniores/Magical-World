@@ -8,8 +8,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 using TMPro;
-using Cysharp.Threading.Tasks;
-public class TelaInicial : ClientEventBehaviour
+using Omni.Threading.Tasks;
+public class TelaInicial : ClientBehaviour
 {
     [SerializeField]
     private Button btnEntrar;
@@ -27,10 +27,10 @@ public class TelaInicial : ClientEventBehaviour
 
     async void Entrar()
     {
-
         if (!Debounce.Bounce(1)) return;
-        var req = await Fetch.PostAsync("/login", (res) =>
+        using var req = await Fetch.PostAsync("/login", (res) =>
         {
+
             string identify = "asdasdasd" + fieldNumber.text;//SystemInfo.deviceUniqueIdentifier;
             if (Application.isMobilePlatform) identify = SystemInfo.deviceUniqueIdentifier;
             UsersModel model = new() { hwid = identify };
@@ -38,7 +38,7 @@ public class TelaInicial : ClientEventBehaviour
             res.ToJson(model);
             res.Send();
         });
-
+        req.SuppressTracking();
         var recieve = req.Read<byte>();
 
         if (recieve == ConstantsDB.SUCCESS)

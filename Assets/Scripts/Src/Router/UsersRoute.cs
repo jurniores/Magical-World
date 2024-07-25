@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Omni.Core;
+using Omni.Threading.Tasks;
 using UnityEngine;
 using static Omni.Core.HttpLite;
 
-public class UsersRoute : ServerEventBehaviour
+public class UsersRoute : ServerBehaviour
 {
     private Controllers User = new Controllers("users");
     private Controllers Inventory = new Controllers("inventory");
@@ -32,9 +32,8 @@ public class UsersRoute : ServerEventBehaviour
         }
     }
 
-    async Task Login(DataBuffer req, DataBuffer res, NetworkPeer peer)
+    async UniTask Login(DataBuffer req, DataBuffer res, NetworkPeer peer)
     {
-
         try
         {
             UsersModel user = req.FromJson<UsersModel>();
@@ -89,7 +88,7 @@ public class UsersRoute : ServerEventBehaviour
         }
     }
 
-    async Task UpdateInfo(DataBuffer req, DataBuffer res, NetworkPeer peer)
+    async UniTask UpdateInfo(DataBuffer req, DataBuffer res, NetworkPeer peer)
     {
         var userPeer = peer.Data.Get<UsersModel>("user");
         var userClient = req.FromJson<UsersModel>();
