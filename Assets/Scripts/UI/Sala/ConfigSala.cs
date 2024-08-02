@@ -45,7 +45,7 @@ public class ConfigSala : MonoBehaviour
     //Setado na fetch do InstancePlayerSala
     void IniciaGame(DataBuffer res)
     {
-        var response = res.FromJson<NetworkResponse>();
+        var response = res.ReadAsJson<NetworkResponse>();
 
         ErrorManager.ValidateError(response, 2, async () =>
         {

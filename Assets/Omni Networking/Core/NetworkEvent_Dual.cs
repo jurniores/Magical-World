@@ -126,14 +126,14 @@ namespace Omni.Core
 
         protected void InitializeBehaviour()
         {
-            cInvoker.FindEvents<ClientAttribute>(this);
-            sInvoker.FindEvents<ServerAttribute>(this);
+            cInvoker.FindEvents<ClientAttribute>(this, m_BindingFlags);
+            sInvoker.FindEvents<ServerAttribute>(this, m_BindingFlags);
 
             Client.AddEventBehaviour(m_Id, this);
             Server.AddEventBehaviour(m_Id, this);
 
-            Local = new NbClient(this);
-            Remote = new NbServer(this);
+            Local = new NbClient(this, m_BindingFlags);
+            Remote = new NbServer(this, m_BindingFlags);
         }
 
         protected void RegisterSystemEvents()
@@ -247,9 +247,9 @@ namespace Omni.Core
         #region Server
         protected virtual void OnServerInitialized() { }
 
-        protected virtual void OnServerPeerConnected(NetworkPeer peer, Status status) { }
+        protected virtual void OnServerPeerConnected(NetworkPeer peer, Phase phase) { }
 
-        protected virtual void OnServerPeerDisconnected(NetworkPeer peer, Status status) { }
+        protected virtual void OnServerPeerDisconnected(NetworkPeer peer, Phase phase) { }
 
         protected virtual void OnPlayerFailedLeaveGroup(NetworkPeer peer, string reason) { }
 
@@ -303,7 +303,7 @@ namespace Omni.Core
         protected virtual void OnPlayerLeftGroup(
             NetworkGroup group,
             NetworkPeer peer,
-            Status status,
+            Phase phase,
             string reason
         ) { }
         #endregion

@@ -136,12 +136,12 @@ public class PlayerSala : MonoBehaviour
         Fetch.Post("/room/kick",
         req =>
         {
-            req.ToJson(user);
+            req.WriteAsJson(user);
             req.Send();
         },
         res =>
         {
-            var response = res.FromJson<NetworkResponse>();
+            var response = res.ReadAsJson<NetworkResponse>();
             ErrorManager.ValidateError(response, 1);
         });
     }

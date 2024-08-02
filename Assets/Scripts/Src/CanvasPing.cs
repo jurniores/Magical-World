@@ -3,14 +3,22 @@ using System.Collections.Generic;
 using Omni.Core;
 using UnityEngine;
 using TMPro;
+using Omni.Threading.Tasks;
+using Omni.Shared;
 public class CanvasPing : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI pingPro, pingSntp, timeSntp;
+    public static BandwidthMonitor bandwidthMonitor = new();
     void Start()
     {
 
         DontDestroyOnLoad(gameObject);
+        bandwidthMonitor.Start();
+        bandwidthMonitor.OnAverageChanged += (avg) => timeSntp.text = "Band: " + avg.ToString();
+
+
+
 
     }
 
@@ -19,7 +27,10 @@ public class CanvasPing : MonoBehaviour
     {
         if (!NetworkManager.IsClientActive) return;
         pingPro.text = "Ping: " + NetworkManager.LocalPeer.Ping.ToString();
-        pingSntp.text = "Ping Sntp: " + NetworkManager.SNTP.Client.Ping;
-        timeSntp.text = "Time Sntp: " + NetworkManager.SNTP.Client.Time;
+        //pingSntp.text = "Ping Sntp: " + NetworkManager.SNTP.Client.Ping;
+
+
     }
+
+
 }

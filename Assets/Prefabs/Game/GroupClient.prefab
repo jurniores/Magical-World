@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ServiceName: GroupClient
   m_Id: 0
+  m_BindingFlags: 38
   skybox: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   clientPlayer: {fileID: -5317595195212261174, guid: e6e0fbae0e7e9d241abbb387c60d6c33,
     type: 3}

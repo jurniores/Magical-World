@@ -18,7 +18,9 @@ public class ServerGroup : NetworkBehaviour
     void Start()
     {
         sala = group.Data.Get<Sala>("sala");
-        print("Players na sala: " + sala.playersNaSala.Count);
+        #if UNITY_EDITOR
+        DontDestroyOnLoad(gameObject);
+        #endif
     }
 
     public void SetInfoGroupServer(NetworkGroup pGroup)
@@ -44,7 +46,8 @@ public class ServerGroup : NetworkBehaviour
     {
 
         //Adicionando o buffer de instanciação
-        NetworkIdentity identity = serverPlayer.InstantiateOnServer(peer);
+        NetworkIdentity identity = serverPlayer.SpawnOnServer(peer);
+       
 
         buffer.WriteIdentity(identity);
 
@@ -53,7 +56,7 @@ public class ServerGroup : NetworkBehaviour
 
         using DataBuffer forAllBuffer = NetworkManager.Pool.Rent();
         print(dicPlayers.Count);
-        forAllBuffer.ToJson(dicPlayers);
+        forAllBuffer.WriteAsJson(dicPlayers);
         this.InvokeByPeer(ConstantsRPC.INSTANT_PLAYERS_GAME, peer, forAllBuffer, Target.Self);
 
         dicPlayers.Add(peer.Id, identity.IdentityId);

@@ -14,20 +14,22 @@ namespace Omni.Core
     {
         private readonly IInvokeMessage m_NetworkMessage;
         private readonly NetworkVariablesBehaviour m_NetworkVariablesBehaviour;
+        private readonly BindingFlags m_BindingFlags;
 
-        internal NbClient(IInvokeMessage networkMessage)
+        internal NbClient(IInvokeMessage networkMessage, BindingFlags flags)
         {
             m_NetworkMessage = networkMessage;
             m_NetworkVariablesBehaviour = m_NetworkMessage as NetworkVariablesBehaviour;
+            m_BindingFlags = flags;
         }
 
         /// <summary>
-        /// Sends a manual 'NetVar' message to the server with the specified property and property ID.
+        /// Sends a manual 'NetworkVariable' message to the server with the specified property and property ID.
         /// </summary>
         /// <typeparam name="T">The type of the property to synchronize.</typeparam>
         /// <param name="property">The property value to synchronize.</param>
         /// <param name="propertyId">The ID of the property being synchronized.</param>
-        public void ManualSync<T>(T property, byte propertyId, SyncOptions syncOptions)
+        public void ManualSync<T>(T property, byte propertyId, NetworkVariableOptions syncOptions)
         {
             ManualSync<T>(
                 property,
@@ -38,7 +40,7 @@ namespace Omni.Core
         }
 
         /// <summary>
-        /// Sends a manual 'NetVar' message to the server with the specified property and property ID.
+        /// Sends a manual 'NetworkVariable' message to the server with the specified property and property ID.
         /// </summary>
         /// <typeparam name="T">The type of the property to synchronize.</typeparam>
         /// <param name="property">The property value to synchronize.</param>
@@ -61,16 +63,16 @@ namespace Omni.Core
         }
 
         /// <summary>
-        /// Automatically sends a 'NetVar' message to the server based on the caller member name.
+        /// Automatically sends a 'NetworkVariable' message to the server based on the caller member name.
         /// </summary>
         /// <typeparam name="T">The type of the property to synchronize.</typeparam>
-        public void AutoSync<T>(SyncOptions options, [CallerMemberName] string ___ = "")
+        public void AutoSync<T>(NetworkVariableOptions options, [CallerMemberName] string ___ = "")
         {
             AutoSync<T>(options.DeliveryMode, options.SequenceChannel, ___);
         }
 
         /// <summary>
-        /// Automatically sends a 'NetVar' message to the server based on the caller member name.
+        /// Automatically sends a 'NetworkVariable' message to the server based on the caller member name.
         /// </summary>
         /// <typeparam name="T">The type of the property to synchronize.</typeparam>
         /// <param name="deliveryMode">The delivery mode for the message. Default is <see cref="DeliveryMode.ReliableOrdered"/>.</param>
@@ -82,8 +84,10 @@ namespace Omni.Core
         )
         {
             IPropertyInfo property = m_NetworkVariablesBehaviour.GetPropertyInfoWithCallerName<T>(
-                ___
+                ___,
+                m_BindingFlags
             );
+
             IPropertyInfo<T> propertyGeneric = property as IPropertyInfo<T>;
 
             if (property != null)
@@ -101,6 +105,7 @@ namespace Omni.Core
         /// Invokes a global message on the server, similar to a Remote Procedure Call (RPC).
         /// </summary>
         /// <param name="msgId">The ID of the message to be invoked.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GlobalInvoke(byte msgId, SyncOptions options)
         {
             GlobalInvoke(msgId, options.Buffer, options.DeliveryMode, options.SequenceChannel);
@@ -113,6 +118,7 @@ namespace Omni.Core
         /// <param name="buffer">The buffer containing the message data. Default is null.</param>
         /// <param name="deliveryMode">The delivery mode for the message. Default is <see cref="DeliveryMode.ReliableOrdered"/>.</param>
         /// <param name="sequenceChannel">The sequence channel for the message. Default is 0.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GlobalInvoke(
             byte msgId,
             DataBuffer buffer = null,
@@ -127,6 +133,7 @@ namespace Omni.Core
         /// Invokes a message on the server, similar to a Remote Procedure Call (RPC).
         /// </summary>
         /// <param name="msgId">The ID of the message to be invoked.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Invoke(byte msgId, SyncOptions options)
         {
             Invoke(msgId, options.Buffer, options.DeliveryMode, options.SequenceChannel);
@@ -139,6 +146,7 @@ namespace Omni.Core
         /// <param name="buffer">The buffer containing the message data. Default is null.</param>
         /// <param name="deliveryMode">The delivery mode for the message. Default is <see cref="DeliveryMode.ReliableOrdered"/>.</param>
         /// <param name="sequenceChannel">The sequence channel for the message. Default is 0.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Invoke(
             byte msgId,
             DataBuffer buffer = null,
@@ -154,21 +162,107 @@ namespace Omni.Core
                 sequenceChannel
             );
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Invoke(byte msgId, ISerializable message, SyncOptions options = default)
+        {
+            using var _ = message.Serialize();
+            options.Buffer = _;
+            Invoke(msgId, options);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Invoke<T1>(byte msgId, T1 p1, SyncOptions options = default)
+            where T1 : unmanaged
+        {
+            using var _ = FastWrite(p1);
+            options.Buffer = _;
+            Invoke(msgId, options);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Invoke<T1, T2>(byte msgId, T1 p1, T2 p2, SyncOptions options = default)
+            where T1 : unmanaged
+            where T2 : unmanaged
+        {
+            using var _ = FastWrite(p1, p2);
+            options.Buffer = _;
+            Invoke(msgId, options);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Invoke<T1, T2, T3>(
+            byte msgId,
+            T1 p1,
+            T2 p2,
+            T3 p3,
+            SyncOptions options = default
+        )
+            where T1 : unmanaged
+            where T2 : unmanaged
+            where T3 : unmanaged
+        {
+            using var _ = FastWrite(p1, p2, p3);
+            options.Buffer = _;
+            Invoke(msgId, options);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Invoke<T1, T2, T3, T4>(
+            byte msgId,
+            T1 p1,
+            T2 p2,
+            T3 p3,
+            T4 p4,
+            SyncOptions options = default
+        )
+            where T1 : unmanaged
+            where T2 : unmanaged
+            where T3 : unmanaged
+            where T4 : unmanaged
+        {
+            using var _ = FastWrite(p1, p2, p3, p4);
+            options.Buffer = _;
+            Invoke(msgId, options);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Invoke<T1, T2, T3, T4, T5>(
+            byte msgId,
+            T1 p1,
+            T2 p2,
+            T3 p3,
+            T4 p4,
+            T5 p5,
+            SyncOptions options = default
+        )
+            where T1 : unmanaged
+            where T2 : unmanaged
+            where T3 : unmanaged
+            where T4 : unmanaged
+            where T5 : unmanaged
+        {
+            using var _ = FastWrite(p1, p2, p3, p4, p5);
+            options.Buffer = _;
+            Invoke(msgId, options);
+        }
     }
 
     public class NbServer
     {
         private readonly IInvokeMessage m_NetworkMessage;
         private readonly NetworkVariablesBehaviour m_NetworkVariablesBehaviour;
+        private readonly BindingFlags m_BindingFlags;
 
-        internal NbServer(IInvokeMessage networkMessage)
+        internal NbServer(IInvokeMessage networkMessage, BindingFlags flags)
         {
             m_NetworkMessage = networkMessage;
             m_NetworkVariablesBehaviour = m_NetworkMessage as NetworkVariablesBehaviour;
+            m_BindingFlags = flags;
         }
 
         /// <summary>
-        /// Sends a manual 'NetVar' message to all(default) clients with the specified property and property ID.
+        /// Sends a manual 'NetworkVariable' message to all(default) clients with the specified property and property ID.
         /// </summary>
         /// <typeparam name="T">The type of the property to synchronize.</typeparam>
         /// <param name="property">The property value to synchronize.</param>
@@ -182,7 +276,7 @@ namespace Omni.Core
         public void ManualSync<T>(
             T property,
             byte propertyId,
-            SyncOptions options,
+            NetworkVariableOptions options,
             NetworkPeer peer = null
         )
         {
@@ -200,7 +294,7 @@ namespace Omni.Core
         }
 
         /// <summary>
-        /// Sends a manual 'NetVar' message to all(default) clients with the specified property and property ID.
+        /// Sends a manual 'NetworkVariable' message to all(default) clients with the specified property and property ID.
         /// </summary>
         /// <typeparam name="T">The type of the property to synchronize.</typeparam>
         /// <param name="property">The property value to synchronize.</param>
@@ -228,6 +322,7 @@ namespace Omni.Core
                 property,
                 propertyId
             );
+
             Invoke(
                 255,
                 peer,
@@ -242,11 +337,11 @@ namespace Omni.Core
         }
 
         /// <summary>
-        /// Automatically sends a 'NetVar' message to all(default) clients based on the caller member name.
+        /// Automatically sends a 'NetworkVariable' message to all(default) clients based on the caller member name.
         /// </summary>
         /// <typeparam name="T">The type of the property to synchronize.</typeparam>
         public void AutoSync<T>(
-            SyncOptions options,
+            NetworkVariableOptions options,
             NetworkPeer peer = null,
             [CallerMemberName] string ___ = ""
         )
@@ -264,7 +359,7 @@ namespace Omni.Core
         }
 
         /// <summary>
-        /// Automatically sends a 'NetVar' message to all(default) clients based on the caller member name.
+        /// Automatically sends a 'NetworkVariable' message to all(default) clients based on the caller member name.
         /// </summary>
         /// <typeparam name="T">The type of the property to synchronize.</typeparam>
         /// <param name="target">The target for the message. Default is <see cref="Target.All"/>.</param>
@@ -285,8 +380,10 @@ namespace Omni.Core
         )
         {
             IPropertyInfo property = m_NetworkVariablesBehaviour.GetPropertyInfoWithCallerName<T>(
-                ___
+                ___,
+                m_BindingFlags
             );
+
             IPropertyInfo<T> propertyGeneric = property as IPropertyInfo<T>;
 
             if (property != null)
@@ -322,6 +419,7 @@ namespace Omni.Core
         /// <param name="cacheId">The cache ID for the message. Default is 0.</param>
         /// <param name="cacheMode">The cache mode for the message. Default is <see cref="CacheMode.None"/>.</param>
         /// <param name="sequenceChannel">The sequence channel for the message. Default is 0.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GlobalInvoke(byte msgId, NetworkPeer peer, SyncOptions options)
         {
             GlobalInvoke(
@@ -348,6 +446,7 @@ namespace Omni.Core
         /// <param name="cacheId">The cache ID for the message. Default is 0.</param>
         /// <param name="cacheMode">The cache mode for the message. Default is <see cref="CacheMode.None"/>.</param>
         /// <param name="sequenceChannel">The sequence channel for the message. Default is 0.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GlobalInvoke(
             byte msgId,
             NetworkPeer peer,
@@ -384,6 +483,7 @@ namespace Omni.Core
         /// <param name="cacheId">The cache ID for the message. Default is 0.</param>
         /// <param name="cacheMode">The cache mode for the message. Default is <see cref="CacheMode.None"/>.</param>
         /// <param name="sequenceChannel">The sequence channel for the message. Default is 0.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Invoke(byte msgId, NetworkPeer peer, SyncOptions options)
         {
             Invoke(
@@ -410,6 +510,7 @@ namespace Omni.Core
         /// <param name="cacheId">The cache ID for the message. Default is 0.</param>
         /// <param name="cacheMode">The cache mode for the message. Default is <see cref="CacheMode.None"/>.</param>
         /// <param name="sequenceChannel">The sequence channel for the message. Default is 0.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Invoke(
             byte msgId,
             NetworkPeer peer,
@@ -434,6 +535,104 @@ namespace Omni.Core
                 cacheMode,
                 sequenceChannel
             );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Invoke(
+            byte msgId,
+            NetworkPeer peer,
+            ISerializable message,
+            SyncOptions options = default
+        )
+        {
+            using var _ = message.Serialize();
+            options.Buffer = _;
+            Invoke(msgId, peer, options);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Invoke<T1>(byte msgId, NetworkPeer peer, T1 p1, SyncOptions options = default)
+            where T1 : unmanaged
+        {
+            using var _ = FastWrite(p1);
+            options.Buffer = _;
+            Invoke(msgId, peer, options);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Invoke<T1, T2>(
+            byte msgId,
+            NetworkPeer peer,
+            T1 p1,
+            T2 p2,
+            SyncOptions options = default
+        )
+            where T1 : unmanaged
+            where T2 : unmanaged
+        {
+            using var _ = FastWrite(p1, p2);
+            options.Buffer = _;
+            Invoke(msgId, peer, options);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Invoke<T1, T2, T3>(
+            byte msgId,
+            NetworkPeer peer,
+            T1 p1,
+            T2 p2,
+            T3 p3,
+            SyncOptions options = default
+        )
+            where T1 : unmanaged
+            where T2 : unmanaged
+            where T3 : unmanaged
+        {
+            using var _ = FastWrite(p1, p2, p3);
+            options.Buffer = _;
+            Invoke(msgId, peer, options);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Invoke<T1, T2, T3, T4>(
+            byte msgId,
+            NetworkPeer peer,
+            T1 p1,
+            T2 p2,
+            T3 p3,
+            T4 p4,
+            SyncOptions options = default
+        )
+            where T1 : unmanaged
+            where T2 : unmanaged
+            where T3 : unmanaged
+            where T4 : unmanaged
+        {
+            using var _ = FastWrite(p1, p2, p3, p4);
+            options.Buffer = _;
+            Invoke(msgId, peer, options);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Invoke<T1, T2, T3, T4, T5>(
+            byte msgId,
+            NetworkPeer peer,
+            T1 p1,
+            T2 p2,
+            T3 p3,
+            T4 p4,
+            T5 p5,
+            SyncOptions options = default
+        )
+            where T1 : unmanaged
+            where T2 : unmanaged
+            where T3 : unmanaged
+            where T4 : unmanaged
+            where T5 : unmanaged
+        {
+            using var _ = FastWrite(p1, p2, p3, p4, p5);
+            options.Buffer = _;
+            Invoke(msgId, peer, options);
         }
     }
 }

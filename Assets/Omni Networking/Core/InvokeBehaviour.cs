@@ -15,7 +15,7 @@ namespace Omni.Core
 
     internal struct Null { }
 
-    internal class InvokeBehaviour<T1, T2, T3, T4, T5>
+    internal sealed class InvokeBehaviour<T1, T2, T3, T4, T5>
     {
         private readonly int expectedArgsCount = -1;
 
@@ -128,7 +128,7 @@ namespace Omni.Core
             }
         }
 
-        internal void FindEvents<T>(object target)
+        internal void FindEvents<T>(object target, BindingFlags flags)
             where T : EventAttribute
         {
             // Reflection is very slow, but it's only called once.
@@ -136,36 +136,16 @@ namespace Omni.Core
             // Delegates are used to avoid reflection overhead, it is much faster, like a direct call.
             // works with il2cpp.
 
-#if OMNI_DEBUG
-            BindingFlags flags =
-                BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
-#else
-            BindingFlags flags =
-                BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Instance; // Optimization!
-#endif
-
-            MethodInfo[] methodInfos = target.GetType().GetMethods(flags);
+            Type type = target.GetType();
+            MethodInfo[] methodInfos = type.GetMethods((System.Reflection.BindingFlags)flags);
             for (int i = 0; i < methodInfos.Length; i++)
             {
                 MethodInfo method = methodInfos[i];
-                IEnumerable<T> attributes = method.GetCustomAttributes<T>();
-
+                var attributes = method.GetCustomAttributes<T>().ToList();
                 foreach (T attr in attributes)
                 {
                     if (attr != null)
                     {
-#if OMNI_DEBUG
-                        if (!method.IsPrivate)
-                        {
-                            NetworkLogger.__Log__(
-                                $"The method '{method.Name}' is public. You must remove 'access modifier' from it for performance reasons.",
-                                NetworkLogger.LogType.Error
-                            );
-
-                            return;
-                        }
-#endif
-
                         int argsCount = method.GetParameters().Length;
                         if (expectedArgsCount > -1 && argsCount != expectedArgsCount)
                         {
@@ -174,6 +154,25 @@ namespace Omni.Core
                                 method,
                                 new TargetParameterCountException("Invalid number of arguments.")
                             );
+                        }
+
+                        if (attr.Id == 255) // 255 -> Reserved to Network Variables!
+                        {
+                            if (flags.HasFlag(BindingFlags.DeclaredOnly))
+                            {
+                                // Derived class will be responsible of calling base method.
+                                if (method.DeclaringType != type)
+                                    continue;
+                            }
+                            else
+                            {
+                                if (t_methods.ContainsKey(attr.Id))
+                                {
+                                    throw new NotSupportedException(
+                                        "Use BindingFlags.DeclaredOnly when the derived class also has network variables."
+                                    );
+                                }
+                            }
                         }
 
                         if (t_methods.TryAdd(attr.Id, argsCount))

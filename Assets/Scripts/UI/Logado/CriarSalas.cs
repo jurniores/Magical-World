@@ -89,7 +89,7 @@ public class CriarSalas : MonoBehaviour
             "/room",
             req =>
             {
-                req.ToJson(
+                req.WriteAsJson(
                     new Sala()
                     {
                         nameSala = nameSalaField.text,
@@ -108,14 +108,14 @@ public class CriarSalas : MonoBehaviour
 
     void ValidateRoom(DataBuffer res)
     {
-        var response = res.FromJson<NetworkResponse<Sala>>();
+        var response = res.ReadAsJson<NetworkResponse<Sala>>();
 
         ErrorManager.ValidateError(response, 2, () =>
         {
             gManager.AddSala(response.Data);
             gManager.salaGame = response.Data;
             
-            gManager.salaInGame = res.FromJson<SalaInGame>();
+            gManager.salaInGame = res.ReadAsJson<SalaInGame>();
             NetworkManager.LoadScene(2);
         });
     }

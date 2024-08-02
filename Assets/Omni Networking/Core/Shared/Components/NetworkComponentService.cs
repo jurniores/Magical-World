@@ -25,16 +25,19 @@ namespace Omni.Core.Components
                     "Component is null. Did you forget to set it in the inspector?"
                 );
             }
+
+#if OMNI_DEBUG
+            if (transform.root.TryGetComponent<NetworkIdentity>(out var _))
+            {
+                throw new NotSupportedException(
+                    "'Network Component Service' is not supported on NetworkIdentity"
+                );
+            }
+#endif
         }
 
         protected override void OnValidate()
         {
-            if (string.IsNullOrEmpty(ServiceName))
-            {
-                ServiceName = GameObject.name;
-                NetworkHelper.EditorSaveObject(gameObject);
-            }
-
             if (m_Component == null)
             {
                 if (TryGetComponent<Button>(out var mButton))
@@ -88,6 +91,25 @@ namespace Omni.Core.Components
                 }
 
                 NetworkHelper.EditorSaveObject(gameObject);
+            }
+
+            if (m_Component != null && ServiceName == GameObject.name)
+            {
+                ServiceName = "";
+            }
+
+            if (string.IsNullOrEmpty(ServiceName))
+            {
+                if (m_Component != null)
+                {
+                    ServiceName = m_Component.GetType().Name;
+                    NetworkHelper.EditorSaveObject(gameObject);
+                }
+                else
+                {
+                    ServiceName = GameObject.name;
+                    NetworkHelper.EditorSaveObject(gameObject);
+                }
             }
         }
     }

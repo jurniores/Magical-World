@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ServiceName: ServerGroup
   m_Id: 0
+  m_BindingFlags: 38
   serverPlayer: {fileID: 6462417198488496190, guid: 9171c17150e1cc643a20bbed29dcba11,
     type: 3}
 --- !u!114 &7718317295470443263

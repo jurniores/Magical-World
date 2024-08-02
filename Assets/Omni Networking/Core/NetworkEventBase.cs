@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 
+#pragma warning disable
+
 namespace Omni.Core
 {
     public class NetworkEventBase : NetworkVariablesBehaviour
@@ -11,6 +13,10 @@ namespace Omni.Core
 
         [SerializeField]
         internal int m_Id;
+
+        [SerializeField]
+        internal BindingFlags m_BindingFlags =
+            BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
         private NbClient local;
         private NbServer remote;
@@ -27,7 +33,7 @@ namespace Omni.Core
                 if (local == null)
                 {
                     throw new NullReferenceException(
-                        "The event behaviour has not been initialized. Call Awake() first or initialize manually."
+                        "This property(Local) is intended for client-side use only. It appears to be accessed from the server side. Or Call Awake() and Start() base first or initialize manually."
                     );
                 }
 
@@ -47,7 +53,7 @@ namespace Omni.Core
                 if (remote == null)
                 {
                     throw new NullReferenceException(
-                        "The event behaviour has not been initialized. Call Awake() first or initialize manually."
+                        "This property(Remote) is intended for server-side use only. It appears to be accessed from the client side. Or Call Awake() and Start() base first or initialize manually."
                     );
                 }
 
@@ -78,6 +84,9 @@ namespace Omni.Core
 
         protected virtual void OnValidate()
         {
+            if (remote != null || local != null)
+                ___NotifyChange___(); // Override by the source generator.
+
             if (m_Id == 0)
             {
                 m_Id = NetworkHelper.GenerateSceneUniqueId();
@@ -89,6 +98,15 @@ namespace Omni.Core
                 m_ServiceName = GetType().Name;
                 NetworkHelper.EditorSaveObject(gameObject);
             }
+
+#if OMNI_DEBUG
+            if (GetComponentInChildren<NetworkIdentity>() != null)
+            {
+                throw new NotSupportedException(
+                    "NetworkEventBase should not be attached to an object with a NetworkIdentity. Use 'NetworkBehaviour' instead."
+                );
+            }
+#endif
         }
     }
 }

@@ -17,11 +17,6 @@ public class GroupClient : NetworkBehaviour
 
     void Awake()
     {
-        var layerPlayer = LayerMask.NameToLayer("LPlayer");
-        var layerEnemy = LayerMask.NameToLayer("LEnemy");
-        
-        Physics.IgnoreLayerCollision(layerPlayer, layerEnemy, true);
-
         NetworkService.Register(this, nameof(GroupClient));
     }
     void Start()
@@ -58,7 +53,9 @@ public class GroupClient : NetworkBehaviour
 
     void InvokeIntantePlayer()
     {
+        print("INICOU");
         Local.Invoke(ConstantsRPC.INSTANT_PLAYER_GAME);
+        print("TERMINOU");
     }
 
     [Client(ConstantsRPC.INSTANT_PLAYER_GAME)]
@@ -79,7 +76,7 @@ public class GroupClient : NetworkBehaviour
     [Client(ConstantsRPC.INSTANT_PLAYERS_GAME)]
     void InstantePlayersRPC(DataBuffer buffer)
     {
-        var dicP = buffer.FromJson<Dictionary<int, int>>();
+        var dicP = buffer.ReadAsJson<Dictionary<int, int>>();
 
         foreach (var (peerId, identityId) in dicP)
         {

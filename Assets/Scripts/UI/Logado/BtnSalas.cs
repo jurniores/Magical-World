@@ -58,17 +58,17 @@ public class BtnSalas : MonoBehaviour
                     "/room/join",
                     req =>
                     {
-                        req.FastWrite(minhaSala.nameSala);
-                        req.FastWrite(password);
+                        req.WriteString(minhaSala.nameSala);
+                        req.WriteString(password);
                         req.Send();
                     },
                     res =>
                     {
-                        var response = res.FromJson<NetworkResponse<Sala>>();
+                        var response = res.ReadAsJson<NetworkResponse<Sala>>();
                         ErrorManager.ValidateError(response, 3, () =>
                         {
                             gManager.salaGame = response.Data;
-                            gManager.salaInGame = res.FromJson<SalaInGame>();
+                            gManager.salaInGame = res.ReadAsJson<SalaInGame>();
                             NetworkManager.LoadScene(2);
                         });
                     }

@@ -67,7 +67,7 @@ public class InstanciaSalas : ClientBehaviour
     [Client(ConstantsRPC.UPDATE_ROOM)]
     void UpdateRoomRPC(DataBuffer res)
     {
-        var sala = res.FromJson<Sala>();
+        var sala = res.ReadAsJson<Sala>();
         gManager.UpdateSala(sala);
     }
 }

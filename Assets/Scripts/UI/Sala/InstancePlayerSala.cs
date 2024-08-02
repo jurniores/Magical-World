@@ -37,7 +37,7 @@ public class InstancePlayerSala : ClientBehaviour
     [Client(ConstantsRPC.SET_RUNE)]
     private void SetRune(DataBuffer res)
     {
-        var response = res.FromJson<NetworkResponse<UsersModel>>();
+        var response = res.ReadAsJson<NetworkResponse<UsersModel>>();
         if (response.status == ConstantsDB.SUCCESS)
         {
             dicUsers[response.Data.peerId].SetRunes(response.Data.pConfig);
@@ -47,14 +47,14 @@ public class InstancePlayerSala : ClientBehaviour
     [Client(ConstantsRPC.INSTANT_PLAYER)]
     private void InstantPlayerRPC(DataBuffer res)
     {
-        var response = res.FromJson<NetworkResponse<UsersModel>>();
+        var response = res.ReadAsJson<NetworkResponse<UsersModel>>();
         ErrorManager.ValidateError(response, 1, () => InstancePlayer(response.Data));
     }
 
     [Client(ConstantsRPC.DESTROY_PLAYER_ROOM)]
     void KikaDaSala(DataBuffer res)
     {
-        var response = res.FromJson<NetworkResponse<UsersModel>>();
+        var response = res.ReadAsJson<NetworkResponse<UsersModel>>();
         ErrorManager.ValidateError(response, 1, () =>
         {
             var user = response.Data;
@@ -74,7 +74,7 @@ public class InstancePlayerSala : ClientBehaviour
     [Client(ConstantsRPC.ME_DESTROY_ROOM)]
     void MeKikou(DataBuffer res)
     {
-        var response = res.FromJson<NetworkResponse>();
+        var response = res.ReadAsJson<NetworkResponse>();
         ErrorManager.ValidateError(response, 2, default, () => NetworkManager.LoadScene(1));
     }
 
@@ -82,7 +82,7 @@ public class InstancePlayerSala : ClientBehaviour
     void ChangeMasteR(DataBuffer res)
     {
         res.DecompressRaw();
-        var response = res.FromJson<NetworkResponse<Sala>>();
+        var response = res.ReadAsJson<NetworkResponse<Sala>>();
         gManager.salaGame = response.Data;
 
         gManager.OnNewMaster?.Invoke();

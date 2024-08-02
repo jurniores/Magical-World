@@ -48,17 +48,12 @@ namespace Omni.Core.Modules.Ntp
             /// Returns the synchronized time or ticks, which is the unity time plus the smoothed offset average.
             /// </summary>
             public double Time =>
-                Math.Round(ClockTime + OffsetAvg.GetAverage(), UseTickTiming ? 0 : 2);
-
-            /// <summary>
-            /// Returns the synchronized time or ticks as a float, which is the unity time plus the smoothed offset average.
-            /// </summary>
-            public float TimeAsFloat => (float)Time;
+                Math.Round(ClockTime + OffsetAvg.Average, UseTickTiming ? 0 : 2);
 
             /// <summary>
             /// Returns the round-trip time (RTT) smoothed average.
             /// </summary>
-            public double Rtt => RttAvg.GetAverage();
+            public double Rtt => RttAvg.Average;
 
             /// <summary>
             /// Returns the half round-trip time (RTT) smoothed average.
@@ -112,8 +107,8 @@ namespace Omni.Core.Modules.Ntp
             internal void Query()
             {
                 using var message = Pool.Rent();
-                message.FastWrite(ClockTime);
-                message.FastWrite(DeltaTime);
+                message.Write(ClockTime);
+                message.Write(DeltaTime);
 
                 // Query the server.
                 NetworkManager.Client.SendMessage(
@@ -168,8 +163,8 @@ namespace Omni.Core.Modules.Ntp
                 double x = ClockTime; // server time
 
                 using var message = Pool.Rent();
-                message.FastWrite(a);
-                message.FastWrite(x);
+                message.Write(a);
+                message.Write(x);
 
                 // A method is used to obtain a small delay to obtain the instant Y.
                 SendWithYInstant(peer, message);
@@ -187,8 +182,8 @@ namespace Omni.Core.Modules.Ntp
                     t = DeltaTime;
                 }
 
-                message.FastWrite(y);
-                message.FastWrite(t);
+                message.Write(y);
+                message.Write(t);
                 // Send NTP response
                 NetworkManager.Server.SendMessage(
                     MessageType.NtpQuery,

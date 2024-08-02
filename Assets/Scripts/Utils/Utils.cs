@@ -114,27 +114,42 @@ public static class Extensions
         return posAtual;
 
     }
-
     public static float RadiusAngle(this Vector3 posAtual, Vector3 pInicial)
     {
         Vector2 dir = posAtual - pInicial;
         return Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
     }
+    public static HalfVector2 HalfV2Convert(this Vector3 pos)
+    {
+        return new HalfVector2(pos.x, pos.z);
+    }
+    public static HalfVector3 HalfV3Convert(this Vector2 pos)
+    {
+        return new HalfVector3(pos.x, 0, pos.y);
+    }
+    public static Vector3 ToVector3(this HalfVector2 pos)
+    {
+        return new Vector3(pos.x, 0, pos.y);
+    }
+    public static Vector2 ToVector2(this HalfVector3 pos)
+    {
+        return new Vector2(pos.x, pos.z);
+    }
 
     public static NetworkIdentity InstantiateOnClientInScene(this NetworkIdentity prefab, int peerId, int identityId, Scene sceneGame)
     {
-        NetworkIdentity objInstantScene = NetworkManager.InstantiateOnClient(prefab, peerId, identityId);
+        NetworkIdentity objInstantScene = NetworkManager.SpawnOnClient(prefab, peerId, identityId);
 
         if (Application.isEditor)
         {
             SceneManager.MoveGameObjectToScene(objInstantScene.gameObject, sceneGame);
         }
-        
+
         return objInstantScene;
     }
     public static NetworkIdentity InstantiateOnServerInScene(this NetworkIdentity prefab, NetworkPeer peer, Scene sceneGame)
     {
-        NetworkIdentity objInstantScene = NetworkManager.InstantiateOnServer(prefab, peer);
+        NetworkIdentity objInstantScene = NetworkManager.SpawnOnServer(prefab, peer);
 
         if (Application.isEditor)
         {
@@ -149,3 +164,17 @@ public static class Extensions
         NetworkManager.Server.Invoke(msgId, peer, identity.IdentityId, identity.Id, buffer, target);
     }
 }
+
+ public struct CharacterAttributes
+    {
+        public float hp,
+            ataq,
+            ataM,
+            def,
+            defM,
+            velAtak,
+            cd,
+            mana,
+            velocity;
+        public int money;
+    }

@@ -18,7 +18,7 @@ public class ClientRooms : MonoBehaviour
             "/room/get",
             res =>
             {
-                gManager.Salas = res.FromJson<Dictionary<int, Sala>>();
+                gManager.Salas = res.ReadAsJson<Dictionary<int, Sala>>();
             }
         );
 
@@ -26,13 +26,13 @@ public class ClientRooms : MonoBehaviour
             "/room",
             res =>
             {
-                var response = res.FromJson<NetworkResponse<Sala>>();
+                var response = res.ReadAsJson<NetworkResponse<Sala>>();
                 gManager.AddSala(response.Data);
             }
         );
         Fetch.AddPostHandler("/room/join", res =>
         {
-            var response = res.FromJson<NetworkResponse<Sala>>();
+            var response = res.ReadAsJson<NetworkResponse<Sala>>();
             gManager.UpdateSala(response.Data);
         });
 

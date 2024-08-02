@@ -7,13 +7,12 @@ using Omni.Threading.Tasks;
 
 namespace Omni.Core
 {
-    public class DataBufferPool : IObjectPooling<DataBuffer>
+    public sealed class DataBufferPool : IObjectPooling<DataBuffer>
     {
-        /// <summary>
         /// The maximum time in milliseconds that a buffer is being tracked before it is considered
         /// to have not been disposed or returned to the pool. <c>Debug mode only.</c>
-        /// </summary>
-        public static int MaxTrackingTime { get; set; } = 500;
+        /// 500ms seems good to me, if there is an expensive operation that takes more than 500ms, it is recommended to call SupressTracking.
+        private const int MAX_TRACKING_TIME = 500;
         private readonly Queue<DataBuffer> _pool;
 
         internal DataBufferPool(int capacity = 32768, int poolSize = 32)
@@ -32,20 +31,13 @@ namespace Omni.Core
         /// <returns>A <see cref="DataBuffer"/> object from the pool.</returns>
         public DataBuffer Rent()
         {
-            var rentedBuffer = UnsafeRent();
-            CreateTrace(rentedBuffer);
-            return rentedBuffer;
-        }
-
-        /// <summary>
-        /// Rents a buffer from the pool. does not performing any tracking.
-        /// </summary>
-        public DataBuffer UnsafeRent()
-        {
             if (_pool.Count > 0)
             {
                 var buffer = _pool.Dequeue();
                 buffer._disposed = false;
+#if UNITY_EDITOR // disable tracking in the build for best testing performance
+                CreateTrace(buffer);
+#endif
                 return buffer;
             }
             else
@@ -81,7 +73,7 @@ namespace Omni.Core
             UniTask.Void(
                 async (token) =>
                 {
-                    await UniTask.Delay(MaxTrackingTime, cancellationToken: token);
+                    await UniTask.Delay(MAX_TRACKING_TIME, cancellationToken: token);
 
                     if (
                         buffer._disposed == false

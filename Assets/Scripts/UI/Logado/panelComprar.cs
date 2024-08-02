@@ -127,11 +127,11 @@ public class panelComprar : ClientBehaviour
 
     void MsgDeErro(DataBuffer response)
     {
-        var res = response.FromJson<NetworkResponse>();
+        var res = response.ReadAsJson<NetworkResponse>();
         if (res.status == ConstantsDB.SUCCESS)
         {
-             var user = response.FromJson<UsersModel>();
-             var inv = response.FromJson<InventoryModel>();
+             var user = response.ReadAsJson<UsersModel>();
+             var inv = response.ReadAsJson<InventoryModel>();
             gManager.User = user;
             gManager.Inventory =  inv;
 

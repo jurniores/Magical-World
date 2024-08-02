@@ -1,0 +1,88 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Omni.Core;
+using Omni.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.Events;
+
+public abstract class Skills : MonoBehaviour
+{
+    [SerializeField]
+    private Sprite sprite;
+    [SerializeField]
+    protected float cowntdown, timeSkillwait;
+    [SerializeField]
+    protected float animTime = 2;
+    [SerializeField]
+    protected int levelSkill;
+    [SerializeField]
+    protected int danoSkill;
+    [SerializeField]
+    public string nameSkill;
+    protected byte ConstantsRPCForServer;
+    protected NetworkIdentity identityCliked;
+    protected UnityAction fnSkillReceived;
+    protected UnityAction<string> fnAnimCharacter;
+    private BtnSkills btnSkill;
+    protected Character character;
+
+    public float distance, timeTotalCowndown;
+
+
+    protected virtual void Start()
+    {
+        btnSkill.SetInfo(sprite);
+        character = GetComponent<Character>();
+        timeTotalCowndown = cowntdown + animTime;
+    }
+
+    //Recebe o click de envio de skills
+    public void PlaySkill(NetworkBehaviour Character, NetworkIdentity identity, UnityAction<string> fnAnim)
+    {
+        fnAnimCharacter = fnAnim;
+        identityCliked = identity;
+        SendSkillServer(Character, identityCliked.IdentityId);
+    }
+    //Envia para o servidor qual skill está sendo acionada para enviar para todos e confirmar para mim
+    private void SendSkillServer(NetworkBehaviour Character, int IdentityId)
+    {
+        //Validação para enviar somente a skill primeira que foi clicada
+        if(character.skillet) return;
+        using var buffer = NetworkManager.Pool.Rent();
+        buffer.Write(IdentityId);
+        //Pegou o RPC da identidade para enviar de qualquer local
+        Character.Local.Invoke(ConstantsRPCForServer, buffer);
+        character.skillet = true;
+    }
+    //Ativa skill chamada pelo servidor pós cowntdown
+    public void AtackSkillAsync()
+    {
+        SkillAfeterCd();
+        fnAnimCharacter(nameSkill);
+        character.skillet = false;
+    }
+    //Servidor chama o Cowndown para depois chamar a skill
+    public void CowntDownSkill()
+    {
+        character.cowntdownFilled.SetCowntDown(cowntdown);
+        character.animCharacter.Play("Casting");
+        SkillBeforeCd();
+        float cowntdownReal = cowntdown + animTime;
+        btnSkill.ActiveSkill(timeSkillwait, cowntdownReal);
+    }
+    protected virtual void SkillBeforeCd()
+    {
+        //
+    }
+    protected virtual void SkillAfeterCd()
+    {
+        //
+    }
+
+    //Método para ser o botão da skill
+    public void SetBtn(BtnSkills btnSkillP)
+    {
+        btnSkill = btnSkillP;
+    }
+}

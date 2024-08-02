@@ -13,6 +13,6 @@ public partial class InstantGroup : ClientBehaviour
      void InitiGame(DataBuffer res)
     {
         res.ReadIdentity(out int peerId, out int identityId);
-        clientGroup.InstantiateOnClient(peerId, identityId);
+        clientGroup.SpawnOnClient(peerId, identityId);
     }
 }

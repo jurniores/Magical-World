@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class ControllsMaterials : MonoBehaviour
 {
-    private Renderer renderer;
+    private Renderer render;
     private Material material;
     [SerializeField]
     private float time = 5;
-    private float range = 0;
+    private float range = 1;
     [SerializeField]
     private string property;
 
     void Start()
     {
-        renderer = GetComponent<Renderer>();
+        render = GetComponent<Renderer>();
 
-        material = renderer.material;;
+        material = render.material;
     }
 
     void Update()
@@ -24,12 +24,9 @@ public class ControllsMaterials : MonoBehaviour
         if (range <= 1)
         {
             range += Time.deltaTime/time;
+            material.SetFloat($"_{property}", range);
         }
-        material.SetFloat($"_{property}", range);
-    }
-
-    void OnDisable()
-    {
-        range = 0;
+        
+        
     }
 }

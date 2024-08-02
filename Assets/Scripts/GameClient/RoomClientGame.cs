@@ -20,15 +20,15 @@ public class RoomClientGame : ClientBehaviour
     [Client(ConstantsRPC.DESTROY_PLAYER_ROOM)]
     void PlayerDesconectado(DataBuffer res)
     {
-        var response = res.FromJson<NetworkResponse<UsersModel>>();
+        var response = res.ReadAsJson<NetworkResponse<UsersModel>>();
         ErrorManager.ValidateError(response, 1);
     }
     void RequestConfigPlayers(DataBuffer res)
     {
-        var response = res.FromJson<NetworkResponse>();
+        var response = res.ReadAsJson<NetworkResponse>();
         ErrorManager.ValidateError(response, 1, () =>
         {
-            var sInGame = res.FromJson<SalaInGame>();
+            var sInGame = res.ReadAsJson<SalaInGame>();
             gManager.salaInGame = sInGame;
         });
 

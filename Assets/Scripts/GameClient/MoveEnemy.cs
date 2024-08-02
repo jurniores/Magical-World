@@ -29,23 +29,26 @@ public class MoveEnemy : BaseMoveBots
         if (distanceFinal)
         {
             animEnemy.SetBool("Run", false);
-            return;
+
+        }
+        else
+        {
+            animEnemy.SetBool("Run", true);
         }
 
-        animEnemy.SetBool("Run", true);
+
 
         //Suavização da rotação
         Quaternion newRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
         character.rotation = Quaternion.Slerp(character.rotation, newRotation, speedRotation * Time.deltaTime);
     }
-    
+
     [Client(ConstantsRPC.MOVIMENT_PLAYER)]
     void MovimentPlayerRpcClient(DataBuffer buffer)
     {
         //Recebe a posição atual do personagem na quantidade de ticks
         Vector3 hMove = buffer.Read<HalfVector3>();
         //Pega a direção que pela posição enviada do cliente
-        print("Chamando rpc");
         hMove -= transform.position;
         moveDirection = hMove;
         position = hMove;

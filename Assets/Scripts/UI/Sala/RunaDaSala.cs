@@ -37,7 +37,7 @@ public class RunaDaSala : MonoBehaviour
         //Escolher a runa que vai usar
         Fetch.Post("/room/set/rune", req =>
         {
-            req.FastWrite(itemRune.id);
+            req.Write(itemRune.id);
         }, 
         res =>
         {

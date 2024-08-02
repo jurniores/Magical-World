@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Reflection;
 using UnityEngine;
+
+#pragma warning disable
 
 namespace Omni.Core
 {
@@ -19,7 +23,7 @@ namespace Omni.Core
 
     internal interface IPropertyInfo<T>
     {
-        public Func<T> Invoke { get; set; }
+        Func<T> Invoke { get; set; }
     }
 
     internal class PropertyInfo<T> : IPropertyInfo, IPropertyInfo<T>
@@ -42,12 +46,24 @@ namespace Omni.Core
         internal DataBuffer CreateHeader<T>(T @object, byte id)
         {
             DataBuffer message = NetworkManager.Pool.Rent(); // disposed by the caller
-            message.FastWrite(id);
-            message.ToBinary(@object);
+            message.Write(id);
+
+            // If the object implements ISerializable, serialize it.
+            if (@object is ISerializable data)
+            {
+                using var serializedData = data.Serialize();
+                serializedData.CopyTo(message);
+                return message;
+            }
+
+            message.WriteAsBinary(@object);
             return message;
         }
 
-        internal IPropertyInfo GetPropertyInfoWithCallerName<T>(string callerName)
+        internal IPropertyInfo GetPropertyInfoWithCallerName<T>(
+            string callerName,
+            BindingFlags flags
+        )
         {
             if (!properties.TryGetValue(callerName, out IPropertyInfo memberInfo))
             {
@@ -55,20 +71,16 @@ namespace Omni.Core
                 // Delegates are used to avoid reflection overhead, it is much faster, like a direct call.
 
                 PropertyInfo propertyInfo =
-                    GetType()
-                        .GetProperty(
-                            callerName,
-                            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
-                        )
+                    GetType().GetProperty(callerName, (System.Reflection.BindingFlags)flags)
                     ?? throw new NullReferenceException(
-                        $"NetVar: Property not found: {callerName}. Use the other overload of this function(ManualSync)."
+                        $"NetworkVariable: Property not found: {callerName}. Use the other overload of this function(ManualSync)."
                     );
 
                 string name = propertyInfo.Name;
-                NetVarAttribute attribute =
-                    propertyInfo.GetCustomAttribute<NetVarAttribute>()
+                NetworkVariableAttribute attribute =
+                    propertyInfo.GetCustomAttribute<NetworkVariableAttribute>()
                     ?? throw new NullReferenceException(
-                        $"NetVar: NetVarAttribute not found on property: {name}. Ensure it has 'NetVar' attribute."
+                        $"NetworkVariable: NetworkVariableAttribute not found on property: {name}. Ensure it has 'NetworkVariable' attribute."
                     );
 
                 byte id = attribute.Id;
@@ -82,36 +94,52 @@ namespace Omni.Core
             return memberInfo;
         }
 
-#pragma warning disable IDE1006
         // This method is intended to be overridden by the caller using source generators and reflection techniques. Magic wow!
         // https://github.com/RuanCardoso/OmniNetSourceGenerator
-        protected virtual void ___OnPropertyChanged___(DataBuffer buffer, NetworkPeer peer)
-#pragma warning restore IDE1006
+        // never override this method!
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Obsolete("Don't override this method! The source generator will override it.")]
+        protected virtual void ___OnPropertyChanged___(
+            string propertyName,
+            byte propertyId,
+            NetworkPeer peer,
+            DataBuffer buffer
+        )
         {
             // The overriden method must call base(SourceGenerator).
-            buffer.SeekToBegin();
-            byte propertyId = buffer.Read<byte>();
             if (peer == null)
             {
-                OnClientPropertyChanged(propertyId);
+                OnClientPropertyChanged(propertyName, propertyId);
             }
             else
             {
-                OnServerPropertyChanged(propertyId, peer);
+                OnServerPropertyChanged(propertyName, propertyId, peer);
             }
         }
+
+        // This method is intended to be overridden by the caller using source generators and reflection techniques. Magic wow!
+        // https://github.com/RuanCardoso/OmniNetSourceGenerator
+        // never override this method!
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Obsolete("Don't override this method! The source generator will override it.")]
+        [Conditional("UNITY_EDITOR")]
+        protected virtual void ___NotifyChange___() { }
 
         /// <summary>
         /// Handles property changes on the client side based on the provided property ID.
         /// </summary>
         /// <param name="id">The ID of the property that has changed.</param>
-        protected virtual void OnClientPropertyChanged(int id) { }
+        protected virtual void OnClientPropertyChanged(string propertyName, int propertyId) { }
 
         /// <summary>
         /// Handles property changes on the server side based on the provided property ID and network peer.
         /// </summary>
         /// <param name="id">The ID of the property that has changed.</param>
         /// <param name="peer">The network peer associated with the property change.</param>
-        protected virtual void OnServerPropertyChanged(int id, NetworkPeer peer) { }
+        protected virtual void OnServerPropertyChanged(
+            string propertyName,
+            int propertyId,
+            NetworkPeer peer
+        ) { }
     }
 }

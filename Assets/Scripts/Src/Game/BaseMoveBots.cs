@@ -10,6 +10,8 @@ public class BaseMoveBots : NetworkBehaviour
     protected float speed, gravity;
     [SerializeField]
     protected CharacterController characterController;
+    [SerializeField]
+    private bool IsEnemy;
     protected bool IsMoving { get; set; }
     protected bool distanceFinal;
 
@@ -20,25 +22,25 @@ public class BaseMoveBots : NetworkBehaviour
     }
     protected void Move(Vector3 lastPosition)
     {
-        float distance = Vector3.Distance(transform.position, lastPosition);
-        //Verifica se a distancia entre o bot e o player é mínima, para parar
-        if (distance < 0.5f)
-        {
-            distanceFinal = true;
-            return;
-        };
-
-        distanceFinal = false;
-
         if (IsMoving)
         {
             //Move o personagem na direção sem parar
             lastPosition.Normalize();
             lastPosition.y = gravity;
             characterController.Move(speed * Time.deltaTime * lastPosition);
+            distanceFinal = false;
         }
-        else if (!IsMoving)
+        else if (!IsMoving && !distanceFinal)
         {
+
+            //Valida a posição que o bot parou do player
+            float distance = Vector3.Distance(transform.position, lastPosition);
+
+            if (distance < 0.5f)
+            {
+                distanceFinal = true;
+            }
+            
             //Move o personagem até o ponto onde o cliente parou
             //Direção obtida do ponto que está, até o ponto que foi enviado na parada do cliente
             lastPosition -= transform.position;

@@ -18,9 +18,9 @@ public class UsersRoute : ServerBehaviour
         Http.PostAsync("/pass", UpdatePass);
     }
 
-    protected override async void OnServerPeerDisconnected(NetworkPeer peer, Status status)
+    protected override async void OnServerPeerDisconnected(NetworkPeer peer, Phase status)
     {
-        if (status == Status.Begin)
+        if (status == Phase.Begin)
         {
             peer.Data.TryGet<UsersModel>("user", out var peerUser);
 
@@ -36,7 +36,7 @@ public class UsersRoute : ServerBehaviour
     {
         try
         {
-            UsersModel user = req.FromJson<UsersModel>();
+            UsersModel user = req.ReadAsJson<UsersModel>();
             InventoryModel inventory = new();
             user.peerId = peer.Id;
             var userPlayer = await User.Get<UsersModel>(new { user.hwid });
@@ -51,8 +51,8 @@ public class UsersRoute : ServerBehaviour
                 peer.Data.TryAdd("inv", inventory);
 
                 res.Write(ConstantsDB.SUCCESS);
-                res.ToJson(user);
-                res.ToJson(inventory);
+                res.WriteAsJson(user);
+                res.WriteAsJson(inventory);
 
                 res.Send();
                 return;
@@ -75,15 +75,15 @@ public class UsersRoute : ServerBehaviour
             InventoryModel invClient = invPlayer;
             
             res.Write(ConstantsDB.SUCCESS);
-            res.ToJson(userClient);
-            res.ToJson(invClient);
+            res.WriteAsJson(userClient);
+            res.WriteAsJson(invClient);
             res.Send();
         }
         catch
         {
             res.Write(ConstantsDB.ERROR);
-            res.ToJson(new UsersModel());
-            res.ToJson(new InventoryModel());
+            res.WriteAsJson(new UsersModel());
+            res.WriteAsJson(new InventoryModel());
             res.Send();
         }
     }
@@ -91,7 +91,7 @@ public class UsersRoute : ServerBehaviour
     async UniTask UpdateInfo(DataBuffer req, DataBuffer res, NetworkPeer peer)
     {
         var userPeer = peer.Data.Get<UsersModel>("user");
-        var userClient = req.FromJson<UsersModel>();
+        var userClient = req.ReadAsJson<UsersModel>();
 
         NetworkResponse response;
         if (userPeer.password == null || userClient.password == userPeer.password)
@@ -161,14 +161,14 @@ public class UsersRoute : ServerBehaviour
                 Data = null
             };
         }
-        res.ToJson(response);
+        res.WriteAsJson(response);
         res.Send();
     }
 
     void UpdatePass(DataBuffer req, DataBuffer res, NetworkPeer peer)
     {
         var userPeer = peer.Data.Get<UsersModel>("user");
-        var userClient = req.FromJson<UsersModel>();
+        var userClient = req.ReadAsJson<UsersModel>();
         var response = new NetworkResponse();
         if (userPeer.password == null || userClient.password == userPeer.password)
         {
@@ -201,7 +201,7 @@ public class UsersRoute : ServerBehaviour
                 Data = null
             };
         }
-        res.ToJson(response);
+        res.WriteAsJson(response);
         res.Send();
     }
 }

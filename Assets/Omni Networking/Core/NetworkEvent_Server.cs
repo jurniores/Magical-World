@@ -112,16 +112,16 @@ namespace Omni.Core
 
         protected void InitializeBehaviour()
         {
-            invoker.FindEvents<ServerAttribute>(this);
+            invoker.FindEvents<ServerAttribute>(this, m_BindingFlags);
             Server.AddEventBehaviour(m_Id, this);
-            Remote = new NbServer(this);
+            Remote = new NbServer(this, m_BindingFlags);
         }
 
         protected void RegisterSystemEvents()
         {
             NetworkManager.OnBeforeSceneLoad += OnBeforeSceneLoad;
             NetworkManager.OnServerInitialized += OnServerInitialized;
-            NetworkManager.OnServerPeerConnected += OnServerPeerConnected;
+            NetworkManager.OnServerPeerConnected += OnServerPeerConnectedAsync;
             NetworkManager.OnServerPeerDisconnected += OnServerPeerDisconnected;
             Server.OnMessage += OnMessage;
         }
@@ -142,7 +142,7 @@ namespace Omni.Core
         {
             NetworkManager.OnBeforeSceneLoad -= OnBeforeSceneLoad;
             NetworkManager.OnServerInitialized -= OnServerInitialized;
-            NetworkManager.OnServerPeerConnected -= OnServerPeerConnected;
+            NetworkManager.OnServerPeerConnected -= OnServerPeerConnectedAsync;
             NetworkManager.OnServerPeerDisconnected -= OnServerPeerDisconnected;
             Server.OnMessage -= OnMessage;
 
@@ -176,13 +176,13 @@ namespace Omni.Core
         /// Called when a new peer has successfully connected to the server.
         /// </summary>
         /// <param name="peer">The network peer that connected.</param>
-        protected virtual void OnServerPeerConnected(NetworkPeer peer, Status status) { }
+        protected virtual void OnServerPeerConnectedAsync(NetworkPeer peer, Phase phase) { }
 
         /// <summary>
         /// Called when a peer has disconnected from the server.
         /// </summary>
         /// <param name="peer">The network peer that disconnected.</param>
-        protected virtual void OnServerPeerDisconnected(NetworkPeer peer, Status status) { }
+        protected virtual void OnServerPeerDisconnected(NetworkPeer peer, Phase phase) { }
 
         /// <summary>
         /// Called when a player fails to leave a group on the server.
@@ -265,7 +265,7 @@ namespace Omni.Core
         protected virtual void OnPlayerLeftGroup(
             NetworkGroup group,
             NetworkPeer peer,
-            Status status,
+            Phase phase,
             string reason
         ) { }
 

@@ -139,7 +139,7 @@ public class TelaConfig : MonoBehaviour
                 password = passwordField.text,
             };
 
-            res.ToJson(modelUser);
+            res.WriteAsJson(modelUser);
 
         });
 
@@ -179,7 +179,7 @@ public class TelaConfig : MonoBehaviour
                 password = passwordField.text,
             };
 
-            res.ToJson(modelUser);
+            res.WriteAsJson(modelUser);
 
         });
         Response(req);
@@ -187,7 +187,7 @@ public class TelaConfig : MonoBehaviour
 
     void Response(DataBuffer res)
     {
-        var response = res.FromJson<NetworkResponse<UsersModel>>();
+        var response = res.ReadAsJson<NetworkResponse<UsersModel>>();
         ErrorManager.ValidateError(response, 3, () =>
         {
             gManager.User = response.Data;

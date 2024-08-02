@@ -7,10 +7,7 @@ using UnityEngine;
 public partial class PlayerConfigs
 {
     private int peerId;
-    public int identity = 0;
     public List<int> listRunes = new();
-
-    private DataBuffer dBuffer = new DataBuffer();
     //Só seta no máximo 3 runas, se for enviado outra, esta passará tomar o primeiro lugar
     public bool SetRune(int rune)
     {

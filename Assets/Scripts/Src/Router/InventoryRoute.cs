@@ -30,7 +30,7 @@ public class InventoryRoute : MonoBehaviour
             CompraTipoItem(runes);
         else
         {
-            res.ToJson(
+            res.WriteAsJson(
                 new NetworkResponse()
                 {
                     status = ConstantsDB.ERROR,
@@ -127,9 +127,9 @@ public class InventoryRoute : MonoBehaviour
                     }
                 }
 
-                res.ToJson(response);
-                res.ToJson(userClient);
-                res.ToJson(invClient);
+                res.WriteAsJson(response);
+                res.WriteAsJson(userClient);
+                res.WriteAsJson(invClient);
 
                 res.Send();
                 return;
@@ -140,7 +140,7 @@ public class InventoryRoute : MonoBehaviour
                 status = ConstantsDB.ERROR,
                 message = "Este item não existe!",
             };
-            res.ToJson(response);
+            res.WriteAsJson(response);
             res.Send();
         }
     }
@@ -155,7 +155,7 @@ public class InventoryRoute : MonoBehaviour
     [Server(ConstantsDB.INVENTORY_UPDATE)]
     async void UpdateAtt(DataBuffer buffer)
     {
-        InventoryModel model = buffer.FromJson<InventoryModel>();
+        InventoryModel model = buffer.ReadAsJson<InventoryModel>();
         int result = await Inventory.UpdateAll(model);
     }
 

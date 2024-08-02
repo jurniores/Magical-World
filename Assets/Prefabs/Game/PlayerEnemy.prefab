@@ -26,12 +26,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 358264626677388229}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.007, y: -0.001, z: 0.215}
+  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -0.21500015, y: 0.055000186, z: 0.07499987}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1762529725422792885}
+  m_Father: {fileID: 4540704033848589341}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &1589915482848433417
 ParticleSystem:
@@ -48,7 +48,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -4860,9 +4860,7 @@ Transform:
   m_LocalPosition: {x: -0.04, y: -1.02, z: 0.05}
   m_LocalScale: {x: 25, y: 25, z: 5}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2389212924646463690}
-  - {fileID: 4582311598191077391}
+  m_Children: []
   m_Father: {fileID: 4540704033848589341}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &2941553383327946467
@@ -4880,7 +4878,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -9847,6 +9845,8 @@ Transform:
   m_Children:
   - {fileID: 6394349362215370367}
   - {fileID: 1762529725422792885}
+  - {fileID: 2389212924646463690}
+  - {fileID: 4582311598191077391}
   - {fileID: 2067436756103049386}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9905,11 +9905,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ServiceName: MoveEnemy
   m_Id: 0
+  m_BindingFlags: 38
   speed: 5
   gravity: -2
   characterController: {fileID: 2860777574089645289}
+  IsEnemy: 0
   character: {fileID: 2067436756103049386}
-  speedRotation: 10
+  speedRotation: 7
   animEnemy: {fileID: 2067436756110468768}
 --- !u!1 &6267644233715796555
 GameObject:
@@ -9937,12 +9939,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6267644233715796555}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.0127, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.03999996, y: -1.02, z: -0.26749998}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1762529725422792885}
+  m_Father: {fileID: 4540704033848589341}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!198 &2093651921668985132
 ParticleSystem:
@@ -9959,7 +9961,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -14830,12 +14832,12 @@ GameObject:
   - component: {fileID: 3799487528380352872}
   - component: {fileID: 4844831050408593461}
   m_Layer: 5
-  m_Name: Canvas (1)
+  m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6394349362215370367
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15158,6 +15160,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 4550765227773025430}
+    - targetCorrespondingSourceObject: {fileID: 135268, guid: aea27ca7a35042c419065833e8daf224,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6156728716939747598}
   m_SourcePrefab: {fileID: 100100000, guid: aea27ca7a35042c419065833e8daf224, type: 3}
 --- !u!4 &2067436756102966040 stripped
 Transform:
@@ -15191,6 +15197,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   time: 5
   property: FloatTime
+--- !u!114 &6156728716939747598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2067436756103287626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a15fe31adb53da4a80a89ffd1839bfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ServiceName: WizardEnemy
+  m_Id: 0
+  m_BindingFlags: 38
+  animEnemy: {fileID: 2067436756110468768}
+  spell: {fileID: 2941553383327946467}
+  circle: {fileID: 2093651921668985132}
+  raio: {fileID: 1589915482848433417}
 --- !u!95 &2067436756110468768 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 9545102, guid: aea27ca7a35042c419065833e8daf224,

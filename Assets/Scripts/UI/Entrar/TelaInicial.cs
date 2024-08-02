@@ -35,7 +35,7 @@ public class TelaInicial : ClientBehaviour
             if (Application.isMobilePlatform) identify = SystemInfo.deviceUniqueIdentifier;
             UsersModel model = new() { hwid = identify };
 
-            res.ToJson(model);
+            res.WriteAsJson(model);
             res.Send();
         });
         req.SuppressTracking();
@@ -43,8 +43,8 @@ public class TelaInicial : ClientBehaviour
 
         if (recieve == ConstantsDB.SUCCESS)
         {
-            UsersModel user = req.FromJson<UsersModel>();
-            InventoryModel inventory = req.FromJson<InventoryModel>();
+            UsersModel user = req.ReadAsJson<UsersModel>();
+            InventoryModel inventory = req.ReadAsJson<InventoryModel>();
             GameManager gManager = NetworkService.Get<GameManager>();
 
             gManager.User = user;

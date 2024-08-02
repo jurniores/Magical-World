@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ConstantsRPC 
+public class ConstantsRPC
 {
    public const byte INSTANT_PLAYER = 0;
    public const byte DESTROY_PLAYER_ROOM = 1;
@@ -15,13 +15,28 @@ public class ConstantsRPC
 
    //Constants Game
 
-  
+
    public const byte INSTANT_PLAYER_GAME = 8;
    public const byte INSTANT_ENEMY_GAME = 9;
    public const byte INSTANT_PLAYERS_GAME = 10;
+
+   //Constans MovePlayer
    public const byte MOVIMENT_PLAYER = 11;
    public const byte MOVIMENT_PLAYER_STOP = 12;
    public const byte MOVIMENT_PLAYER_CORRECT_POSITION = 13;
+
+   //Constans player in Game
+
+   public const byte DEMAGE_PLAYER = 14;
+   public const byte SKILLBASE_PLAYER = 15;
+   public const byte SKILL1_PLAYER = 16;
+   public const byte SKILL2_PLAYER = 17;
+   public const byte SKILL3_PLAYER = 18;
+   public const byte SKILL4_PLAYER = 19;
+   public const byte SKILL5_PLAYER = 20;
+   public const byte COWNTDOWN_SKILL = 21;
+   
+   public const byte CONFIRMED_SKILL = 22;
 
 
 }

@@ -39,19 +39,19 @@ public class RoomRoute : ServerBehaviour
 
         salaIngame.SetRooms(sala);
 
-        res.ToJson(new NetworkResponse()
+        res.WriteAsJson(new NetworkResponse()
         {
             status = ConstantsDB.SUCCESS,
             message = "Configurações obtidas!"
         });
-        res.ToJson(salaIngame);
+        res.WriteAsJson(salaIngame);
 
         res.Send();
     }
 
     private void SetRune(DataBuffer req, DataBuffer res, NetworkPeer peer)
     {
-        int runeId = req.FastRead<int>();
+        int runeId = req.Read<int>();
         UsersModel user = peer.Data.Get<UsersModel>("user");
         bool setValida;
           
@@ -59,7 +59,7 @@ public class RoomRoute : ServerBehaviour
 
         if (setValida)
         {
-            res.ToJson(new NetworkResponse()
+            res.WriteAsJson(new NetworkResponse()
             {
                 status = ConstantsDB.ERROR,
                 message = "Runa já está setada!",
@@ -67,7 +67,7 @@ public class RoomRoute : ServerBehaviour
         }
         else
         {
-            res.ToJson(new NetworkResponse<UsersModel>()
+            res.WriteAsJson(new NetworkResponse<UsersModel>()
             {
                 status = ConstantsDB.SUCCESS,
                 message = "Runa adicionada com sucesso!",
@@ -87,7 +87,7 @@ public class RoomRoute : ServerBehaviour
 
         if (user.inGame)
         {
-            res.ToJson(new NetworkResponse()
+            res.WriteAsJson(new NetworkResponse()
             {
                 status = ConstantsDB.ERROR,
                 message = "Você já iniciou a partida!",
@@ -98,7 +98,7 @@ public class RoomRoute : ServerBehaviour
 
         // if (sala.qtd != sala.playersNaSala.Count)
         // {
-        //     res.ToJson(new NetworkResponse()
+        //     res.WriteAsJson(new NetworkResponse()
         //     {
         //         status = ConstantsDB.ERROR,
         //         message = "A sala ainda não está cheia!",
@@ -117,7 +117,7 @@ public class RoomRoute : ServerBehaviour
             userPlayer.group = group.Name;
         }
 
-        res.ToJson(new NetworkResponse()
+        res.WriteAsJson(new NetworkResponse()
         {
             status = ConstantsDB.SUCCESS,
             message = "A partida vai iniciar!",
@@ -128,9 +128,9 @@ public class RoomRoute : ServerBehaviour
 
     }
 
-    protected override void OnServerPeerDisconnected(NetworkPeer peer, Status status)
+    protected override void OnServerPeerDisconnected(NetworkPeer peer, Phase status)
     {
-        if (status == Status.Begin)
+        if (status == Phase.Begin)
         {
             Leave(peer);
         }
@@ -139,13 +139,13 @@ public class RoomRoute : ServerBehaviour
 
     private void PlayerKick(DataBuffer req, DataBuffer res, NetworkPeer peer)
     {
-        var userKick = req.FromJson<UsersModel>();
+        var userKick = req.ReadAsJson<UsersModel>();
         var sala = peer.Data.Get<Sala>("sala");
         NetworkGroup group = peer.Data.Get<NetworkGroup>("group");
 
         if (sala.master != peer.Id)
         {
-            res.ToJson(new NetworkResponse()
+            res.WriteAsJson(new NetworkResponse()
             {
                 status = ConstantsDB.ERROR,
                 message = "Você não é o master da sala"
@@ -156,7 +156,7 @@ public class RoomRoute : ServerBehaviour
 
         if (userKick.peerId == peer.Id)
         {
-            res.ToJson(new NetworkResponse()
+            res.WriteAsJson(new NetworkResponse()
             {
                 status = ConstantsDB.ERROR,
                 message = "Você não pode se expulsar!"
@@ -172,7 +172,7 @@ public class RoomRoute : ServerBehaviour
             if (userKickCompare.peerId == userKick.peerId)
             {
                 Matchmaking.Server.LeaveGroup(group, peerKick);
-                res.ToJson(new NetworkResponse()
+                res.WriteAsJson(new NetworkResponse()
                 {
                     status = ConstantsDB.NEUTRO,
                 });
@@ -181,7 +181,7 @@ public class RoomRoute : ServerBehaviour
             }
         }
 
-        res.ToJson(new NetworkResponse()
+        res.WriteAsJson(new NetworkResponse()
         {
             status = ConstantsDB.ERROR,
             message = "Aconteceu algum erro!"
@@ -192,7 +192,7 @@ public class RoomRoute : ServerBehaviour
 
     private void CriaSala(DataBuffer req, DataBuffer res, NetworkPeer peer)
     {
-        var salaClient = req.FromJson<Sala>();
+        var salaClient = req.ReadAsJson<Sala>();
         string name = salaClient.nameSala;
         string password = salaClient.password;
         bool IsPass = salaClient.IsPass;
@@ -202,7 +202,7 @@ public class RoomRoute : ServerBehaviour
         {
             if (name.Length < 4 || (name.Length > 0 && name.Length > 7))
             {
-                res.ToJson(
+                res.WriteAsJson(
                     new NetworkResponse()
                     {
                         status = ConstantsDB.ERROR,
@@ -216,7 +216,7 @@ public class RoomRoute : ServerBehaviour
             {
                 if (password.Length < 4)
                 {
-                    res.ToJson(
+                    res.WriteAsJson(
                         new NetworkResponse()
                         {
                             status = ConstantsDB.ERROR,
@@ -240,7 +240,7 @@ public class RoomRoute : ServerBehaviour
 
         if (!exists)
         {
-            res.ToJson(
+            res.WriteAsJson(
                 new NetworkResponse()
                 {
                     status = ConstantsDB.ERROR,
@@ -256,7 +256,7 @@ public class RoomRoute : ServerBehaviour
         if (!groupValida)
         {
 
-            res.ToJson(
+            res.WriteAsJson(
                 new NetworkResponse()
                 {
                     status = ConstantsDB.ERROR,
@@ -313,7 +313,7 @@ public class RoomRoute : ServerBehaviour
         Matchmaking.Server.JoinGroup(group, peer);
 
 
-        res.ToJson(
+        res.WriteAsJson(
             new NetworkResponse<Sala>()
             {
                 status = ConstantsDB.SUCCESS,
@@ -321,13 +321,13 @@ public class RoomRoute : ServerBehaviour
                 Data = salaClient
             }
         );
-        res.ToJson(salaIngame);
+        res.WriteAsJson(salaIngame);
         res.Send(HttpTarget.NonGroupMembers);
     }
     private void GetPlayer(DataBuffer res, NetworkPeer peer)
     {
         peer.Data.TryGet("user", out UsersModel user);
-        res.ToJson(new NetworkResponse<UsersModel>()
+        res.WriteAsJson(new NetworkResponse<UsersModel>()
         {
             status = ConstantsDB.SUCCESS,
             message = "Player entrou na sala",
@@ -349,7 +349,7 @@ public class RoomRoute : ServerBehaviour
         }
 
 
-        res.ToJson(new NetworkResponse<List<UsersModel>>()
+        res.WriteAsJson(new NetworkResponse<List<UsersModel>>()
         {
             status = ConstantsDB.SUCCESS,
             message = "Players obtido com sucesso!",
@@ -372,7 +372,7 @@ public class RoomRoute : ServerBehaviour
                 status = ConstantsDB.ERROR,
                 message = "Grupo não existe mais!"
             };
-            res.ToJson(response);
+            res.WriteAsJson(response);
             res.Send();
             return;
         }
@@ -391,7 +391,7 @@ public class RoomRoute : ServerBehaviour
                         status = ConstantsDB.ERROR,
                         message = "A senha está incorreta!"
                     };
-                    res.ToJson(response);
+                    res.WriteAsJson(response);
                     res.Send();
                     return;
                 }
@@ -401,7 +401,7 @@ public class RoomRoute : ServerBehaviour
 
         if (exists)
         {
-            res.ToJson(
+            res.WriteAsJson(
                 new NetworkResponse()
                 {
                     status = ConstantsDB.ERROR,
@@ -420,7 +420,7 @@ public class RoomRoute : ServerBehaviour
                 status = ConstantsDB.ERROR,
                 message = "Não foi possível encontrar o grupo!"
             };
-            res.ToJson(response);
+            res.WriteAsJson(response);
             res.Send();
             return;
         }
@@ -432,7 +432,7 @@ public class RoomRoute : ServerBehaviour
                 status = ConstantsDB.ERROR,
                 message = "Você já está neste grupo"
             };
-            res.ToJson(response);
+            res.WriteAsJson(response);
             res.Send();
             return;
         }
@@ -443,7 +443,7 @@ public class RoomRoute : ServerBehaviour
                 status = ConstantsDB.ERROR,
                 message = "A sala está cheia!"
             };
-            res.ToJson(response);
+            res.WriteAsJson(response);
             res.Send();
             return;
         }
@@ -477,8 +477,8 @@ public class RoomRoute : ServerBehaviour
             message = "Adicionado ao grupo com sucesso!",
             Data = sala
         };
-        res.ToJson(response);
-        res.ToJson(salaInGame);
+        res.WriteAsJson(response);
+        res.WriteAsJson(salaInGame);
         res.Send(HttpTarget.NonGroupMembers);
         return;
     }
@@ -490,14 +490,14 @@ public class RoomRoute : ServerBehaviour
     }
     private void GetRooms(DataBuffer res, NetworkPeer peer)
     {
-        res.ToJson(listRooms);
+        res.WriteAsJson(listRooms);
         res.Send();
     }
 
     protected override void OnPlayerJoinedGroup(DataBuffer buffer, NetworkGroup group, NetworkPeer peer)
     {
         using DataBuffer res = Pool.Rent();
-        res.ToJson(new NetworkResponse<UsersModel>()
+        res.WriteAsJson(new NetworkResponse<UsersModel>()
         {
             status = ConstantsDB.SUCCESS,
             message = "Novo player entrou!",
@@ -506,11 +506,11 @@ public class RoomRoute : ServerBehaviour
         Remote.Invoke(ConstantsRPC.INSTANT_PLAYER, peer, res, Target.GroupMembersExceptSelf);
     }
 
-    protected override void OnPlayerLeftGroup(NetworkGroup group, NetworkPeer peer, Status status, string reason)
+    protected override void OnPlayerLeftGroup(NetworkGroup group, NetworkPeer peer, Phase status, string reason)
     {
         Sala sala = group.Data.Get<Sala>("sala");
 
-        if (status == Status.Begin)
+        if (status == Phase.Begin)
         {
             UsersModel user = peer.Data.Get<UsersModel>("user");
             user.pConfig.listRunes = new();
@@ -527,7 +527,7 @@ public class RoomRoute : ServerBehaviour
 
             using DataBuffer res = Pool.Rent();
 
-            res.ToJson(new NetworkResponse<UsersModel>()
+            res.WriteAsJson(new NetworkResponse<UsersModel>()
             {
                 status = ConstantsDB.SUCCESS,
                 message = "Um player foi removido da sala!",
@@ -547,7 +547,7 @@ public class RoomRoute : ServerBehaviour
 
             using DataBuffer resKick = Pool.Rent();
 
-            resKick.ToJson(new NetworkResponse()
+            resKick.WriteAsJson(new NetworkResponse()
             {
                 status = ConstantsDB.ERROR,
                 message = "Você foi removido da sala!",
@@ -584,7 +584,7 @@ public class RoomRoute : ServerBehaviour
             }
 
 
-            res.ToJson(new NetworkResponse<Sala>()
+            res.WriteAsJson(new NetworkResponse<Sala>()
             {
                 Data = sala
             });
@@ -597,14 +597,16 @@ public class RoomRoute : ServerBehaviour
     //Só serve para iniciar uma partida
     private void InitGame(NetworkPeer peer, NetworkGroup group)
     {
+        print("ENTREI");
         using DataBuffer buffer = Pool.Rent();
-        NetworkIdentity identityGroup = ServerGroup.InstantiateOnServer(peer);
+        NetworkIdentity identityGroup = ServerGroup.SpawnOnServer(peer);
         var groupInstServer = identityGroup.GetComponent<ServerGroup>();
         groupInstServer.SetInfoGroupServer(group);
 
         buffer.WriteIdentity(identityGroup);
 
         Remote.GlobalInvoke(ConstantsRPC.INIT_GAME, peer, buffer, Target.GroupMembers);
+        print("ACABEI");
         
     }
 
