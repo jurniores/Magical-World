@@ -15155,13 +15155,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ServiceName: WizardServer
   m_Id: 0
-  m_BindingFlags: 38
-  cdSkillBase: 0.5
-  cdSkill1: 2
-  cdSkill2: 4
-  cdSkill3: 4
-  cdSkill4: 6
-  cdSkill5: 5
+  m_BindingFlags: 36
+  propSkill:
+  - cd: 0.5
+    distance: 4
+    dano: 0
+    lvl: 1
+  - cd: 3
+    distance: 20
+    dano: 0
+    lvl: 1
+  - cd: 4
+    distance: 10
+    dano: 0
+    lvl: 1
+  - cd: 3
+    distance: 12
+    dano: 0
+    lvl: 1
+  - cd: 2
+    distance: 9
+    dano: 0
+    lvl: 1
+  - cd: 1.5
+    distance: 9
+    dano: 0
+    lvl: 1
 --- !u!4 &8223252625502901981 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 455556, guid: aea27ca7a35042c419065833e8daf224,

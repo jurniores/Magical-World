@@ -55,6 +55,8 @@ public abstract class Character : NetworkBehaviour
             skill.SetBtn(btnSkill);
             count++;
         }
+
+        Local.Invoke(ConstantsRPC.RECIEVE_SKILL);
     }
 
     void Update()
@@ -100,9 +102,21 @@ public abstract class Character : NetworkBehaviour
 
     }
 
-    void SkillActived(string nameSkillAnim)
+    public void FuncSKillArea(Skills skill)
     {
-        //Script de torno para ativar somente quando a skill for acionada
+        skill.PlaySkillArea(this, SkillActivedArea);
+    }
+
+    public void SkillActivedArea(string nameSkillAnim)
+    {
+        //Script para ativar somente quando a skill for acionada pela skill em area
+
+        animCharacter.Play(nameSkillAnim);
+    }
+
+    public void SkillActived(string nameSkillAnim)
+    {
+        //Script para ativar somente quando a skill for acionada pela skill
         //animação e rotação
         movePlayer.RotateToClicked(IdentityClicked);
         animCharacter.Play(nameSkillAnim);
@@ -112,10 +126,8 @@ public abstract class Character : NetworkBehaviour
     protected void RecieveSkill(DataBuffer buffer)
     {
         byte skCount = buffer.Read<byte>();
-        print("Skill; " +skCount);
         Skills skill = skills[skCount];
         skill.AtackSkillAsync();
-        print("Chamei skill");
     }
     [Client(ConstantsRPC.COWNTDOWN_SKILL)]
     protected void CowntDownSkill(DataBuffer buffer)
@@ -123,7 +135,18 @@ public abstract class Character : NetworkBehaviour
         byte skCount = buffer.Read<byte>();
         Skills skill = skills[skCount];
         skill.CowntDownSkill();
-        print("Chamei cowntdown");
+    }
+    [Client(ConstantsRPC.RECIEVE_SKILL)]
+    protected void RecieveSKillsRPC(DataBuffer buffer)
+    {
+        buffer.DecompressRaw();
+        var prop = buffer.ReadAsBinary<List<PropSkills>>();
+        int count = 0;
+        skills.ForEach(e =>
+        {
+            e.PropSkills = prop[count];
+            count++;
+        });
     }
 
     protected abstract void Skill5();

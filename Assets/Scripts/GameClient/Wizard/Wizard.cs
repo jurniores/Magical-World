@@ -27,7 +27,7 @@ public class Wizard : Character
     }
     protected override void Skill4()
     {
-        FuncSkills(skills[4]);
+        FuncSKillArea(skills[4]);
     }
     protected override void Skill5()
     {

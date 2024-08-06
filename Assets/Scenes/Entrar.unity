@@ -6417,7 +6417,7 @@ MonoBehaviour:
   m_ClientListenPort: 7778
   m_ConnectAddress: 127.0.0.1
   m_ConnectPort: 7779
-  m_TickRate: 30
+  m_TickRate: 10
   m_MaxFpsOnClient: 60
   m_AutoStartClient: 1
   m_AutoStartServer: 1

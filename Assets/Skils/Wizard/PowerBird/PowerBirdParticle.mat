@@ -7,14 +7,16 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SpellWall
-  m_Shader: {fileID: -6465566751694194690, guid: 476052860f8240344a3baf801d667119,
+  m_Name: PowerBirdParticle
+  m_Shader: {fileID: -6465566751694194690, guid: 0494a9e4b1040fa4e917a0781e9819e6,
     type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ALPHAPREMULTIPLY_ON
+  - _ALPHATEST_ON
   - _RECEIVE_SHADOWS_OFF
+  - _SPECULAR_SETUP
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords: []
   m_LightmapFlags: 2
@@ -24,16 +26,12 @@ Material:
   stringTagMap:
     RenderType: Transparent
   disabledShaderPasses:
-  - DepthOnly
   - SHADOWCASTER
+  - DepthOnly
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _MainTexture:
-        m_Texture: {fileID: 2800000, guid: cbb006c50eea75a48a1ebfb765327c07, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -48,33 +46,32 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaClip: 0
+    - _AlphaClip: 1
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _CastShadows: 0
     - _Cull: 2
     - _DstBlend: 10
-    - _POwer: 1.07
-    - _PowerFresnel: 24.6
+    - _FresnelPower: 0
+    - _NoiseScale: 50
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 0
+    - _Smooth: 1
     - _SrcBlend: 1
     - _Surface: 1
-    - _Velocity: 0.05
-    - _VoronoiOffset: 100
-    - _VoronoiScale: 100
-    - _WorkflowMode: 1
+    - _WorkflowMode: 0
     - _ZTest: 4
     - _ZWrite: 0
     - _ZWriteControl: 0
     m_Colors:
-    - _Color: {r: 61.246815, g: 0, b: 72.65928, a: 1}
-    - _Speed: {r: 0.05, g: 0.05, b: 0, a: 0}
-    - _Tilling: {r: 2, g: 2, b: 0, a: 0}
+    - _Color: {r: 0.44287887, g: 0, b: 1.072441, a: 0.050980393}
+    - _ColorBird: {r: 260.8302, g: 12.761832, b: 0, a: 1}
+    - _Emission: {r: 0, g: 0, b: 0, a: 1}
+    - _Speed: {r: 0.05, g: -0.6, b: 0, a: 0}
   m_BuildTextureStacks: []
---- !u!114 &5893873265233548455
+--- !u!114 &8485625186966970009
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

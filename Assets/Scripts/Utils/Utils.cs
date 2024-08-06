@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using MemoryPack;
 using Omni.Core;
 using Omni.Threading.Tasks;
 using UnityEngine;
@@ -165,16 +166,22 @@ public static class Extensions
     }
 }
 
- public struct CharacterAttributes
-    {
-        public float hp,
-            ataq,
-            ataM,
-            def,
-            defM,
-            velAtak,
-            cd,
-            mana,
-            velocity;
-        public int money;
-    }
+public struct CharacterAttributes
+{
+    public float hp,
+        ataq,
+        ataM,
+        def,
+        defM,
+        velAtak,
+        cd,
+        mana,
+        velocity;
+    public int money;
+}
+[MemoryPackable]
+[Serializable]
+public partial struct PropSkills
+{
+    public float cd, distance, dano, lvl;
+}

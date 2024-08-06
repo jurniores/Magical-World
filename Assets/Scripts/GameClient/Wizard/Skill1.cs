@@ -11,6 +11,8 @@ public class Skill1 : Skills
 {
     [SerializeField]
     private ParticleSystem spell, circle, raio;
+    [SerializeField]
+    private GameObject powerRock;
 
     protected override void Start()
     {
@@ -36,8 +38,12 @@ public class Skill1 : Skills
         circle.Play();
         raio.Play();
     }
-    protected override void SkillAfeterCd()
+    protected override async void SkillAfeterCd()
     {
-        print("lancei skill");
+        await UniTask.WaitForSeconds(animTime);
+
+        PowerRock rt = Instantiate(powerRock).GetComponent<PowerRock>();
+        Transform posEnemy = identityCliked.GetComponent<Transform>();
+        rt.SetInfoPowerRock(posEnemy.position);
     }
 }

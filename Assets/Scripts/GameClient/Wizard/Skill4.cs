@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using Omni.Core;
+using Omni.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class Skill4 : Skills
 {
-   [SerializeField]
+    [SerializeField]
     private ParticleSystem circle;
+    [SerializeField]
+    private GameObject inverseField;
+
     protected override void Start()
     {
         base.Start();
@@ -20,5 +24,11 @@ public class Skill4 : Skills
         var raioMain = circle.main;
         raioMain.startLifetime = timeTotalCowndown;
         circle.Play();
+    }
+
+    protected override void SkillAfeterCd()
+    {
+        InverseField iF = Instantiate(inverseField).GetComponent<InverseField>();
+        iF.SetInfoField(posInitialSkill, animTime);
     }
 }

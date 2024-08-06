@@ -9811,6 +9811,37 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &3855635089224862760
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1590872663200880877}
+  m_Layer: 6
+  m_Name: posInitialSkills
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1590872663200880877
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3855635089224862760}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4540704033848589341}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5059470893971938231
 GameObject:
   m_ObjectHideFlags: 0
@@ -9843,6 +9874,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1590872663200880877}
   - {fileID: 3730646779659741783}
   - {fileID: 2389212924646463690}
   - {fileID: 4582311598191077391}
@@ -14935,108 +14967,90 @@ PrefabInstance:
       value: item_wizard
       objectReference: {fileID: 0}
     - target: {fileID: 412824, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 412824, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 412824, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 412824, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.466244
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 412824, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 51.7895
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 412824, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 48.21606
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 412824, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.01890044
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 412824, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.1211001
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 412824, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.9562257
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 412824, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.2657256
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 412824, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 76.746
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 412824, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -87.12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 412824, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -6.023
-      objectReference: {fileID: 0}
-    - target: {fileID: 412824, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
-      propertyPath: m_ConstrainProportionsScale
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2327030, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
-      propertyPath: m_Materials.Array.size
+    - target: {fileID: 2115587649741473661, guid: d64f40bf7e223c14894e18fe15958fa3,
+        type: 3}
+      propertyPath: livroPos
+      value: 
+      objectReference: {fileID: 819633695480986614}
+    - target: {fileID: 6929005520016657003, guid: d64f40bf7e223c14894e18fe15958fa3,
+        type: 3}
+      propertyPath: m_UseWorldSpace
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 2327030, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: a0185fc5f2a4c714384b06570f6b5d89, type: 2}
-    - target: {fileID: 2327030, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
-      propertyPath: m_Materials.Array.data[1]
-      value: 
-      objectReference: {fileID: 2100000, guid: a0185fc5f2a4c714384b06570f6b5d89, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 151696, guid: d64f40bf7e223c14894e18fe15958fa3,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1064214465967917087}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d64f40bf7e223c14894e18fe15958fa3, type: 3}
---- !u!1 &819633695480719358 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 151696, guid: d64f40bf7e223c14894e18fe15958fa3,
-    type: 3}
-  m_PrefabInstance: {fileID: 819633695480870766}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1064214465967917087
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 819633695480719358}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8acbacc01b579448b3c02ddaf941c39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  time: 5
-  property: FloatTime
 --- !u!4 &819633695480986614 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 412824, guid: d64f40bf7e223c14894e18fe15958fa3,
     type: 3}
   m_PrefabInstance: {fileID: 819633695480870766}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1586392156239081491 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2115587649741473661, guid: d64f40bf7e223c14894e18fe15958fa3,
+    type: 3}
+  m_PrefabInstance: {fileID: 819633695480870766}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18484e0201b4237408003db5355f7b4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1993176120038655501 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1222379432528965987, guid: d64f40bf7e223c14894e18fe15958fa3,
+    type: 3}
+  m_PrefabInstance: {fileID: 819633695480870766}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8acbacc01b579448b3c02ddaf941c39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2067436756103152430
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15248,7 +15262,7 @@ MonoBehaviour:
   movePlayer: {fileID: 5527063300558996950}
   skillet: 0
   cMaterialsChar: {fileID: 4550765227773025430}
-  cMaterialLivro: {fileID: 1064214465967917087}
+  cMaterialLivro: {fileID: 1993176120038655501}
 --- !u!114 &2765956139810675167
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15262,11 +15276,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: b7a760d154b6acc42a6b2b0a6d57aa98, type: 3}
-  cowntdown: 0.5
   timeSkillwait: 1
   animTime: 2
-  levelSkill: 1
-  danoSkill: 15
+  posInitialSkill: {fileID: 1590872663200880877}
   nameSkill: SkillBase
   distance: 4
   timeTotalCowndown: 0
@@ -15283,17 +15295,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: 31e8df81b172f9045ae851d477e7dc6d, type: 3}
-  cowntdown: 2
   timeSkillwait: 5
-  animTime: 2.3
-  levelSkill: 1
-  danoSkill: 160
+  animTime: 1
+  posInitialSkill: {fileID: 1590872663200880877}
   nameSkill: Skill1
   distance: 9
   timeTotalCowndown: 0
   spell: {fileID: 2941553383327946467}
   circle: {fileID: 2093651921668985132}
   raio: {fileID: 1589915482848433417}
+  powerRock: {fileID: 2629709523203077304, guid: 741101185a556cc4f81d84c77244eceb,
+    type: 3}
 --- !u!114 &3532963698578196254
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15307,15 +15319,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: d808535cfa5256b44a9b4b2ab199c314, type: 3}
-  cowntdown: 4
   timeSkillwait: 3
   animTime: 2
-  levelSkill: 1
-  danoSkill: 60
+  posInitialSkill: {fileID: 1590872663200880877}
   nameSkill: Skill2
-  distance: 5
+  distance: 10
   timeTotalCowndown: 0
   circle: {fileID: 2093651921668985132}
+  magicBomb: {fileID: 5149873134035951749, guid: ad35bb85e30c4cd469e609e9dcc1ebce,
+    type: 3}
 --- !u!114 &4599753379430561878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15329,15 +15341,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: 8d8b098e35d1e0149b6a781ed7f74b49, type: 3}
-  cowntdown: 4
   timeSkillwait: 3
-  animTime: 2
-  levelSkill: 1
-  danoSkill: 24
+  animTime: 1
+  posInitialSkill: {fileID: 1590872663200880877}
   nameSkill: Skill3
-  distance: 6
+  distance: 20
   timeTotalCowndown: 0
   circle: {fileID: 2093651921668985132}
+  thunderBird: {fileID: 1586392156239081491}
 --- !u!114 &9109831407642604642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15351,15 +15362,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: 31e8df81b172f9045ae851d477e7dc6d, type: 3}
-  cowntdown: 6
   timeSkillwait: 3
-  animTime: 2
-  levelSkill: 1
-  danoSkill: 120
+  animTime: 1.8
+  posInitialSkill: {fileID: 1590872663200880877}
   nameSkill: Skill4
   distance: 9
   timeTotalCowndown: 0
   circle: {fileID: 2093651921668985132}
+  inverseField: {fileID: 6748221070059511821, guid: 426c3e121ec0f514fb86c18e2d3b95f7,
+    type: 3}
 --- !u!114 &6556157389885519202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15373,15 +15384,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: d25ff2b622dc88943964a32615b927df, type: 3}
-  cowntdown: 5
   timeSkillwait: 3
-  animTime: 2
-  levelSkill: 1
-  danoSkill: 100
+  animTime: 0.5
+  posInitialSkill: {fileID: 1590872663200880877}
   nameSkill: Skill5
-  distance: 5
+  distance: 9
   timeTotalCowndown: 0
   raio: {fileID: 1589915482848433417}
+  thunderTime: {fileID: 1089507880870785022, guid: 6e0d7b33c58a49d4496123f8cab9dce8,
+    type: 3}
 --- !u!95 &2067436756110468768 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 9545102, guid: aea27ca7a35042c419065833e8daf224,

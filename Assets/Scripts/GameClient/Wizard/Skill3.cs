@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Omni.Core;
+using Omni.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,6 +9,9 @@ public class Skill3 : Skills
 {
     [SerializeField]
     private ParticleSystem circle;
+    [SerializeField]
+    private ThunderBird thunderBird;
+
     protected override void Start()
     {
         base.Start();
@@ -15,10 +19,11 @@ public class Skill3 : Skills
         circle.Stop();
     }
 
-    protected override void SkillBeforeCd()
+     protected override async void SkillAfeterCd()
     {
-        var raioMain = circle.main;
-        raioMain.startLifetime = timeTotalCowndown;
-        circle.Play();
+        await UniTask.WaitForSeconds(animTime);
+        Transform posEnemy = identityCliked.GetComponent<Transform>();
+        thunderBird.SetPosThunder(posEnemy);
     }
+ 
 }
