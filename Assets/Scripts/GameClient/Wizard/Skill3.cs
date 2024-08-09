@@ -22,7 +22,7 @@ public class Skill3 : Skills
      protected override async void SkillAfeterCd()
     {
         await UniTask.WaitForSeconds(animTime);
-        Transform posEnemy = identityCliked.GetComponent<Transform>();
+        Transform posEnemy = IdentityClicked.GetComponent<Transform>();
         thunderBird.SetPosThunder(posEnemy);
     }
  

@@ -37,7 +37,9 @@ public class ConstantsRPC
    public const byte COWNTDOWN_SKILL = 21;
    
    public const byte CONFIRMED_SKILL = 22;
-   public const byte RECIEVE_SKILL = 23;
+   public const byte RECIEVE_CONFIGS_INITIALS = 23;
+   public const byte RECIEVE_DEMAGE = 24;
+   
 
 
 }

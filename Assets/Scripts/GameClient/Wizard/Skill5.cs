@@ -29,7 +29,7 @@ public class Skill5 : Skills
     {
         await UniTask.WaitForSeconds(animTime);
         ThunderTime tt = Instantiate(thunderTime).GetComponent<ThunderTime>();
-        Transform posEnemy = identityCliked.GetComponent<Transform>();
+        Transform posEnemy = IdentityClicked.GetComponent<Transform>();
         tt.SetInfoThunderTime(posEnemy.position);
     }
 

@@ -13,6 +13,8 @@ public class MoveEnemy : BaseMoveBots
     private Animator animEnemy;
     private Vector3 position;
     private Vector3 moveDirection;
+    private NetworkIdentity identityCharClicked;
+    private bool rotateCharClicked = false;
 
     // Start is called before the first frame update
     void Start()
@@ -39,6 +41,11 @@ public class MoveEnemy : BaseMoveBots
 
 
         //Suavização da rotação
+        if (rotateCharClicked)
+        {
+            moveDirection = identityCharClicked.transform.position - transform.position;
+        }
+        
         Quaternion newRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
         character.rotation = Quaternion.Slerp(character.rotation, newRotation, speedRotation * Time.deltaTime);
     }
@@ -46,6 +53,7 @@ public class MoveEnemy : BaseMoveBots
     [Client(ConstantsRPC.MOVIMENT_PLAYER)]
     void MovimentPlayerRpcClient(DataBuffer buffer)
     {
+        rotateCharClicked = false;
         //Recebe a posição atual do personagem na quantidade de ticks
         Vector3 hMove = buffer.Read<HalfVector3>();
         //Pega a direção que pela posição enviada do cliente
@@ -62,5 +70,19 @@ public class MoveEnemy : BaseMoveBots
         position = buffer.Read<HalfVector3>();
         moveDirection = position - transform.position;
         IsMoving = false;
+    }
+
+    void RotateMyChar(Vector3 dir)
+    {
+        Vector3 rot = Quaternion.LookRotation(dir, Vector3.up).eulerAngles;
+        if (rot.y == 0 || rot == Vector3.zero) return;
+        rot.x = 0;
+        character.rotation = Quaternion.Euler(rot);
+    }
+
+    public void RotateToClicked(NetworkIdentity identity)
+    {
+        identityCharClicked = identity;
+        rotateCharClicked = true;
     }
 }

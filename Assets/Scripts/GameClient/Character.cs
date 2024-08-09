@@ -5,6 +5,7 @@ using System.Linq;
 using AYellowpaper.SerializedCollections;
 using Newtonsoft.Json.Schema;
 using Omni.Core;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -22,10 +23,12 @@ public abstract class Character : NetworkBehaviour
     public MovePlayer movePlayer;
     private Camera mainCamera;
     protected NetworkIdentity IdentityClicked;
+    [SerializeField]
     protected CharacterAttributes charAttribues;
     protected ComponentsSkillsBtns componentsSkillsBtns;
     private GameObject canvasActive;
 
+    public CanvasPlayer cPlayer;
     public bool skillet = false;
 
     void Start()
@@ -56,7 +59,7 @@ public abstract class Character : NetworkBehaviour
             count++;
         }
 
-        Local.Invoke(ConstantsRPC.RECIEVE_SKILL);
+        Local.Invoke(ConstantsRPC.RECIEVE_CONFIGS_INITIALS);
     }
 
     void Update()
@@ -90,7 +93,7 @@ public abstract class Character : NetworkBehaviour
     }
     public void FuncSkills(Skills skill)
     {
-        float avaliableDistance = AvaliableDistance(skill.distance);
+        float avaliableDistance = AvaliableDistance(skill.propSkills.distance);
 
         if (avaliableDistance != 0)
         {
@@ -134,14 +137,21 @@ public abstract class Character : NetworkBehaviour
     {
         byte skCount = buffer.Read<byte>();
         Skills skill = skills[skCount];
+        movePlayer.RotateToClicked(IdentityClicked);
         skill.CowntDownSkill();
     }
-    [Client(ConstantsRPC.RECIEVE_SKILL)]
+    [Client(ConstantsRPC.RECIEVE_CONFIGS_INITIALS)]
     protected void RecieveSKillsRPC(DataBuffer buffer)
     {
         buffer.DecompressRaw();
         var prop = buffer.ReadAsBinary<List<PropSkills>>();
+
+        var cAttributes = buffer.ReadAsBinary<CharacterAttributes>();
+        charAttribues = cAttributes;
+
+        cPlayer.imgHp.SetConfig(charAttribues.hp);
         int count = 0;
+
         skills.ForEach(e =>
         {
             e.PropSkills = prop[count];
@@ -155,5 +165,13 @@ public abstract class Character : NetworkBehaviour
     protected abstract void Skill2();
     protected abstract void Skill1();
     protected abstract void SkillBase();
-    protected abstract void Demage(DataBuffer buffer);
+    
+    [Client(ConstantsRPC.RECIEVE_DEMAGE)]
+    protected  void Demage(DataBuffer buffer)
+    {
+        float dano = buffer.Read<half>();
+        charAttribues.hp -= dano;
+        print("Dano no cliente de " + dano);
+        cPlayer.imgHp.SetHp(charAttribues.hp);
+    }
 }

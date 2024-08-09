@@ -9,6 +9,7 @@ public class MovePlayer : BaseMoveClient
     private Transform character;
     [SerializeField]
     private float speedRot, distanceCharClicked;
+
     private CinemachineVirtualCamera virtualCamera;
     private Transform cam;
     private Joystick joystick;
@@ -20,8 +21,6 @@ public class MovePlayer : BaseMoveClient
     private bool moveClicked = false, rotateCharClicked = false;
     private HalfVector3 hMove;
     NetworkIdentity identityCharClicked;
-
-
     private UnityAction fnSkill;
     protected override void OnStart()
     {

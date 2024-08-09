@@ -18,15 +18,15 @@ public abstract class Skills : MonoBehaviour
     protected Transform posInitialSkill;
     public string nameSkill;
     protected byte ConstantsRPCForServer;
-    protected NetworkIdentity identityCliked;
+    protected NetworkIdentity IdentityClicked;
     protected UnityAction fnSkillReceived;
     protected UnityAction<string> fnAnimCharacter;
     private BtnSkills btnSkill;
     protected Character character;
 
-    public float distance, timeTotalCowndown;
+    public float timeTotalCowndown;
 
-    private PropSkills propSkills;
+    public PropSkills propSkills;
 
     public PropSkills PropSkills
     {
@@ -54,8 +54,8 @@ public abstract class Skills : MonoBehaviour
     public void PlaySkill(NetworkBehaviour Character, NetworkIdentity identity, UnityAction<string> fnAnim)
     {
         fnAnimCharacter = fnAnim;
-        identityCliked = identity;
-        SendSkillServer(Character, identityCliked.IdentityId);
+        IdentityClicked = identity;
+        SendSkillServer(Character, IdentityClicked.IdentityId);
     }
 
     private void SendSkillAreaServer(NetworkBehaviour Character)

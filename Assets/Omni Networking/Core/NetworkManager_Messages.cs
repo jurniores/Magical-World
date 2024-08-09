@@ -97,11 +97,6 @@ namespace Omni.Core
                 }
                 else
                 {
-                    NetworkLogger.__Log__(
-                        $"Get Error: Identity with ID {identityId} not found.",
-                        NetworkLogger.LogType.Error
-                    );
-
                     return null;
                 }
             }
@@ -325,11 +320,6 @@ namespace Omni.Core
                 }
                 else
                 {
-                    NetworkLogger.__Log__(
-                        $"Get Error: Identity with ID {identityId} not found.",
-                        NetworkLogger.LogType.Error
-                    );
-
                     return null;
                 }
             }

@@ -59,7 +59,7 @@ public class ServerGroup : NetworkBehaviour
         forAllBuffer.WriteAsJson(dicPlayers);
         this.InvokeByPeer(ConstantsRPC.INSTANT_PLAYERS_GAME, peer, forAllBuffer, Target.Self);
 
-        dicPlayers.Add(peer.Id, identity.IdentityId);
+        dicPlayers.TryAdd(peer.Id, identity.IdentityId);
     }
 
 

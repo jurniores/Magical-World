@@ -165,8 +165,9 @@ public static class Extensions
         NetworkManager.Server.Invoke(msgId, peer, identity.IdentityId, identity.Id, buffer, target);
     }
 }
-
-public struct CharacterAttributes
+[MemoryPackable]
+[Serializable]
+public partial struct CharacterAttributes
 {
     public float hp,
         ataq,
@@ -183,5 +184,5 @@ public struct CharacterAttributes
 [Serializable]
 public partial struct PropSkills
 {
-    public float cd, distance, dano, lvl;
+    public float cd, animDano, distance, dano, lvl;
 }

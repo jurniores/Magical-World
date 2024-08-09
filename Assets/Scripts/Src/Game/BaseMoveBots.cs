@@ -36,7 +36,7 @@ public class BaseMoveBots : NetworkBehaviour
             //Valida a posição que o bot parou do player
             float distance = Vector3.Distance(transform.position, lastPosition);
         
-            if (distance < 0.05f)
+            if (distance < 0.1f)
             {
                 distanceFinal = true;
             }

@@ -1,5 +1,6 @@
 using AYellowpaper.SerializedCollections;
 using Omni.Core;
+using Unity.Mathematics;
 using UnityEngine;
 
 
@@ -34,10 +35,5 @@ public class Wizard : Character
         FuncSkills(skills[5]);
     }
 
-    [Client(ConstantsRPC.DEMAGE_PLAYER)]
-    protected override void Demage(DataBuffer buffer)
-    {
-
-    }
-
+   
 }

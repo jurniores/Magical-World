@@ -31,7 +31,7 @@ public class Skill2 : Skills
         await UniTask.WaitForSeconds(animTime);
 
         MagicBomb mb = Instantiate(magicBomb).GetComponent<MagicBomb>();
-        Transform posEnemy = identityCliked.GetComponent<Transform>();
+        Transform posEnemy = IdentityClicked.GetComponent<Transform>();
         mb.SetDirection(posInitialSkill.position, posEnemy);
     }
 }

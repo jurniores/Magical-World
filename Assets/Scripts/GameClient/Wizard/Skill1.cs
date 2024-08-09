@@ -43,7 +43,7 @@ public class Skill1 : Skills
         await UniTask.WaitForSeconds(animTime);
 
         PowerRock rt = Instantiate(powerRock).GetComponent<PowerRock>();
-        Transform posEnemy = identityCliked.GetComponent<Transform>();
+        Transform posEnemy = IdentityClicked.GetComponent<Transform>();
         rt.SetInfoPowerRock(posEnemy.position);
     }
 }

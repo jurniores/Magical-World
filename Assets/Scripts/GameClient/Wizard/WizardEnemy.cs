@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Omni.Core;
+using Omni.Threading.Tasks;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,6 +12,13 @@ public class WizardEnemy : CharacterEnemy
     [SerializeField]
     private ParticleSystem spell, circle, raio;
     private bool casting = true;
+    [SerializeField]
+    private GameObject inverseField, magicBomb, thunderTime, powerRock;
+    [SerializeField]
+    private ThunderBird thunderBird;
+    [SerializeField]
+    private float animTimeBase, animTime1, animTime2, animTime3, animTime4, animTime5;
+    private NetworkIdentity IdentityClicked;
 
     void Start()
     {
@@ -25,7 +34,7 @@ public class WizardEnemy : CharacterEnemy
         RecieveSkillOnServer(nameof(SkillBase));
     }
 
-    protected override void Skill1()
+    protected override async void Skill1()
     {
         if (casting)
         {
@@ -37,9 +46,14 @@ public class WizardEnemy : CharacterEnemy
 
 
         RecieveSkillOnServer(nameof(Skill1));
+        await UniTask.WaitForSeconds(animTime1);
+
+        PowerRock rt = Instantiate(powerRock).GetComponent<PowerRock>();
+        Transform posEnemy = IdentityClicked.GetComponent<Transform>();
+        rt.SetInfoPowerRock(posEnemy.position);
     }
 
-    protected override void Skill2()
+    protected override async void Skill2()
     {
         if (casting)
         {
@@ -48,17 +62,26 @@ public class WizardEnemy : CharacterEnemy
         }
 
         RecieveSkillOnServer(nameof(Skill2));
+        await UniTask.WaitForSeconds(animTime2);
+
+        MagicBomb mb = Instantiate(magicBomb).GetComponent<MagicBomb>();
+        Transform posEnemy = IdentityClicked.GetComponent<Transform>();
+        mb.SetDirection(posInitialSkill.position, posEnemy);
 
     }
 
-    protected override void Skill3()
+    protected async override void Skill3()
     {
         if (casting)
         {
             circle.Play();
             return;
         }
+
         RecieveSkillOnServer(nameof(Skill3));
+        await UniTask.WaitForSeconds(animTime3);
+        Transform posEnemy = IdentityClicked.GetComponent<Transform>();
+        thunderBird.SetPosThunder(posEnemy);
     }
 
     protected override void Skill4()
@@ -69,9 +92,11 @@ public class WizardEnemy : CharacterEnemy
             return;
         }
         RecieveSkillOnServer(nameof(Skill4));
+        InverseField iF = Instantiate(inverseField).GetComponent<InverseField>();
+        iF.SetInfoField(posInitialSkill, animTime4);
     }
 
-    protected override void Skill5()
+    protected async override void Skill5()
     {
         if (casting)
         {
@@ -79,6 +104,10 @@ public class WizardEnemy : CharacterEnemy
             return;
         }
         RecieveSkillOnServer(nameof(Skill5));
+        await UniTask.WaitForSeconds(animTime5);
+        ThunderTime tt = Instantiate(thunderTime).GetComponent<ThunderTime>();
+        Transform posEnemy = IdentityClicked.GetComponent<Transform>();
+        tt.SetInfoThunderTime(posEnemy.position);
     }
     void RecieveSkillOnServer(string nameSkill)
     {
@@ -95,6 +124,13 @@ public class WizardEnemy : CharacterEnemy
 
         byte confirmSkill = buffer.Read<byte>();
         dicSkills[confirmSkill]?.Invoke();
+
+        int Identity = buffer.Read<int>();
+        var identClicked = NetworkManager.Client.GetIdentity(Identity);
+
+        if(identClicked == null) return;
+        IdentityClicked = identClicked;
+        moveEnemy.RotateToClicked(IdentityClicked);
     }
 
     [Client(ConstantsRPC.CONFIRMED_SKILL)]
@@ -102,13 +138,8 @@ public class WizardEnemy : CharacterEnemy
     {
         casting = false;
         byte confirmSkill = buffer.Read<byte>();
-        print(confirmSkill);
         dicSkills[confirmSkill]?.Invoke();
     }
 
-    [Client(ConstantsRPC.DEMAGE_PLAYER)]
-    protected override void Demage(DataBuffer buffer)
-    {
-
-    }
+    
 }

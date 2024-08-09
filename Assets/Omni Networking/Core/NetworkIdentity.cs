@@ -370,11 +370,11 @@ namespace Omni.Core
             NetworkHelper.Destroy(m_Id, IsServer);
         }
 
-        public override bool Equals(object obj)
-        {
-            NetworkIdentity other = (NetworkIdentity)obj;
-            return IdentityId == other.IdentityId;
-        }
+        // public override bool Equals(object obj)
+        // {
+        //     NetworkIdentity other = (NetworkIdentity)obj;
+        //     return IdentityId == other.IdentityId;
+        // }
 
         public override int GetHashCode()
         {
