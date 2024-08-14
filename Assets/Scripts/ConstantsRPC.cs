@@ -37,8 +37,19 @@ public class ConstantsRPC
    public const byte COWNTDOWN_SKILL = 21;
    
    public const byte CONFIRMED_SKILL = 22;
-   public const byte RECIEVE_CONFIGS_INITIALS = 23;
-   public const byte RECIEVE_DEMAGE = 24;
+   public const byte CANCELED_SKILL = 23;
+   public const byte RECIEVE_CONFIGS_INITIALS = 24;
+   public const byte RECIEVE_DEMAGE = 25;
+   public const byte DEATH = 26;
+
+   //BOTS
+   public const byte BOT_WALK = 40;
+   public const byte BOT_RUN = 41;
+   public const byte BOT_ATACK = 42;
+   public const byte BOT_STOP = 43;
+   public const byte BOT_INSTANTIATE = 44;
+   public const byte BOT_POS_INITIAL = 45;
+
    
 
 

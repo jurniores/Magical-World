@@ -35,7 +35,6 @@ public class BtnSkills : MonoBehaviour
                 skillActivated = false;
                 timePro.gameObject.SetActive(false);
                 myButton.interactable = true;
-                btnSelected = false;
             }
         }
     }
@@ -53,15 +52,13 @@ public class BtnSkills : MonoBehaviour
     {
         myButton.onClick.AddListener(characterSkill);
     }
-    public async void ActiveSkill(float timeParam, float animTime)
+    public void ActiveSkill(float timeParam)
     {
-        if (btnSelected) return;
+        
         timeText = timeTotal = timeParam;
-        btnSelected = true;
+        
         myButton.interactable = false;
         imgFill.fillAmount = 0;
-
-        await UniTask.WaitForSeconds(animTime);
         time = 0;
         timeText = timeTotal;
         skillActivated = true;

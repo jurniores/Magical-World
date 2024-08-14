@@ -3,37 +3,50 @@ using System.Collections.Generic;
 using Omni.Core;
 using Omni.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class SkillSingleServer : MonoBehaviour
 {
-    [SerializeField]
-    private float timeDano;
     protected float dano;
     protected float shield;
-    protected NetworkIdentity identity;
 
-    public async void SetInfoSingle(float danoP, NetworkIdentity idEnemy, float timeAnim)
+    private bool move = false;
+    protected CharacterServer charEnemy;
+
+    /// <summary>
+    /// Update is called every frame, if the MonoBehaviour is enabled.
+    /// </summary>
+    void Update()
+    {
+        
+    }
+
+    public async void SetInfoSkill(float danoP, NetworkIdentity identity, float timeDano, bool buff)
     {
         dano = danoP;
-        identity = idEnemy;
-        await UniTask.WaitForSeconds(timeAnim + timeDano);
-        SkillSingle();
+
+        charEnemy = identity.Get<CharacterServer>();
+        await UniTask.WaitForSeconds(timeDano);
+
+        if (!buff)
+        {
+            SkillSingleDemage();
+        }
+        else
+        {
+            SkillSingleBuff();
+        }
     }
 
-    public async void SetInfoShield(float shieldP, NetworkIdentity myIdentity, float timeAnim)
+    protected virtual void SkillSingleDemage()
     {
-        shield = shieldP;
-        identity = myIdentity;
-        await UniTask.WaitForSeconds(timeAnim + timeDano);
-        SkillSingle();
-    }
-
-
-    protected virtual void SkillSingle()
-    {
-        print("Dano single: " + dano);
-        var charEnemy = identity.Get<CharacterServer>();
+        //Se o personagem se mover, cancela o dano da  skill
         charEnemy.SetDemage(dano);
+    }
+    protected virtual void SkillSingleBuff()
+    {
+        //Se o personagem se mover, cancela o dano da  skill
+        charEnemy.SetShield(dano);
     }
 
 }

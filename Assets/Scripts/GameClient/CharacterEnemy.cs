@@ -12,6 +12,8 @@ public abstract class CharacterEnemy : NetworkBehaviour
     protected Animator animEnemy;
     [SerializeField]
     protected Transform posInitialSkill;
+    [SerializeField]
+    protected List<PropSkills> propSkillsEnemy;
     protected MoveEnemy moveEnemy;
     [SerializeField]
     protected CharacterAttributes charAttribues;
@@ -49,7 +51,11 @@ public abstract class CharacterEnemy : NetworkBehaviour
     protected void RecieveSKillsRPC(DataBuffer buffer)
     {
         buffer.DecompressRaw();
+        var prop = buffer.ReadAsBinary<List<PropSkills>>();
+        propSkillsEnemy = prop;
+
         var cAttributes = buffer.ReadAsBinary<CharacterAttributes>();
+        //
         charAttribues = cAttributes;
         cPlayer.imgHp.SetConfig(charAttribues.hp);
     }
@@ -57,8 +63,17 @@ public abstract class CharacterEnemy : NetworkBehaviour
     [Client(ConstantsRPC.RECIEVE_DEMAGE)]
     protected void Demage(DataBuffer buffer)
     {
-        float dano = buffer.Read<half>();
+        float dano = buffer.Read<Half>();
         charAttribues.hp -= dano;
         cPlayer.imgHp.SetHp(charAttribues.hp);
+    }
+    
+    [Client(ConstantsRPC.DEATH)]
+    protected virtual void Death(DataBuffer buffer)
+    {
+        animEnemy.Play("Death");
+        moveEnemy.enabled = false;
+        cPlayer.gameObject.SetActive(false);
+        enabled = false;
     }
 }

@@ -10081,7 +10081,6 @@ MonoBehaviour:
   speed: 5
   gravity: -2
   characterController: {fileID: 2860777574089645289}
-  IsEnemy: 0
   character: {fileID: 2067436756103049386}
   speedRotation: 8
   animEnemy: {fileID: 2067436756110468768}
@@ -15448,6 +15447,7 @@ MonoBehaviour:
   m_BindingFlags: 36
   animEnemy: {fileID: 2067436756110468768}
   posInitialSkill: {fileID: 125127070543997781}
+  propSkillsEnemy: []
   charAttribues:
     hp: 0
     ataq: 0
@@ -15472,12 +15472,6 @@ MonoBehaviour:
   powerRock: {fileID: 2629709523203077304, guid: 741101185a556cc4f81d84c77244eceb,
     type: 3}
   thunderBird: {fileID: 1586392156239081491}
-  animTimeBase: 2
-  animTime1: 1
-  animTime2: 2
-  animTime3: 1
-  animTime4: 1.8
-  animTime5: 0.5
 --- !u!95 &2067436756110468768 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 9545102, guid: aea27ca7a35042c419065833e8daf224,

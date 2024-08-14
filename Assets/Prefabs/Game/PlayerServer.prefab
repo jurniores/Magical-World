@@ -96,7 +96,6 @@ MonoBehaviour:
   speed: 5
   gravity: -2
   characterController: {fileID: 3360045172204961044}
-  IsEnemy: 0
   correctLagDistance: 3
 --- !u!1 &4993200754443678962
 GameObject:
@@ -15044,11 +15043,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1686728064991217761, guid: b0521a0c9a8de2c4992a411d66a08b7c,
-        type: 3}
-      propertyPath: timeDano
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4539628495345181343, guid: b0521a0c9a8de2c4992a411d66a08b7c,
         type: 3}
       propertyPath: m_Name
@@ -15059,16 +15053,16 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b0521a0c9a8de2c4992a411d66a08b7c, type: 3}
---- !u!114 &288085756680603842 stripped
+--- !u!114 &1676141050342606714 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1686728064991217761, guid: b0521a0c9a8de2c4992a411d66a08b7c,
+  m_CorrespondingSourceObject: {fileID: 276359098200016857, guid: b0521a0c9a8de2c4992a411d66a08b7c,
     type: 3}
   m_PrefabInstance: {fileID: 1483665894477906083}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9f8b0509c50917468efc7006ed64a6f, type: 3}
+  m_Script: {fileID: 11500000, guid: 61f27cad56173d84cb64389693c98193, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &1955065664057306496 stripped
@@ -15531,6 +15525,7 @@ MonoBehaviour:
   m_ServiceName: CharacterServer
   m_Id: 0
   m_BindingFlags: 36
+  moveServer: {fileID: -978942271774837965}
   charAttribues:
     hp: 1000
     ataq: 100
@@ -15544,40 +15539,52 @@ MonoBehaviour:
     money: 360
   propSkill:
   - cd: 0.5
-    animDano: 0.1
+    animDano: 1.1
     distance: 4
     dano: 10
     lvl: 1
+    animTime: 1
+    skillWait: 5
   - cd: 3
-    animDano: 1
+    animDano: 1.1
     distance: 12
     dano: 50
     lvl: 1
+    animTime: 1
+    skillWait: 5
   - cd: 2
-    animDano: 0.8
+    animDano: 2
     distance: 10
     dano: 15
     lvl: 1
+    animTime: 1.4
+    skillWait: 5
   - cd: 3
-    animDano: 0.1
+    animDano: 1
     distance: 12
     dano: 25
     lvl: 1
+    animTime: 1
+    skillWait: 5
   - cd: 2
     animDano: 0
     distance: 9
     dano: 30
     lvl: 1
+    animTime: 1.8
+    skillWait: 5
   - cd: 1.5
-    animDano: 1
+    animDano: 0.5
     distance: 9
     dano: 30
     lvl: 1
+    animTime: 2
+    skillWait: 10
   powerRockServer: {fileID: 4890718241637640823, guid: 84027adcae9c353468f05fa3a889dc86,
     type: 3}
   thunderTimeServer: {fileID: 8643041006202844983, guid: 4b820e34180124b4db52a13fc3137a98,
     type: 3}
-  LineThunder: {fileID: 288085756680603842}
+  LineThunder: {fileID: 1676141050342606714}
   MagicBomb: {fileID: 8901021470935006263}
   BasicSkill: {fileID: 910967595338191014}
   InverseField: {fileID: 2651450341038179099}

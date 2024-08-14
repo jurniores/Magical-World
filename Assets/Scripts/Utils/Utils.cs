@@ -184,5 +184,5 @@ public partial struct CharacterAttributes
 [Serializable]
 public partial struct PropSkills
 {
-    public float cd, animDano, distance, dano, lvl;
+    public float cd, animDano, distance, dano, lvl, animTime, skillWait;
 }

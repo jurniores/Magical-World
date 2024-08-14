@@ -8,30 +8,32 @@ using UnityEngine.Events;
 public class Skill2 : Skills
 {
     [SerializeField]
-    private ParticleSystem circle;
-    [SerializeField]
     private GameObject magicBomb;
 
     protected override void Start()
     {
         base.Start();
         ConstantsRPCForServer = ConstantsRPC.SKILL2_PLAYER;
-        circle.Stop();
     }
 
     protected override void SkillBeforeCd()
     {
-        var circleMain = circle.main;
+        var circleMain = character.circle.main;
         circleMain.startLifetime = timeTotalCowndown;
-        circle.Play();
+        character.circle.Play();
     }
 
     protected override async void SkillAfeterCd()
     {
-        await UniTask.WaitForSeconds(animTime);
-
+        await UniTask.WaitForSeconds(propSkills.animTime);
+        base.SkillAfeterCd();
         MagicBomb mb = Instantiate(magicBomb).GetComponent<MagicBomb>();
         Transform posEnemy = IdentityClicked.GetComponent<Transform>();
         mb.SetDirection(posInitialSkill.position, posEnemy);
+    }
+
+    protected override void CancelAnimations()
+    {
+        character.circle.Stop();
     }
 }

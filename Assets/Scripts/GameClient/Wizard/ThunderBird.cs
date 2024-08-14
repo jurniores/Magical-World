@@ -17,7 +17,7 @@ public class ThunderBird : MonoBehaviour
         line.SetPosition(1, posEnemy.position);
     }
 
-    public async void SetPosThunder(Transform posEnemyP)
+    public async UniTask SetPosThunder(Transform posEnemyP)
     {
         gameObject.SetActive(true);
         posEnemy = posEnemyP;

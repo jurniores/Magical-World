@@ -10093,7 +10093,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ServiceName: MovePlayer
   m_Id: 0
-  m_BindingFlags: 38
+  m_BindingFlags: 36
   speed: 5
   gravity: -2
   animator: {fileID: 2067436756110468768}
@@ -15224,18 +15224,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18484e0201b4237408003db5355f7b4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1993176120038655501 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1222379432528965987, guid: d64f40bf7e223c14894e18fe15958fa3,
-    type: 3}
-  m_PrefabInstance: {fileID: 819633695480870766}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8acbacc01b579448b3c02ddaf941c39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &2067436756103152430
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15433,14 +15421,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cff9a790b89f753498c60d945b2b3cd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ServiceName: Character
+  m_ServiceName: CharacterClient
   m_Id: 0
   m_BindingFlags: 36
   colors:
   - {r: 0.4474356, g: 0.087931626, b: 0.9811321, a: 1}
   - {r: 0.8223133, g: 0, b: 0.9433962, a: 0.48235294}
+  spell: {fileID: 2941553383327946467}
+  circle: {fileID: 2093651921668985132}
+  raio: {fileID: 1589915482848433417}
   animCharacter: {fileID: 2067436756110468768}
   cowntdownFilled: {fileID: 0}
+  death: 0
   layerCollider:
     serializedVersion: 2
     m_Bits: 128
@@ -15458,8 +15450,6 @@ MonoBehaviour:
     money: 0
   cPlayer: {fileID: 4952151034023969450}
   skillet: 0
-  cMaterialsChar: {fileID: 4550765227773025430}
-  cMaterialLivro: {fileID: 1993176120038655501}
 --- !u!114 &2765956139810675167
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15473,8 +15463,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: b7a760d154b6acc42a6b2b0a6d57aa98, type: 3}
-  timeSkillwait: 1
-  animTime: 2
   posInitialSkill: {fileID: 1590872663200880877}
   nameSkill: SkillBase
   timeTotalCowndown: 0
@@ -15484,6 +15472,8 @@ MonoBehaviour:
     distance: 0
     dano: 0
     lvl: 0
+    animTime: 0
+    skillWait: 0
 --- !u!114 &821256420597441665
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15497,8 +15487,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: 31e8df81b172f9045ae851d477e7dc6d, type: 3}
-  timeSkillwait: 5
-  animTime: 1
   posInitialSkill: {fileID: 1590872663200880877}
   nameSkill: Skill1
   timeTotalCowndown: 0
@@ -15508,9 +15496,8 @@ MonoBehaviour:
     distance: 0
     dano: 0
     lvl: 0
-  spell: {fileID: 2941553383327946467}
-  circle: {fileID: 2093651921668985132}
-  raio: {fileID: 1589915482848433417}
+    animTime: 0
+    skillWait: 0
   powerRock: {fileID: 2629709523203077304, guid: 741101185a556cc4f81d84c77244eceb,
     type: 3}
 --- !u!114 &3532963698578196254
@@ -15526,8 +15513,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: d808535cfa5256b44a9b4b2ab199c314, type: 3}
-  timeSkillwait: 3
-  animTime: 1.4
   posInitialSkill: {fileID: 1590872663200880877}
   nameSkill: Skill2
   timeTotalCowndown: 4
@@ -15537,7 +15522,8 @@ MonoBehaviour:
     distance: 10
     dano: 15
     lvl: 1
-  circle: {fileID: 2093651921668985132}
+    animTime: 0
+    skillWait: 0
   magicBomb: {fileID: 5149873134035951749, guid: ad35bb85e30c4cd469e609e9dcc1ebce,
     type: 3}
 --- !u!114 &4599753379430561878
@@ -15553,8 +15539,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: 8d8b098e35d1e0149b6a781ed7f74b49, type: 3}
-  timeSkillwait: 3
-  animTime: 1
   posInitialSkill: {fileID: 1590872663200880877}
   nameSkill: Skill3
   timeTotalCowndown: 0
@@ -15564,7 +15548,8 @@ MonoBehaviour:
     distance: 0
     dano: 0
     lvl: 0
-  circle: {fileID: 2093651921668985132}
+    animTime: 0
+    skillWait: 0
   thunderBird: {fileID: 1586392156239081491}
 --- !u!114 &9109831407642604642
 MonoBehaviour:
@@ -15579,8 +15564,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: 31e8df81b172f9045ae851d477e7dc6d, type: 3}
-  timeSkillwait: 3
-  animTime: 1.8
   posInitialSkill: {fileID: 1590872663200880877}
   nameSkill: Skill4
   timeTotalCowndown: 0
@@ -15590,7 +15573,8 @@ MonoBehaviour:
     distance: 0
     dano: 0
     lvl: 0
-  circle: {fileID: 2093651921668985132}
+    animTime: 0
+    skillWait: 0
   inverseField: {fileID: 6748221070059511821, guid: 426c3e121ec0f514fb86c18e2d3b95f7,
     type: 3}
 --- !u!114 &6556157389885519202
@@ -15606,8 +15590,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 21300000, guid: d25ff2b622dc88943964a32615b927df, type: 3}
-  timeSkillwait: 3
-  animTime: 0.5
   posInitialSkill: {fileID: 1590872663200880877}
   nameSkill: Skill5
   timeTotalCowndown: 0
@@ -15617,7 +15599,8 @@ MonoBehaviour:
     distance: 0
     dano: 0
     lvl: 0
-  raio: {fileID: 1589915482848433417}
+    animTime: 0
+    skillWait: 0
   thunderTime: {fileID: 1089507880870785022, guid: 6e0d7b33c58a49d4496123f8cab9dce8,
     type: 3}
 --- !u!95 &2067436756110468768 stripped

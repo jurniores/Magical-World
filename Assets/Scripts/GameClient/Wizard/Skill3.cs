@@ -8,22 +8,24 @@ using UnityEngine.Events;
 public class Skill3 : Skills
 {
     [SerializeField]
-    private ParticleSystem circle;
-    [SerializeField]
     private ThunderBird thunderBird;
 
     protected override void Start()
     {
         base.Start();
         ConstantsRPCForServer = ConstantsRPC.SKILL3_PLAYER;
-        circle.Stop();
     }
 
      protected override async void SkillAfeterCd()
     {
-        await UniTask.WaitForSeconds(animTime);
+        await UniTask.WaitForSeconds(propSkills.animTime);
         Transform posEnemy = IdentityClicked.GetComponent<Transform>();
-        thunderBird.SetPosThunder(posEnemy);
+        await thunderBird.SetPosThunder(posEnemy);
+        base.SkillAfeterCd();
     }
- 
+
+    protected override void CancelAnimations()
+    {
+        character.circle.Stop();
+    }
 }

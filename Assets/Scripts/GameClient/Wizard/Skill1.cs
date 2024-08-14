@@ -9,41 +9,46 @@ using static UnityEngine.ParticleSystem;
 
 public class Skill1 : Skills
 {
-    [SerializeField]
-    private ParticleSystem spell, circle, raio;
+    
     [SerializeField]
     private GameObject powerRock;
 
     protected override void Start()
     {
         base.Start();
-        spell.Stop();
-        circle.Stop();
-        raio.Stop();
         //pSystemWizard.time
         ConstantsRPCForServer = ConstantsRPC.SKILL1_PLAYER;
     }
     protected override void SkillBeforeCd()
     {
 
-        var spellMain = spell.main;
-        var circleMain = circle.main;
-        var raioMain = raio.main;
+        var spellMain = character.spell.main;
+        var circleMain = character.circle.main;
+        var raioMain = character.raio.main;
 
         spellMain.startLifetime = timeTotalCowndown;
         circleMain.startLifetime = timeTotalCowndown;
         raioMain.duration = timeTotalCowndown;
 
-        spell.Play();
-        circle.Play();
-        raio.Play();
+        character.spell.Play();
+        character.circle.Play();
+        character.raio.Play();
     }
     protected override async void SkillAfeterCd()
     {
-        await UniTask.WaitForSeconds(animTime);
-
+        await UniTask.WaitForSeconds(propSkills.animTime);
+        base.SkillAfeterCd();
         PowerRock rt = Instantiate(powerRock).GetComponent<PowerRock>();
         Transform posEnemy = IdentityClicked.GetComponent<Transform>();
         rt.SetInfoPowerRock(posEnemy.position);
+    }
+
+    protected override void CancelAnimations()
+    {
+        base.CancelAnimations();
+        print("Chamei no cliente cancelando");
+        character.spell.Stop();
+        character.circle.Stop();
+        character.raio.Stop();
     }
 }

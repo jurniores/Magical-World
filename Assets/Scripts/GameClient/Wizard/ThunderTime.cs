@@ -11,7 +11,7 @@ public class ThunderTime : MonoBehaviour
     }
     public void SetInfoThunderTime(Vector3 posEnemyP)
     {
-        posEnemyP.y += 1.80f;
+        posEnemyP.y += 1.90f;
         posEnemy = posEnemyP;
     }
 }

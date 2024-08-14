@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using kcp2k;
 using Omni.Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,25 +7,28 @@ using UnityEngine.SceneManagement;
 public class ServerGroup : NetworkBehaviour
 {
     [SerializeField]
-    private NetworkIdentity serverPlayer;
+    private NetworkIdentity serverPlayer, botServer;
     private readonly Dictionary<int, int> dicPlayers = new();
     private Scene sceneGame;
     private Sala sala;
     private NetworkGroup group;
     public static int identityId = 0;
+    public int groupID;
 
     void Start()
     {
+        
         sala = group.Data.Get<Sala>("sala");
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         DontDestroyOnLoad(gameObject);
-        #endif
+#endif
     }
 
     public void SetInfoGroupServer(NetworkGroup pGroup)
     {
         Invoke(nameof(StartedGame), 1);
         group = pGroup;
+        groupID = group.Id;
     }
 
     void Update()
@@ -47,10 +49,13 @@ public class ServerGroup : NetworkBehaviour
 
         //Adicionando o buffer de instanciação
         NetworkIdentity identity = serverPlayer.SpawnOnServer(peer);
-       
+
 
         buffer.WriteIdentity(identity);
 
+
+        //Enviando com esse invoke, pois todos os jogadores chamam esse RPC
+        //Se não enviar com esse não conseguiria usar o self, pois o peer é do master
         this.InvokeByPeer(ConstantsRPC.INSTANT_ENEMY_GAME, peer, buffer, Target.GroupMembersExceptSelf);
         this.InvokeByPeer(ConstantsRPC.INSTANT_PLAYER_GAME, peer, buffer, Target.Self);
 
@@ -60,6 +65,28 @@ public class ServerGroup : NetworkBehaviour
         this.InvokeByPeer(ConstantsRPC.INSTANT_PLAYERS_GAME, peer, forAllBuffer, Target.Self);
 
         dicPlayers.TryAdd(peer.Id, identity.IdentityId);
+
+
+
+        NetworkIdentity identityBot = botServer.SpawnOnServer(0);
+        BotServer bS= identityBot.Get<BotServer>();
+        bS.Group(group.Id);
+
+        using DataBuffer bufferBot = NetworkManager.Pool.Rent();
+
+
+        bufferBot.WriteIdentity(identityBot);
+
+        this.InvokeByPeer(ConstantsRPC.BOT_INSTANTIATE, peer, bufferBot, Target.GroupMembers);
+
+
+
+
+
+
+
+
+
     }
 
 

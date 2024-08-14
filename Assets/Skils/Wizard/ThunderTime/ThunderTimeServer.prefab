@@ -68,6 +68,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeDano: 0.5
+  boxC: {fileID: 528352378176944418}
 --- !u!114 &-4545713766525706261
 MonoBehaviour:
   m_ObjectHideFlags: 0

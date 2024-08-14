@@ -10,9 +10,7 @@ public class BaseMoveBots : NetworkBehaviour
     protected float speed, gravity;
     [SerializeField]
     protected CharacterController characterController;
-    [SerializeField]
-    private bool IsEnemy;
-    protected bool IsMoving { get; set; }
+    public bool IsMoving { get; set; }
     protected bool distanceFinal;
 
     protected override void OnStart()
@@ -22,7 +20,9 @@ public class BaseMoveBots : NetworkBehaviour
     }
     protected void Move(Vector3 lastPosition)
     {
-        if (IsMoving)
+        float distance = Vector3.Distance(transform.position, lastPosition);
+
+        if (IsMoving && distance > 0.4f)
         {
             //Move o personagem na direção sem parar
             lastPosition.Normalize();
@@ -32,15 +32,12 @@ public class BaseMoveBots : NetworkBehaviour
         }
         else if (!IsMoving && !distanceFinal)
         {
-
             //Valida a posição que o bot parou do player
-            float distance = Vector3.Distance(transform.position, lastPosition);
-        
-            if (distance < 0.1f)
+            if (distance < 0.5f)
             {
                 distanceFinal = true;
             }
-            
+
             //Move o personagem até o ponto onde o cliente parou
             //Direção obtida do ponto que está, até o ponto que foi enviado na parada do cliente
             lastPosition -= transform.position;

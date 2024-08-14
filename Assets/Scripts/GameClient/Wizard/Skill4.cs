@@ -8,27 +8,31 @@ using UnityEngine.Events;
 public class Skill4 : Skills
 {
     [SerializeField]
-    private ParticleSystem circle;
-    [SerializeField]
     private GameObject inverseField;
 
     protected override void Start()
     {
         base.Start();
         ConstantsRPCForServer = ConstantsRPC.SKILL4_PLAYER;
-        circle.Stop();
     }
 
     protected override void SkillBeforeCd()
     {
-        var raioMain = circle.main;
+        var raioMain = character.circle.main;
         raioMain.startLifetime = timeTotalCowndown;
-        circle.Play();
+        character.circle.Play();
     }
 
-    protected override void SkillAfeterCd()
+    protected override async void SkillAfeterCd()
     {
         InverseField iF = Instantiate(inverseField).GetComponent<InverseField>();
-        iF.SetInfoField(posInitialSkill, animTime);
+        iF.SetInfoField(posInitialSkill, propSkills.animTime);
+        await UniTask.WaitForSeconds(propSkills.animTime);
+        base.SkillAfeterCd();
+    }
+
+    protected override void CancelAnimations()
+    {
+        character.circle.Stop();
     }
 }

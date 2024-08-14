@@ -4,12 +4,8 @@ using Unity.Mathematics;
 using UnityEngine;
 
 
-public class Wizard : Character
+public class Wizard : CharacterClient
 {
-
-    [SerializeField]
-    private ControllsMaterials cMaterialsChar, cMaterialLivro;
-
     protected override void SkillBase()
     {
         FuncSkills(skills[0]);
@@ -33,7 +29,5 @@ public class Wizard : Character
     protected override void Skill5()
     {
         FuncSkills(skills[5]);
-    }
-
-   
+    } 
 }

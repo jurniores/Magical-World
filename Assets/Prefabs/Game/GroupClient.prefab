@@ -53,6 +53,8 @@ MonoBehaviour:
     type: 3}
   clientEnemy: {fileID: -5317595195212261174, guid: 4bce6640289282247856eb7ae5c954fa,
     type: 3}
+  botClient: {fileID: 6759533008785040237, guid: 85220b13b9a5c94439d81044c3b92d5f,
+    type: 3}
 --- !u!114 &984364587800015383
 MonoBehaviour:
   m_ObjectHideFlags: 0

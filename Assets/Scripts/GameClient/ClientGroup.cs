@@ -8,7 +8,7 @@ public class GroupClient : NetworkBehaviour
     [SerializeField]
     private Material skybox;
     [SerializeField]
-    private NetworkIdentity clientPlayer, clientEnemy;
+    private NetworkIdentity clientPlayer, clientEnemy, botClient;
     private Dictionary<int, NetworkIdentity> dicPlayerClient = new();
     private CanvasGo canvasGo;
     private int scene = 3;
@@ -58,6 +58,14 @@ public class GroupClient : NetworkBehaviour
         print("TERMINOU");
     }
 
+    [Client(ConstantsRPC.BOT_INSTANTIATE)]
+    void InstantiateBots(DataBuffer buffer)
+    {
+        print("instanciei os bots");
+        buffer.ReadIdentity(out var peerId, out var identityId);
+        botClient.InstantiateOnClientInScene(peerId, identityId, sceneGame);
+    }
+
     [Client(ConstantsRPC.INSTANT_PLAYER_GAME)]
     void InstantePlayerRPC(DataBuffer buffer)
     {
@@ -89,7 +97,7 @@ public class GroupClient : NetworkBehaviour
         //Verificando se a identitade já edxiste
         if (dicPlayerClient.ContainsKey(identityId)) return;
         NetworkIdentity identity = clientEnemy.InstantiateOnClientInScene(peerId, identityId, sceneGame);
-        identity.transform.position = new Vector3(0,1,0);
+        identity.transform.position = new Vector3(0, 1, 0);
         dicPlayerClient.Add(identityId, identity);
     }
 }

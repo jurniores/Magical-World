@@ -11,10 +11,6 @@ public abstract class Skills : MonoBehaviour
     [SerializeField]
     private Sprite sprite;
     [SerializeField]
-    protected float timeSkillwait;
-    [SerializeField]
-    protected float animTime = 2;
-    [SerializeField]
     protected Transform posInitialSkill;
     public string nameSkill;
     protected byte ConstantsRPCForServer;
@@ -22,7 +18,7 @@ public abstract class Skills : MonoBehaviour
     protected UnityAction fnSkillReceived;
     protected UnityAction<string> fnAnimCharacter;
     private BtnSkills btnSkill;
-    protected Character character;
+    protected CharacterClient character;
 
     public float timeTotalCowndown;
 
@@ -33,16 +29,15 @@ public abstract class Skills : MonoBehaviour
         get => propSkills;
         set
         {
-            
+
             propSkills = value;
-            timeTotalCowndown = propSkills.cd + animTime;
+            timeTotalCowndown = propSkills.cd + propSkills.animTime;
         }
     }
-
     protected virtual void Start()
     {
         btnSkill.SetInfo(sprite);
-        character = GetComponent<Character>();
+        character = GetComponent<CharacterClient>();
     }
 
     //Recebe o click de envio de skills
@@ -80,28 +75,43 @@ public abstract class Skills : MonoBehaviour
     //Ativa skill chamada pelo servidor pós cowntdown
     public void AtackSkillAsync()
     {
-        SkillAfeterCd();
+        character.movePlayer.enabled = false;
         fnAnimCharacter(nameSkill);
-        character.skillet = false;
+        SkillAfeterCd();
     }
     //Servidor chama o Cowndown para depois chamar a skill
     public void CowntDownSkill()
     {
+        //Trava o boneco para não andar nem poder soltar nova skill
         character.cowntdownFilled.SetCowntDown(PropSkills.cd);
         character.animCharacter.Play("Casting");
         SkillBeforeCd();
-        float cowntdownReal = PropSkills.cd + animTime;
-        btnSkill.ActiveSkill(timeSkillwait, cowntdownReal);
+        float cowntdownReal = PropSkills.cd + propSkills.animTime;
+
         character.skillet = true;
+    }
+    public void CancelSkill()
+    {
+        btnSkill.ActiveSkill(propSkills.skillWait);
     }
     protected virtual void SkillBeforeCd()
     {
         //
     }
+    //Obrigatório chamar em todas as classes filhas devido ativar a movimentação do personagem
     protected virtual void SkillAfeterCd()
     {
-        //
+        //Depois do cowndown e da animação da skill é liberado para soltar uma nova skill e andar
+        character.movePlayer.enabled = true;
+        character.skillet = false;
+        btnSkill.ActiveSkill(propSkills.skillWait);
     }
+
+    protected virtual void CancelAnimations()
+    {
+        print("Cancelei no metodo");
+    }
+
 
     //Método para ser o botão da skill
     public void SetBtn(BtnSkills btnSkillP)

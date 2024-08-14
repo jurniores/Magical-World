@@ -142,6 +142,7 @@ public class MovePlayer : BaseMoveClient
 
     public void RotateToClicked(NetworkIdentity identity)
     {
+        if(identity == null) return;
         identityCharClicked = identity;
         rotateCharClicked = true;
     }

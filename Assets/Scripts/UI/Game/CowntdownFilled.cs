@@ -30,6 +30,11 @@ public class CowntdownFilled : MonoBehaviour
         filledImg.fillAmount = 0;
     }
 
+    public void CancelCowntDown()
+    {
+        gameObject.SetActive(false);
+    }
+
     private void ActiveSkill()
     {
         gameObject.SetActive(false);
