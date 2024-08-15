@@ -81,6 +81,7 @@ MonoBehaviour:
   gravity: -2
   characterController: {fileID: 3561384072267746563}
   TimeWalk: 5
+  TimeWalk2: 15
   move1: {fileID: 0}
   move2: {fileID: 0}
 --- !u!114 &734150917203873346
@@ -95,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af5286aa0273ab545b79c264b0086e99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ServiceName: CharacterBotServer
+  m_ServiceName: Character
   m_Id: 0
   m_BindingFlags: 38
   charAttribues:

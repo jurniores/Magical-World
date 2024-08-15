@@ -8,7 +8,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 
-public abstract class CharacterServer : NetworkBehaviour
+public abstract class CharacterServer : Character
 {
     public MoveServer moveServer;
     public CharacterAttributes charAttribues;
@@ -70,7 +70,7 @@ public abstract class CharacterServer : NetworkBehaviour
         // Remote.Invoke(ConstantsRPC.RECIEVE_CONFIGS_INITIALS, buffer2, Target.GroupMembersExceptSelf);
     }
 
-    public void SetDemage(float dano)
+    public override void SetDemage(float dano)
     {
         if (charAttribues.hp <= 0) return;
 
@@ -91,6 +91,11 @@ public abstract class CharacterServer : NetworkBehaviour
         half halfDano = (half)dano;
         Remote.Invoke(ConstantsRPC.RECIEVE_DEMAGE, halfDano, Target.GroupMembers);
 
+    }
+
+    public override void SetShield(float shield)
+    {
+        charAttribues.hp += shield;
     }
     protected async UniTask SkillSendServer(float cdSkill, byte skill, int idenity)
     {
@@ -128,12 +133,6 @@ public abstract class CharacterServer : NetworkBehaviour
         }
         return null;
     }
-
-    public void SetShield(float shield)
-    {
-        charAttribues.hp += shield;
-    }
-
     protected async void InvokeSkill(DataBuffer buffer, byte skill, UnityAction<NetworkIdentity, PropSkills> fnSkill)
     {
         if (!skillLiberate[skill]) return;

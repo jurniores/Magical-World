@@ -15,21 +15,24 @@ public class BotClient : BaseMoveBots
     private float speedRotation;
     [SerializeField]
     private Animator animBot;
-    private Vector3 dir, objDistance;
+    private Vector3 dir, objDistance = Vector3.zero;
 
     void Start()
     {
-        posInitial = NetworkService.GetAsComponent<Transform>("move1");
+        posInitial = NetworkService.GetAsComponent<Transform>("initPos");
         transform.position = posInitial.position;
+        print(posInitial.position);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (objDistance == Vector3.zero) return;
         dir = objDistance - transform.position;
-
         dir.Normalize();
+
         float distance = Vector3.Distance(objDistance, transform.position);
+
         if (distance < 0.5f)
         {
             animBot.SetBool("Walk", false);
@@ -47,10 +50,19 @@ public class BotClient : BaseMoveBots
 
     void RotateBot(Vector3 moveDirection)
     {
-        Quaternion newRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
+        Vector3 rot = Quaternion.LookRotation(moveDirection, Vector3.up).eulerAngles;
+        rot.x = 0;
+
+        Quaternion newRotation = Quaternion.Euler(rot);
         character.rotation = Quaternion.Slerp(character.rotation, newRotation, speedRotation * Time.deltaTime);
     }
-
+    public async void Death()
+    {
+        characterController.enabled = false;
+        await UniTask.WaitForSeconds(4);
+        var rb = gameObject.AddComponent<Rigidbody>();
+        rb.drag = 20f;
+    }
     [Client(ConstantsRPC.BOT_WALK)]
     void WalkRPC(DataBuffer buffer)
     {

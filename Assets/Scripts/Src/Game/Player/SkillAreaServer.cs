@@ -12,8 +12,7 @@ public class SkillAreaServer : MonoBehaviour
 
     [SerializeField]
     private BoxCollider boxC;
-    protected List<CharacterServer> playerServer = new();
-    protected List<CharacterBotServer> botServer = new();
+    protected List<Character> charServer = new();
 
     protected float dano;
     protected int myIdentityId;
@@ -47,15 +46,7 @@ public class SkillAreaServer : MonoBehaviour
     protected virtual void AfterCd()
     {
         print("Dano area: " + dano);
-        if (bot)
-        {
-            botServer.ForEach(e =>
-            {
-                e.SetDemage(dano);
-            });
-            return;
-        }
-        playerServer.ForEach(e =>
+        charServer.ForEach(e =>
         {
             e.SetDemage(dano);
         });
@@ -63,29 +54,38 @@ public class SkillAreaServer : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        Character cEnemy;
         if (other.CompareTag("bot"))
         {
-            
-            var cEnemy = other.GetComponent<CharacterBotServer>();
-            botServer.Add(cEnemy);
-            bot = true;
+            cEnemy = other.GetComponent<Character>();
+            charServer.Add(cEnemy);
         }
         else
         {
             if (!other.TryGetComponent<MoveServer>(out var mEnemy) || myIdentityId == mEnemy.IdentityId) return;
-            var cEnemy = mEnemy.Identity.Get<CharacterServer>();
-            playerServer.Add(cEnemy);
+            cEnemy = mEnemy.Identity.Get<Character>();
+            charServer.Add(cEnemy);
         }
+
+
     }
 
     void OnTriggerExit(Collider other)
     {
         print(other.name + " Saiu");
 
-        if (!other.TryGetComponent<MoveServer>(out var mEnemy) || myIdentityId == mEnemy.IdentityId) return;
-
-
-        var cEnemy = mEnemy.Identity.Get<CharacterServer>();
-        playerServer.RemoveAll(e => e.IdentityId == cEnemy.IdentityId);
+         Character cEnemy;
+        if (other.CompareTag("bot"))
+        {
+            cEnemy = other.GetComponent<Character>();
+            charServer.RemoveAll(e => e.IdentityId == cEnemy.IdentityId);
+        }
+        else
+        {
+            if (!other.TryGetComponent<MoveServer>(out var mEnemy) || myIdentityId == mEnemy.IdentityId) return;
+            cEnemy = mEnemy.Identity.Get<Character>();
+            charServer.RemoveAll(e => e.IdentityId == cEnemy.IdentityId);
+        }
+        
     }
 }

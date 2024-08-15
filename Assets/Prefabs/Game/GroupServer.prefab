@@ -50,8 +50,7 @@ MonoBehaviour:
   m_BindingFlags: 38
   serverPlayer: {fileID: 6462417198488496190, guid: 9171c17150e1cc643a20bbed29dcba11,
     type: 3}
-  botServer: {fileID: 4772053671084055349, guid: fc1f26a68b760df448b4c80ec1461e8b,
-    type: 3}
+  botsInScene: {fileID: 0}
   groupID: 0
 --- !u!114 &7718317295470443263
 MonoBehaviour:

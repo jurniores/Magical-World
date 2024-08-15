@@ -15522,7 +15522,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb3bbe1869ae0334888b42bf1038872e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ServiceName: CharacterServer
+  m_ServiceName: Character
   m_Id: 0
   m_BindingFlags: 36
   moveServer: {fileID: -978942271774837965}

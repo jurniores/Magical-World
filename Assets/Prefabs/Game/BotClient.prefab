@@ -433,6 +433,7 @@ MonoBehaviour:
     mana: 0
     velocity: 0
     money: 0
+  nameBot: 
 --- !u!114 &6759533008785040237
 MonoBehaviour:
   m_ObjectHideFlags: 0

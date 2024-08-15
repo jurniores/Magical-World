@@ -5,7 +5,7 @@ using Omni.Threading.Tasks;
 using Unity.Mathematics;
 using UnityEngine;
 
-public class CharacterBotServer : NetworkBehaviour
+public class CharacterBotServer : Character
 {
     [SerializeField]
     private CharacterAttributes charAttribues;
@@ -23,7 +23,7 @@ public class CharacterBotServer : NetworkBehaviour
 
     }
 
-    public void SetDemage(float dano)
+    public override async void SetDemage(float dano)
     {
         if (charAttribues.hp <= 0) return;
 
@@ -38,16 +38,22 @@ public class CharacterBotServer : NetworkBehaviour
             enabled = false;
             moveBot.enabled = false;
             death = true;
-            Remote.Invoke(ConstantsRPC.DEATH, groupId: moveBot.GroupID);
         }
 
         half halfDano = (half)dano;
-        
-        using var buffer = NetworkManager.Pool.Rent();
+
+        var buffer = NetworkManager.Pool.Rent();
         buffer.Write(halfDano);
 
         Remote.Invoke(ConstantsRPC.RECIEVE_DEMAGE, buffer, groupId: moveBot.GroupID);
-
+        buffer.Dispose();
+        
+        if (death)
+        {
+            Remote.Invoke(ConstantsRPC.DEATH, groupId: moveBot.GroupID);
+            await UniTask.WaitForSeconds(10);
+            Identity.Destroy();
+        }
     }
 
     [Server(ConstantsRPC.RECIEVE_CONFIGS_INITIALS)]
@@ -58,5 +64,10 @@ public class CharacterBotServer : NetworkBehaviour
         using var buffer = NetworkManager.Pool.Rent();
         buffer.WriteAsBinary(charAttribues);
         Remote.Invoke(ConstantsRPC.RECIEVE_CONFIGS_INITIALS, buffer, groupId: moveBot.GroupID);
+    }
+
+    public override void SetShield(float dano)
+    {
+        print("SetShieldBot");
     }
 }

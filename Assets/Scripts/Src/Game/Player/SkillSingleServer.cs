@@ -11,7 +11,7 @@ public class SkillSingleServer : MonoBehaviour
     protected float shield;
 
     private bool move = false;
-    protected CharacterServer charEnemy;
+    protected Character charEnemy;
 
     /// <summary>
     /// Update is called every frame, if the MonoBehaviour is enabled.
@@ -25,7 +25,7 @@ public class SkillSingleServer : MonoBehaviour
     {
         dano = danoP;
 
-        charEnemy = identity.Get<CharacterServer>();
+        charEnemy = identity.Get<Character>();
         await UniTask.WaitForSeconds(timeDano);
 
         if (!buff)

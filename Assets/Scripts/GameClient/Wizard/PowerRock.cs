@@ -41,7 +41,7 @@ public class PowerRock : MonoBehaviour
 
     public void SetInfoPowerRock(Vector3 posEnemyP)
     {
-        posEnemyP.y -= 1f;
+        posEnemyP.y -= 0.8f;
         transform.position = posEnemyP;
     }
 }

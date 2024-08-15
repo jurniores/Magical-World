@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Omni.Core;
+using Omni.Threading.Tasks;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -14,6 +15,8 @@ public class CharacterBotClient : NetworkBehaviour
     private BotClient moveBot;
     [SerializeField]
     private CharacterAttributes charAttribues;
+    [SerializeField]
+    private string nameBot;
     private bool death = false;
 
     //IMCOMPLETO
@@ -54,5 +57,6 @@ public class CharacterBotClient : NetworkBehaviour
         cBot.gameObject.SetActive(false);
         enabled = false;
         death = true;
+        moveBot.Death();
     }
 }

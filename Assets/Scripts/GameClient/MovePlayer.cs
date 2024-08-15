@@ -90,12 +90,14 @@ public class MovePlayer : BaseMoveClient
         }
         else if (joystick.Vertical == 0 && rotateCharClicked)
         {
+            if(identityCharClicked == null) return;
             Vector3 dirCharClicked = identityCharClicked.transform.position - transform.position;
             RotateMyChar(dirCharClicked);
         }
     }
     void FollowClickedSkill()
     {
+        if(identityCharClicked == null) return;
         //Algoritmo para fazer o player seguir após soltar uma skill que não tenha a distancia suficiente
         if (joystick.Vertical == 0 && joystick.Horizontal == 0 && moveClicked)
         {

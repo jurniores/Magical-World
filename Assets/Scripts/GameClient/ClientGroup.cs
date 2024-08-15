@@ -8,9 +8,12 @@ public class GroupClient : NetworkBehaviour
     [SerializeField]
     private Material skybox;
     [SerializeField]
-    private NetworkIdentity clientPlayer, clientEnemy, botClient;
+    private NetworkIdentity clientPlayer, clientEnemy;
+    [SerializeField]
+    private BotsInScene botsInScene;
     private Dictionary<int, NetworkIdentity> dicPlayerClient = new();
     private CanvasGo canvasGo;
+
     private int scene = 3;
     Scene sceneGame;
     private bool instante = false;
@@ -48,7 +51,7 @@ public class GroupClient : NetworkBehaviour
             SceneManager.UnloadSceneAsync(sceneUnload);
             RenderSettings.skybox = skybox;
         }
-
+        botsInScene = NetworkService.GetAsComponent<BotsInScene>();
     }
 
     void InvokeIntantePlayer()
@@ -61,9 +64,10 @@ public class GroupClient : NetworkBehaviour
     [Client(ConstantsRPC.BOT_INSTANTIATE)]
     void InstantiateBots(DataBuffer buffer)
     {
-        print("instanciei os bots");
+        int key = (int)buffer.Read<Half>();
         buffer.ReadIdentity(out var peerId, out var identityId);
-        botClient.InstantiateOnClientInScene(peerId, identityId, sceneGame);
+        print("instanciei client: " +identityId);
+        botsInScene.bots[key].botClient.InstantiateOnClientInScene(peerId, identityId, sceneGame);
     }
 
     [Client(ConstantsRPC.INSTANT_PLAYER_GAME)]
