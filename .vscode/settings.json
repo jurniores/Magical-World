@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Magical world.sln"
+    "dotnet.defaultSolution": "Magical-World.sln"
 }
